@@ -1,0 +1,570 @@
+.sidebar,
+.main-panel,
+.sidebar-wrapper,
+.navbar-fixed,
+.navbar-minimize {
+  -webkit-transition-property: top, bottom, width;
+  transition-property: top, bottom, width;
+  -webkit-transition-duration: 0.2s, 0.2s, 0.35s;
+  transition-duration: 0.2s, 0.2s, 0.35s;
+  -webkit-transition-timing-function: linear, linear, ease;
+  transition-timing-function: linear, linear, ease;
+  -webkit-overflow-scrolling: touch;
+}
+.animation-transition-general,
+.sidebar .nav p,
+.sidebar .user .photo,
+.bootstrap-navbar .user .photo,
+.sidebar .user a,
+.bootstrap-navbar .user a,
+.login-page .card {
+  @include transition(300ms, linear);
+}
+
+a[aria-controls~="menu"] .caret {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.sidebar-button {
+  height: 26px !important;
+  float: right;
+}
+
+.sidebar-tasks {
+  padding: 2px;
+  position: relative;
+  text-align: left;
+  height: 26px !important;
+  line-height: normal;
+}
+
+.sidebar-badge {
+  border-radius: 50%;
+  font-size: 12px !important;
+  width: 18px !important;
+  height: 18px !important;
+  padding: 3px !important;
+  top: -1px !important;
+}
+
+.loading-spinner {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.bsidebarOpen {
+  // when the bootstrapvue sidebar is open
+  .b-sidebar-outer {
+    // overwrite bootstrapvue style
+    position: fixed !important;
+    top: 25px !important;
+    height: calc(100vh - 50px) !important;
+    width: 300px;
+  }
+
+  .b-sidebar {
+    // overwrite bootstrapvue style
+    height: calc(100vh - 50px) !important;
+    width: 300px !important;
+    position: fixed !important;
+    top: 25px !important;
+
+    .b-sidebar-body {
+      height: calc(100vh - 50px) !important;
+    }
+
+    .b-sidebar-footer {
+      height: 50px !important;
+      z-index: 2500;
+    }
+  }
+}
+
+.bsidebarClosed {
+  // when the bootstrapvue sidebar is closed
+  .b-sidebar-outer {
+    // overwrite bootstrapvue style
+    position: fixed !important;
+    width: 0;
+  }
+
+  .b-sidebar {
+    // overwrite bootstrapvue style
+    width: 0 !important;
+  }
+}
+
+// THE SIDEBAR
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  height: calc(100vh - 50px) !important;
+  left: 0;
+  width: 300px;
+  display: block;
+  z-index: 1;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  font-weight: 200;
+
+  .logo-img {
+    width: 34px;
+    display: inline-block;
+    height: 34px;
+    margin-left: 0;
+    margin-right: 10px;
+    background: #fff;
+    border-radius: 40px;
+    text-align: center;
+    line-height: 34px;
+
+    img {
+      max-width: 18px;
+      position: relative;
+    }
+  }
+
+  .logo {
+    padding: 12px 0px 9px;
+    margin: 0;
+    position: relative;
+    z-index: 4;
+    display: block;
+
+    a.logo-mini {
+      float: left;
+      width: 30px;
+      text-align: center;
+      margin-left: 23px;
+      margin-right: 15px;
+      position: relative;
+    }
+
+    a.logo-normal {
+      display: block;
+      opacity: 1;
+      @include transform-translate-x(0px);
+    }
+
+    .simple-text {
+      text-transform: uppercase;
+      padding: $padding-small-vertical $padding-zero;
+      display: inline-block;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-normal;
+      line-height: 30px;
+      white-space: nowrap;
+      color: $white;
+      overflow: hidden;
+    }
+
+    p {
+      float: left;
+      font-size: 20px;
+      margin: 10px 10px;
+      line-height: 20px;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      bottom: 0px;
+      right: 15px;
+      width: calc(100% - 30px);
+      height: 1px;
+    }
+  }
+
+  .sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    min-height: 100%;
+    overflow: auto;
+    width: 300px;
+    z-index: 4;
+    /* padding-bottom: 100px; */
+
+    .nav {
+      min-height: 20px;
+    }
+
+    .nav .nav-item {
+      cursor: pointer;
+      [data-toggle="collapse"] ~ div {
+        .nav {
+          .nav-item {
+            .nav-link {
+              background: $azure;
+              padding-left: 55px;
+              text-transform: capitalize;
+              padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+              font-weight: 400;
+              font-size: 0.75rem;
+            }
+
+            &:hover,
+            &:focus,
+            &.active {
+              .nav-link {
+                background: rgba(255, 255, 255, 0.13);
+              }
+            }
+          }
+          .sidebar-normal {
+            left: 0.5rem;
+          }
+        }
+      }
+    }
+
+    .nav .nav-item {
+      cursor: pointer;
+      [accordion="sidebar-accordion"] ~ div {
+        .nav {
+          .nav-item {
+            .nav-link {
+              background: $azure;
+              padding-left: 55px;
+              text-transform: capitalize;
+              padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+              font-weight: 400;
+              font-size: 0.75rem;
+            }
+
+            &:hover,
+            &:focus,
+            &.active {
+              .nav-link {
+                background: rgba(255, 0, 0, 0.13);
+              }
+            }
+          }
+          .sidebar-normal {
+            left: 0.5rem;
+          }
+        }
+      }
+    }
+
+    .nav .nav-header {
+      height: 50px !important;
+      .nav-link {
+        height: 50px;
+        padding: 15px;
+        .sidebar-icon {
+          font-size: 1.25rem;
+        }
+      }
+    }
+
+    .nav .nav-link {
+      p {
+        margin: 0;
+        line-height: 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        white-space: nowrap;
+        position: relative;
+        color: #ffffff;
+        @include transform-translate-x(0px);
+        display: block;
+        height: auto;
+        opacity: 1;
+      }
+    }
+
+    .nav .nav-item .nav-link.not-collapsed {
+      .caret {
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+        -webkit-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
+    }
+
+    .navbar-form.navbar-search-form {
+      margin-top: 15px;
+      padding-left: 25px;
+
+      input {
+        padding-left: 10px;
+        padding-top: 5px;
+      }
+    }
+  }
+
+  .sidebar-background {
+    position: absolute;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    display: block;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    background-size: cover;
+    background-position: center center;
+  }
+
+  .user {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 20px;
+    margin-top: 20px;
+
+    ~ .nav {
+      margin-top: 15px;
+    }
+    .info {
+      .caret {
+        right: 5px;
+        top: -5px;
+      }
+      a {
+        color: $white;
+        padding: 5x;
+        display: block;
+        white-space: nowrap;
+        line-height: 18px;
+      }
+      span {
+        position: relative;
+        display: block;
+      }
+      .collapse {
+        .sidebar-normal {
+          padding-left: 0;
+        }
+      }
+    }
+
+    .profile-dropdown {
+      text-align: left !important;
+      padding-left: 25px !important;
+
+      .sidebar-mini,
+      .sidebar-normal {
+        margin-right: 0;
+        font-size: 14px;
+      }
+      .sidebar-normal {
+        left: 15px;
+      }
+    }
+  }
+
+  .caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-top: 4px solid\9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    margin-top: 0.5rem;
+    position: absolute;
+    right: 5px;
+    @include transition(150ms, ease-in);
+  }
+
+  a[data-toggle="collapse"][aria-expanded="true"] .caret,
+  .btn[data-toggle="collapse"][aria-expanded="true"] .caret,
+  a.dropdown-toggle[aria-expanded="true"] .caret {
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+
+  .nav {
+    float: none;
+    display: block;
+
+    .nav-item {
+      .nav-header {
+        height: 50px;
+      }
+
+      .nav-link {
+        color: $white;
+        margin: 0;
+        opacity: 1;
+        border-radius: 4px;
+        text-transform: uppercase;
+        line-height: 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        white-space: nowrap;
+        text-align: left;
+
+        &:hover,
+        &.router-link-active {
+          color: $white;
+          background: $warning !important;
+        }
+
+        .sidebar-icon {
+          text-transform: uppercase;
+          text-align: left;
+        }
+
+        .sidebar-text {
+          text-align: left;
+          text-transform: uppercase;
+          margin-left: 8px;
+          padding: 0;
+        }
+
+        .sidebar-badge {
+          border-radius: 50%;
+          font-size: 12px !important;
+          width: 18px !important;
+          height: 18px !important;
+          padding: 3px !important;
+          top: -1px !important;
+        }
+
+        .sidebar-header {
+          font-size: 1.25rem;
+        }
+
+        i {
+          font-size: 28px;
+          margin-right: 15px;
+          width: 30px;
+          text-align: center;
+          vertical-align: middle;
+          float: left;
+        }
+
+        svg {
+          font-size: 1.5rem;
+          margin-right: 0.5rem;
+          width: 1rem;
+          text-align: center;
+          vertical-align: middle;
+          float: left;
+        }
+      }
+
+      .nav-filter-item {
+        text-transform: none !important;
+        svg {
+          font-size: 0.75rem;
+          margin-right: 0.5rem;
+          width: 0.75rem;
+          text-align: center;
+          vertical-align: middle;
+          float: left;
+        }
+      }
+
+      &:not(.collapse .nav-link):hover .nav-link {
+        background: rgba(255, 255, 255, 0.13);
+        opacity: 1;
+      }
+
+      &.active .nav-link {
+        color: $white;
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.23);
+      }
+
+      &.separator {
+        margin: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+        & + .nav-item {
+          margin-top: 31px;
+        }
+      }
+    }
+
+    .nav-filter-item {
+      color: $white !important;
+      line-height: 1rem !important;
+      padding: 0.2rem !important;
+
+      .e-checkbox-wrapper {
+        .e-label {
+          color: $white !important;
+        }
+      }
+
+      .btn-secondary {
+        background-color: transparent !important;
+        border: none !important;
+      }
+
+      .form-control {
+        height: 24px;
+      }
+
+      .e-input-group .e-input-group-icon {
+        min-height: 0px !important;
+      }
+
+      .e-input {
+        height: 20px;
+      }
+    }
+  }
+
+  &:after,
+  &:before {
+    display: block;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  &:before {
+    opacity: 0.33;
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+//  MAIN PANEL
+
+.main-panel {
+  position: fixed;
+  top: 25px;
+  bottom: 25px;
+  left: 300px;
+  height: calc(100vh - 50px); /* cui banner compensation */
+  width: calc(100vw - 300px);
+
+  .content {
+    height: calc(
+      100vh - 150px
+    ); /* TODO: validate conentheight in bootstrap.scss is set to this same style.    */
+    width: calc(100vw - 300px);
+    background: #000000; /* $BACKGROUNDCOLOR; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .navbar {
+    margin-bottom: 0;
+  }
+}
+
+.main-panel.sidebarClosed {
+  width: 100vw;
+  left: 0;
+
+  .content {
+    width: 100vw;
+  }
+}
