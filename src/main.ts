@@ -48,7 +48,7 @@ export const EventBus = new Vue()
   logger.logToServer({ message, source, lineno, colno, error })
 } */
 
-window.addEventListener('beforeunload', function (e) {
+window.addEventListener('beforeunload', function(e) {
   // TODO: anything to do here?
 })
 
@@ -59,5 +59,5 @@ Vue.config.devtools = true
 new Vue({
   router,
   store,
-  render: (h) => h(App)
+  render: h => h(App)
 }).$mount('#app')

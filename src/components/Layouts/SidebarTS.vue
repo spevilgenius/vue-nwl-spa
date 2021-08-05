@@ -11,7 +11,7 @@
           </b-link>
         </li>
       </ul>
-      <ul v-if="navigationloaded" class="accordion nav" role="tablist">
+      <ul v-if="sidebaritems.length > 0" class="accordion nav" role="tablist">
         <UserMenu />
         <li v-for="(link, index) in sidebaritems" :key="link.name + index" :link="link" class="nav-item" :to="link.path ? link.path : '/'">
           <template v-if="link.children.length > 0">
@@ -22,7 +22,6 @@
               </span>
               <span class="sidebar-text">
                 {{ link.name }}
-                <!-- <span v-if="link.badgeId && link.badgeId.length > 0" :id="link.badgeId" class="badge badge-xs badge-danger sidebar-badge">0</span> -->
               </span>
               <b class="caret"></b>
             </a>
@@ -38,13 +37,10 @@
                             <font-awesome-icon v-else-if="sublink.library === 'far'" far :icon="sublink.icon" class="icon"></font-awesome-icon>
                           </span>
                         </div>
-                        <div class="col-10">
+                        <div class="col-11">
                           <span class="sidebar-text">
                             {{ sublink.name }}
                           </span>
-                        </div>
-                        <div class="col-1">
-                          <!-- <span v-if="sublink.badgeId && sublink.badgeId.length > 0" :id="sublink.badgeId" class="badge badge-xs badge-danger sidebar-badge">0</span> -->
                         </div>
                       </div>
                     </div>
@@ -61,7 +57,6 @@
               </span>
               <span class="sidebar-text">
                 {{ link.name }}
-                <!-- <span v-if="link.badgeId && link.badgeId.length > 0" :id="link.badgeId" class="badge badge-xs badge-danger sidebar-badge">0</span> -->
               </span>
             </router-link>
           </template>
