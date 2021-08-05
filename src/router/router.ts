@@ -12,7 +12,7 @@ const pubsMenu = {
   children: [
     {
       path: 'home/:mode',
-      name: 'Home',
+      name: 'Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
       props: true
     },

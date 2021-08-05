@@ -83,8 +83,8 @@ class Sidebar extends VuexModule {
           path: '/pubs/home/refreshnavy',
           library: 'fas',
           icon: 'anchor'
-        },
-        {
+        }
+        /*  {
           id: 103,
           name: 'Allied',
           path: '/pubs/home/refreshallied',
@@ -111,11 +111,12 @@ class Sidebar extends VuexModule {
           path: '/pubs/home/refreshall',
           library: 'fas',
           icon: 'user-shield'
-        }
+        } */
       ],
       library: 'fas',
       icon: 'file-alt'
-    },
+    }
+    /* 
     {
       id: 200,
       isMenu: true,
@@ -291,7 +292,7 @@ class Sidebar extends VuexModule {
       path: '/search/home',
       library: 'fas',
       icon: 'search-plus'
-    }
+    } */
   ]
 
   public navigationloaded = false

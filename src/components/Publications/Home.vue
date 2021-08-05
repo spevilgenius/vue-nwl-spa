@@ -6,14 +6,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
-  name: 'Home',
-  props: {
-    mode: {
-      type: String
-    }
-  }
+  name: 'Publication'
 })
-export default class Home extends Vue {
+export default class Publication extends Vue {
   @Prop() readonly mode!: string
 
   /** @method - lifecycle hook */
