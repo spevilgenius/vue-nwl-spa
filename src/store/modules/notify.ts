@@ -15,7 +15,7 @@ class Notify extends VuexModule {
   }
   @Mutation
   public deleteNotification(notificationToRemove: NotificationItem): void {
-    this.notifications = this.notifications.filter(notification => notification.id !== notificationToRemove.id)
+    this.notifications = this.notifications.filter((notification) => notification.id !== notificationToRemove.id)
   }
   @Action
   public add(notification: NotificationItem): void {

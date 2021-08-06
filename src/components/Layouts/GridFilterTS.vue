@@ -202,60 +202,60 @@ export default class GridFilter extends Vue {
           switch (filterfields[i].Predicate) {
             case 'SW':
               // Starts With
-              p = p.filter(search => Vue._.startsWith(search[filterfields[i].FieldName], filterfields[i].FilterValue))
+              p = p.filter((search) => Vue._.startsWith(search[filterfields[i].FieldName], filterfields[i].FilterValue))
               break
 
             case 'EW':
               // Ends With
-              p = p.filter(search => Vue._.endsWith(search[filterfields[i].FieldName], filterfields[i].FilterValue))
+              p = p.filter((search) => Vue._.endsWith(search[filterfields[i].FieldName], filterfields[i].FilterValue))
               break
 
             case 'C':
               // Contains
-              p = p.filter(search => Vue._.includes(search[filterfields[i].FieldName], filterfields[i].FilterValue))
+              p = p.filter((search) => Vue._.includes(search[filterfields[i].FieldName], filterfields[i].FilterValue))
               break
 
             case 'E':
               // Equals
               if (filterfields[i].DataType == 'Choice') {
-                p = p.filter(search => Vue._.isEqual(search[filterfields[i].FieldName], filterfields[i].Selected))
+                p = p.filter((search) => Vue._.isEqual(search[filterfields[i].FieldName], filterfields[i].Selected))
               } else {
                 if (filterfields[i].DataType == 'Number') {
-                  p = p.filter(search => search[filterfields[i].FieldName] == filterfields[i].FilterValue)
+                  p = p.filter((search) => search[filterfields[i].FieldName] == filterfields[i].FilterValue)
                 } else {
-                  p = p.filter(search => vm.$moment(search[filterfields[i].FieldName]).isSame(vm.$moment(filterfields[i].FilterValue), 'day'))
+                  p = p.filter((search) => vm.$moment(search[filterfields[i].FieldName]).isSame(vm.$moment(filterfields[i].FilterValue), 'day'))
                 }
               }
               break
 
             case 'NE':
               // Not Equals
-              p = p.filter(search => Vue._.without(search[filterfields[i].FieldName], filterfields[i].FilterValue))
+              p = p.filter((search) => Vue._.without(search[filterfields[i].FieldName], filterfields[i].FilterValue))
               break
 
             case 'GT':
               // Greater Than
               if (filterfields[i].DataType == 'Number') {
-                p = p.filter(search => search[filterfields[i].FieldName] > Number(filterfields[i].FilterValue))
+                p = p.filter((search) => search[filterfields[i].FieldName] > Number(filterfields[i].FilterValue))
               } else {
                 // date
-                p = p.filter(search => vm.$moment(search[filterfields[i].FieldName]).isAfter(vm.$moment(filterfields[i].FilterValue)))
+                p = p.filter((search) => vm.$moment(search[filterfields[i].FieldName]).isAfter(vm.$moment(filterfields[i].FilterValue)))
               }
               break
 
             case 'LT':
               // Less Than
               if (filterfields[i].DataType == 'Number') {
-                p = p.filter(search => search[filterfields[i].FieldName] < Number(filterfields[i].FilterValue))
+                p = p.filter((search) => search[filterfields[i].FieldName] < Number(filterfields[i].FilterValue))
               } else {
                 // date
-                p = p.filter(search => vm.$moment(filterfields[i].FilterValue).isAfter(vm.$moment(search[filterfields[i].FieldName])))
+                p = p.filter((search) => vm.$moment(filterfields[i].FilterValue).isAfter(vm.$moment(search[filterfields[i].FieldName])))
               }
               break
 
             case 'B':
               // Between
-              p = p.filter(search => vm.$moment(search[filterfields[i].FieldName]).isBetween(vm.$moment(filterfields[i].FilterValue), vm.$moment(filterfields[i].FilterValue2)))
+              p = p.filter((search) => vm.$moment(search[filterfields[i].FieldName]).isBetween(vm.$moment(filterfields[i].FilterValue), vm.$moment(filterfields[i].FilterValue2)))
               break
           }
           if (vm.sortfield !== '') {
@@ -264,7 +264,7 @@ export default class GridFilter extends Vue {
               const f = filterfields[i].FieldName
               p = Vue._.orderBy(
                 p,
-                function(o) {
+                function (o) {
                   return new vm.$moment(o[f]).format('YYYYMMDD')
                 },
                 vm.sortdir
@@ -374,7 +374,7 @@ export default class GridFilter extends Vue {
           hideHeaderClose: false,
           centered: true
         })
-        .then(value => {
+        .then((value) => {
           if (value == true) {
             vm.filteredtravel = []
             let flds = JSON.parse(f)
@@ -384,7 +384,7 @@ export default class GridFilter extends Vue {
             }, 250)
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err)
         })
     }

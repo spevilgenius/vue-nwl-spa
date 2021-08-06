@@ -54,7 +54,7 @@ class Support extends VuexModule {
   public setShown(newVal: boolean): void {
     const that = this
     this.context.commit('updateShown', newVal)
-    window.setTimeout(function() {
+    window.setTimeout(function () {
       that.context.dispatch('setRect')
     }, 500)
   }

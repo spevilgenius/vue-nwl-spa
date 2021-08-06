@@ -4,8 +4,8 @@ module.exports = {
   },
 
   assetsDir: 'static',
-  //publicPath: process.env.BASE_URL,
-  publicPath: '/',
+  publicPath: process.env.BASE_URL,
+  // publicPath: '/',
 
   configureWebpack: {
     optimization: {
@@ -18,7 +18,7 @@ module.exports = {
     }
   },
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     // console.log(config.plugins)
     config.plugins.delete('prefetch')
     config.plugins.delete('preload')

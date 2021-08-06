@@ -83,8 +83,8 @@ class Sidebar extends VuexModule {
           path: '/pubs/home/refreshnavy',
           library: 'fas',
           icon: 'anchor'
-        }
-        /*  {
+        },
+        {
           id: 103,
           name: 'Allied',
           path: '/pubs/home/refreshallied',
@@ -111,15 +111,15 @@ class Sidebar extends VuexModule {
           path: '/pubs/home/refreshall',
           library: 'fas',
           icon: 'user-shield'
-        } */
+        }
       ],
       library: 'fas',
       icon: 'file-alt'
-    }
-    /* 
+    },
     {
       id: 200,
-      isMenu: true,
+      isMenu: false,
+      children: [],
       name: 'Pubs In Development',
       library: 'fas',
       icon: 'user-edit',
@@ -127,7 +127,8 @@ class Sidebar extends VuexModule {
     },
     {
       id: 300,
-      isMenu: true,
+      isMenu: false,
+      children: [],
       name: 'Naval Terminology',
       library: 'fas',
       icon: 'spell-check',
@@ -135,7 +136,8 @@ class Sidebar extends VuexModule {
     },
     {
       id: 400,
-      isMenu: true,
+      isMenu: false,
+      children: [],
       name: 'PleaseReview',
       library: 'fas',
       icon: 'folder-open',
@@ -233,7 +235,8 @@ class Sidebar extends VuexModule {
     },
     {
       id: 700,
-      isMenu: true,
+      isMenu: false,
+      children: [],
       name: 'Doctrine Links',
       library: 'fas',
       icon: 'link',
@@ -292,7 +295,7 @@ class Sidebar extends VuexModule {
       path: '/search/home',
       library: 'fas',
       icon: 'search-plus'
-    } */
+    }
   ]
 
   public navigationloaded = false

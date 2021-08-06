@@ -27,6 +27,36 @@ const pubsMenu = {
       name: 'Navy',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Navy.vue'),
       props: true
+    },
+    {
+      path: 'page/allied',
+      name: 'Allied',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Allied.vue'),
+      props: true
+    },
+    {
+      path: 'page/joint',
+      name: 'Joint',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Joint.vue'),
+      props: true
+    },
+    {
+      path: 'page/multinational',
+      name: 'MultiNational',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/MultiNational.vue'),
+      props: true
+    },
+    {
+      path: 'page/all',
+      name: 'All Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
+      props: true
+    },
+    {
+      path: 'page/development',
+      name: 'Pubs In Development',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
+      props: true
     }
   ]
 }

@@ -5,7 +5,7 @@
         <li class="nav-item nav-header">
           <b-link class="nav-link" :href="homepage">
             <span class="sidebar-icon">
-              <font-awesome-icon fas icon="fighter-jet" class="icon"></font-awesome-icon>
+              <font-awesome-icon fas icon="anchor" class="icon"></font-awesome-icon>
             </span>
             <span class="sidebar-text sidebar-header">{{ title }}</span>
           </b-link>

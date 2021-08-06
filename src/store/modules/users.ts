@@ -14,10 +14,6 @@ let local = false
 if (loc.indexOf('localhost') >= 0) {
   local = true
 }
-let baseUrl = null
-if (!local) {
-  baseUrl = _spPageContextInfo.webServerRelativeUrl
-}
 
 @Module({ namespaced: true })
 class Users extends VuexModule {
@@ -26,6 +22,8 @@ class Users extends VuexModule {
   public currentUser!: UserInt
   public todoCount?: number
   public todos?: Array<TodoItem> = []
+  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'test.nwdc.navy.mil' */
+  public baseUrl = 'https://test.nwdc.navy.mil'
   public vm = this
 
   @Mutation updateDigest(digest: string): void {
@@ -92,7 +90,7 @@ class Users extends VuexModule {
   public async getDigest(): Promise<boolean> {
     if (!local) {
       const response = await axios.request({
-        url: baseUrl + '/_api/contextinfo',
+        url: this.baseUrl + '/_api/contextinfo',
         method: 'POST',
         headers: { Accept: 'application/json; odata=verbose' }
       })
@@ -108,6 +106,7 @@ class Users extends VuexModule {
   public async getTodosByUser(): Promise<boolean> {
     let allTodos: any[] = []
     const p: Array<TodoItem> = []
+    const that = this
     // if local just fake it for the current test
     let userid = 0
     if (!local) {
@@ -119,7 +118,7 @@ class Users extends VuexModule {
       const that = this
       async function getAllTodos(turl: string): Promise<void> {
         if (turl === '') {
-          turl = baseUrl + "/_api/lists/getbytitle('Tasks')/items?"
+          turl = that.baseUrl + "/_api/lists/getbytitle('Tasks')/items?"
           turl += '$select=*,AssignedTo/Id&$expand=AssignedTo/Id'
           turl += '&$filter=(AssignedTo/Id eq ' + userid + ") and (Status ne 'Completed')"
         }
@@ -167,7 +166,7 @@ class Users extends VuexModule {
   @Action
   public async getUserId(): Promise<UserInt | boolean> {
     if (!local) {
-      const idurl = baseUrl + '/_api/Web/CurrentUser?$select=*'
+      const idurl = this.baseUrl + '/_api/Web/CurrentUser?$select=*'
       const response = await axios.get(idurl, {
         headers: {
           accept: 'application/json;odata=verbose'
@@ -193,7 +192,7 @@ class Users extends VuexModule {
   @Action
   public async getUserProfile(): Promise<boolean> {
     if (!local) {
-      const userurl = baseUrl + '/_api/SP.UserProfiles.PeopleManager/GetMyProperties'
+      const userurl = this.baseUrl + '/_api/SP.UserProfiles.PeopleManager/GetMyProperties'
       let response = await axios.get(userurl, {
         headers: {
           accept: 'application/json;odata=verbose'
@@ -250,7 +249,7 @@ class Users extends VuexModule {
   @Action
   public async getUserPermissions(id: number): Promise<UserInt> {
     if (!local) {
-      const groupurl = baseUrl + "/_api/web/getuserbyid('" + id + "')/groups"
+      const groupurl = this.baseUrl + "/_api/web/getuserbyid('" + id + "')/groups"
       const response = await axios.get(groupurl, {
         headers: {
           accept: 'application/json;odata=verbose'
