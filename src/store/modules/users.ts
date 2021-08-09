@@ -263,19 +263,19 @@ class Users extends VuexModule {
             permissions.isApprover = true
             break
 
-          case 'DansSB1 Visitors':
+          case 'Visitors':
             permissions.isVisitor = true
             break
 
-          case 'DansSB1 Members':
+          case 'Members':
             permissions.isMember = true
             break
 
-          case 'DansSB1 Developers':
+          case 'Developers':
             permissions.isDeveloper = true
             break
 
-          case 'DansSB1 Owners':
+          case 'Owners':
             permissions.isOwner = true
             break
         }

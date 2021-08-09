@@ -38,92 +38,100 @@
             </b-col>
           </b-row>
           <b-row no-gutters>
-            <b-col cols="4" class="m-0 p-0 bg-white">
-              <div class="linksContainer">
-                <span class="linkHeader">Navy Doctrinal Publications</span>
-                <b-list-group>
-                  <b-list-group-item href="#" class="flex-column align-items-start">
-                    <b-card no-body class="">
-                      <b-row no-gutters>
-                        <b-col md="4">
-                          <b-card-img src="https://picsum.photos/50/50/?image=20" alt="Image"></b-card-img>
-                        </b-col>
-                        <b-col md="8" class="p-1">
-                          <b-card-sub-title>Navy Doctrine</b-card-sub-title>
-                          <b-card-title>NDP, NWP</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-list-group-item>
-                  <b-list-group-item href="#" class="flex-column align-items-start">
-                    <b-card no-body class="">
-                      <b-row no-gutters>
-                        <b-col md="4">
-                          <b-card-img src="https://picsum.photos/50/50/?image=18" alt="Image"></b-card-img>
-                        </b-col>
-                        <b-col md="8" class="p-1">
-                          <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
-                          <b-card-title>NTTP, MTTP</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-list-group-item>
-                  <b-list-group-item href="#" class="flex-column align-items-start">
-                    <b-card no-body class="">
-                      <b-row no-gutters>
-                        <b-col md="4">
-                          <b-card-img src="https://picsum.photos/50/50/?image=16" alt="Image"></b-card-img>
-                        </b-col>
-                        <b-col md="8" class="p-1">
-                          <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
-                          <b-card-title>NTRP</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-list-group-item>
-                  <b-list-group-item href="#" class="flex-column align-items-start">
-                    <b-card no-body class="">
-                      <b-row no-gutters>
-                        <b-col md="4">
-                          <b-card-img src="https://picsum.photos/50/50/?image=14" alt="Image"></b-card-img>
-                        </b-col>
-                        <b-col md="8" class="p-1">
-                          <b-card-sub-title>Navy Development TTP</b-card-sub-title>
-                          <b-card-title>TACMEMO, TACBUL, TACNOTE</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-list-group-item>
-                </b-list-group>
-              </div>
+            <b-col cols="4" class="m-0 p-1 bg-white">
+              <b-card no-body header-tag="header">
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Navy Doctrinal Publications</h4></b-card-header>
+                <b-card-body>
+                  <b-list-group>
+                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                      <b-card no-body class="">
+                        <b-row no-gutters>
+                          <b-col md="2">
+                            <b-card-img src="/SiteAssets/images/book.png" alt="Image" height="65"></b-card-img>
+                          </b-col>
+                          <b-col md="10" class="p-1">
+                            <b-card-sub-title>Navy Doctrine</b-card-sub-title>
+                            <b-card-title>NDP, NWP</b-card-title>
+                          </b-col>
+                        </b-row>
+                      </b-card>
+                    </b-list-group-item>
+                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                      <b-card no-body class="">
+                        <b-row no-gutters>
+                          <b-col md="2">
+                            <b-card-img src="/SiteAssets/images/offense.png" alt="Image" height="65"></b-card-img>
+                          </b-col>
+                          <b-col md="10" class="p-1">
+                            <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
+                            <b-card-title>NTTP, MTTP</b-card-title>
+                          </b-col>
+                        </b-row>
+                      </b-card>
+                    </b-list-group-item>
+                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                      <b-card no-body class="">
+                        <b-row no-gutters>
+                          <b-col md="2">
+                            <b-card-img src="/SiteAssets/images/bookshelf.png" alt="Image" height="65"></b-card-img>
+                          </b-col>
+                          <b-col md="10" class="p-1">
+                            <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
+                            <b-card-title>NTRP</b-card-title>
+                          </b-col>
+                        </b-row>
+                      </b-card>
+                    </b-list-group-item>
+                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                      <b-card no-body class="">
+                        <b-row no-gutters>
+                          <b-col md="2">
+                            <b-card-img src="/SiteAssets/images/lightbulb.png" alt="Image" height="65"></b-card-img>
+                          </b-col>
+                          <b-col md="10" class="p-1">
+                            <b-card-sub-title>Navy Development TTP</b-card-sub-title>
+                            <b-card-title>TACMEMO, TACBUL, TACNOTE</b-card-title>
+                          </b-col>
+                        </b-row>
+                      </b-card>
+                    </b-list-group-item>
+                  </b-list-group>
+                </b-card-body>
+              </b-card>
             </b-col>
-            <b-col cols="4" class="m-0 p-0 bg-white">
-              <div class="linksContainer">
-                <span class="linkHeader">Warfighting Collections</span>
-                <ul>
-                  <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
-                  <li><a href="/Pages/alliedHome.aspx">Allied Publications</a></li>
-                  <li><a href="/pubs/Forms/joint.aspx">Joint Publications</a></li>
-                  <li><a href="/pubs/Forms/multinational.aspx">Multinational Publications</a></li>
-                  <li><a href="/pubs/Forms/concepts.aspx">Navy Concepts</a></li>
-                  <li><a href="/pubs/Forms/conops.aspx">Fleet CONOPS</a></li>
-                  <li><a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a></li>
-                  <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a></li>
-                  <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a></li>
-                  <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a></li>
-                  <li><a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a></li>
-                </ul>
-                <span class="linkHeader">Warfighting Reference Materials</span>
-                <ul>
-                  <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
-                  <li><a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a></li>
-                  <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a></li>
-                  <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a></li>
-                  <li title="Coming soon!">Selected Instructions</li>
-                </ul>
-              </div>
+            <b-col cols="4" class="m-0 p-1 bg-white">
+              <b-card no-body header-tag="header">
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Collections</h4></b-card-header>
+                <b-card-body body-class="card-body-left">
+                  <ul>
+                    <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
+                    <li><a href="/Pages/alliedHome.aspx">Allied Publications</a></li>
+                    <li><a href="/pubs/Forms/joint.aspx">Joint Publications</a></li>
+                    <li><a href="/pubs/Forms/multinational.aspx">Multinational Publications</a></li>
+                    <li><a href="/pubs/Forms/concepts.aspx">Navy Concepts</a></li>
+                    <li><a href="/pubs/Forms/conops.aspx">Fleet CONOPS</a></li>
+                    <li><a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a></li>
+                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a></li>
+                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a></li>
+                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a></li>
+                    <li><a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a></li>
+                  </ul>
+                </b-card-body>
+              </b-card>
+              <b-card no-body header-tag="header">
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Reference Materials</h4></b-card-header>
+                <b-card-body body-class="card-body-left">
+                  <ul>
+                    <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
+                    <li><a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a></li>
+                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a></li>
+                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a></li>
+                    <li title="Coming soon!">Selected Instructions</li>
+                  </ul>
+                </b-card-body>
+              </b-card>
             </b-col>
-            <b-col cols="4" class="m-0 p-0 bg-white"> RIGHT SIDE </b-col>
+            <b-col cols="4" class="m-0 p-1 bg-white"> RIGHT SIDE </b-col>
           </b-row>
         </b-container>
       </b-col>
@@ -171,22 +179,19 @@ export default class Home extends Vue {
   font-family: 'Arial';
   font-size: 16pt;
 }
-.linkHeader {
-  color: #000 !important;
-  text-decoration: underline;
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 0.5rem;
+  background-color: #fff;
+  border: none;
+}
+.card-body-left {
   font-family: 'Arial';
-  font-size: 16pt;
-  font-weight: bold;
-  text-align: left;
+  font-size: 16px;
+  text-align: left !important;
 }
-.linksContainer li {
-  font-family: 'Calibri';
-  font-size: 14pt;
-  list-style: none;
-  text-align: left;
-}
-.linksContainer li a {
-  text-decoration: none;
-  color: #000 !important;
+.card-body-left li a {
+  color: black !important;
 }
 </style>
