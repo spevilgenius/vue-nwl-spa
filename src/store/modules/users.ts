@@ -278,6 +278,10 @@ class Users extends VuexModule {
           case 'Owners':
             permissions.isOwner = true
             break
+
+          case 'Library Administrators':
+            permissions.isAdmin = true
+            break
         }
       }
       this.context.commit('updateUserPermissions', permissions)

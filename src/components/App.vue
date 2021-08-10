@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="isVisible ? 'app' : 'hidden'">
     <router-view></router-view>
   </div>
 </template>
@@ -16,6 +16,7 @@ const users = namespace('users')
 @Component
 export default class App extends Vue {
   public userid = 0
+  public isVisible = false
 
   @notify.Action
   public add!: (notification: NotificationItem) => void
@@ -34,44 +35,48 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   public created(): void {
-    const that = this
-    this.getUserId().then((response) => {
-      console.log('TEST POINT A')
-      this.userid = response.userid // sets local variable to user id and can be used in ts and js versions
-      this.getUserProfile().then((response) => {
-        if (response === true) {
-          console.log('TEST POINT B')
-          this.getUserPermissions(this.userid).then((response) => {
-            if (response) {
-              console.log('TEST POINT C')
-              this.getTodosByUser().then((response) => {
-                if (response) {
-                  console.log('App loaded.')
-                  this.add({
-                    id: 'WelcomeMSG',
-                    type: 'success',
-                    title: 'Welcome',
-                    message: 'Welcome'
-                  })
-                } else {
-                  console.log('App loaded. No Todos for current user')
-                  this.add({
-                    id: 'WelcomeMSG',
-                    type: 'success',
-                    title: 'Welcome',
-                    message: 'Welcome'
-                  })
-                }
-              })
-            } else {
-              console.log('Error getting user permissions.')
-            }
-          })
-        } else {
-          console.log('Error getting user profile.')
-        }
+    let loc = String(window.location)
+    if (loc.indexOf('WSSWebPartPage') >= 0) {
+      this.isVisible = false
+    } else {
+      this.isVisible = true
+      console.log('APP VISIBLE')
+      const that = this
+      this.getUserId().then((response) => {
+        this.userid = response.userid // sets local variable to user id and can be used in ts and js versions
+        this.getUserProfile().then((response) => {
+          if (response === true) {
+            this.getUserPermissions(this.userid).then((response) => {
+              if (response) {
+                this.getTodosByUser().then((response) => {
+                  if (response) {
+                    console.log('App loaded.')
+                    this.add({
+                      id: 'WelcomeMSG',
+                      type: 'success',
+                      title: 'Welcome',
+                      message: 'Welcome'
+                    })
+                  } else {
+                    console.log('App loaded. No Todos for current user')
+                    this.add({
+                      id: 'WelcomeMSG',
+                      type: 'success',
+                      title: 'Welcome',
+                      message: 'Welcome'
+                    })
+                  }
+                })
+              } else {
+                console.log('Error getting user permissions.')
+              }
+            })
+          } else {
+            console.log('Error getting user profile.')
+          }
+        })
       })
-    })
+    }
   }
 
   /** @method - lifecycle hook */
@@ -80,7 +85,7 @@ export default class App extends Vue {
 </script>
 
 <style>
-#app {
+.app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -93,5 +98,10 @@ export default class App extends Vue {
   width: 100%;
   height: 100vh;
   z-index: 1000 !important;
+}
+
+.hidden {
+  display: none;
+  z-index: -1000;
 }
 </style>
