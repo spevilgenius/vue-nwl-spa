@@ -65,6 +65,18 @@ $modal-sm:                          300px !default;
 
 .contentHeight { height: calc(100vh - 150px) !important; }
 
+.banner {
+  /* background-image: url('/images/banner.jpg'); */
+  height: 130px;
+}
+
+.logo {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
   color: #fff;
   background-color: #007bff!important;

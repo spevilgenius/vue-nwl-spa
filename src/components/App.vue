@@ -42,13 +42,13 @@ export default class App extends Vue {
       this.isVisible = true
       console.log('APP VISIBLE')
       const that = this
-      this.getUserId().then((response) => {
+      this.getUserId().then(response => {
         this.userid = response.userid // sets local variable to user id and can be used in ts and js versions
-        this.getUserProfile().then((response) => {
+        this.getUserProfile().then(response => {
           if (response === true) {
-            this.getUserPermissions(this.userid).then((response) => {
+            this.getUserPermissions(this.userid).then(response => {
               if (response) {
-                this.getTodosByUser().then((response) => {
+                this.getTodosByUser().then(response => {
                   if (response) {
                     console.log('App loaded.')
                     this.add({

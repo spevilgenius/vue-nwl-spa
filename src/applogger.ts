@@ -53,7 +53,7 @@ class AppLogger {
     this.initLogger()
   }
   initLogger() {
-    this.logToServer = (err) => {
+    this.logToServer = err => {
       logToSharePoint(err)
     }
   }

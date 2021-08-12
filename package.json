@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --max-old-space-size=4096",
-    "build": "vue-cli-service build --max-old-space-size=4096",
-    "build-dev": "vue-cli-service build --max-old-space-size=4096 --mode development",
-    "build-test": "vue-cli-service build --max-old-space-size=4096 --mode test",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-dev": "vue-cli-service build --mode development",
+    "build-test": "vue-cli-service build --mode test",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

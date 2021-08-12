@@ -1,18 +1,18 @@
 <template>
   <b-container fluid class="m-0 p-0">
-    <b-row no-gutter class="cui">
+    <b-row no-gutters class="cui">
       <b-col cols="4" class="p-0"></b-col>
       <b-col cols="4" class="p-0 text-center text-white">CUI</b-col>
       <b-col cols="4" class="p-0"></b-col>
     </b-row>
-    <b-row no-gutter>
+    <b-row no-gutters>
       <div v-if="userloaded" class="wrapper" :class="isShown === true ? 'bsidebarOpen' : 'bsidebarClosed'">
         <NotificationContainer />
         <b-sidebar no-slide no-close-on-route-change v-model="isShown" no-header bg-variant="dark" text-variant="white" sidebar-class="bsvSidebar" z-index="1000">
           <template v-slot:default>
             <Sidebar v-if="userloaded"></Sidebar>
           </template>
-          <template v-slot:footer>
+          <!-- <template v-slot:footer>
             <div class="accordion legend" role="tablist" :class="{ 'legend-expanded': legendHeightExpanded }">
               <b-card no-body>
                 <b-card-header header-tag="header" class="p-1" role="tab">
@@ -31,7 +31,7 @@
                 </b-collapse>
               </b-card>
             </div>
-          </template>
+          </template> -->
         </b-sidebar>
         <div v-if="userloaded" class="main-panel" :class="isShown === true ? 'sidebarOpen' : 'sidebarClosed'">
           <Header />
@@ -50,7 +50,7 @@
         <div class="blockG" id="rotateG_08"></div>
       </div>
     </b-row>
-    <b-row no-gutter class="cui">
+    <b-row no-gutters class="cui">
       <b-col cols="4" class="p-0"></b-col>
       <b-col cols="4" class="p-0 text-center text-white">CUI</b-col>
       <b-col cols="4" class="p-0"></b-col>
@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { LegendItem } from '../../interfaces/LegendItem'
 import NotificationContainer from '@/components/Notifications/NotificationContainer.vue'
@@ -86,16 +86,28 @@ export default class Layout extends Vue {
   public legendHeightExpanded?: boolean = false
   public interval: any
 
+  @Prop({ default: process.env.VUE_APP_TITLE }) readonly title!: string
+
   @users.State
   public loaded!: boolean
 
   @support.State
   public isShown!: boolean
 
+  @support.Action
+  public setShown!: (newVal: boolean) => void
+
+  @support.State
+  public isThemeSelectorShown!: boolean
+
+  @support.Action
+  public setRect!: (newVal: DOMRect) => void
+
   @support.State
   public legendItems!: Array<LegendItem>
 
   mounted() {
+    console.log('ENVIRONMENT ' + process.env)
     this.interval = setInterval(this.waitforit, 1000)
   }
 

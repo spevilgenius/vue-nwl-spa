@@ -24,30 +24,30 @@
               </b-carousel>
             </b-col>
           </b-row>
-          <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-0">
-              <div class="mx-auto text-center text-light bg-info py100">ANNOUNCEMENT</div>
+          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/banner.jpg)' }">
+            <b-col cols="12">
+              <b-container fluid class="m-0 p-0">
+                <b-row no-gutters class="titleRow">
+                  <div class="mx-auto text-center text-light">
+                    <div class="upper" id="NWLTitle">Welcome to The Navy Warfare Library</div>
+                    <div class="pubType" align="center">The Navy Warfare Library (NWL) is the authoritative repository for Navy Doctrine and terminology.</div>
+                  </div>
+                </b-row>
+              </b-container>
             </b-col>
-          </b-row>
-          <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-0">
-              <div class="mx-auto text-center text-light bg-info py80">
-                <div class="upper" id="NWLTitle">Welcome to The Navy Warfare Library</div>
-                <div class="pubType" align="center">The Navy Warfare Library (NWL) is the authoritative repository for Navy Doctrine and terminology.</div>
-              </div>
-            </b-col>
+            <!-- <b-col cols="6"></b-col> -->
           </b-row>
           <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Navy Doctrinal Publications</h4></b-card-header>
-                <b-card-body>
+                <b-card-body class="p-1">
                   <b-list-group>
                     <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="">
+                      <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <b-card-img src="/SiteAssets/images/book.png" alt="Image" height="65"></b-card-img>
+                            <font-awesome-icon fas icon="book-open" class="pubicon text-green"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Doctrine</b-card-sub-title>
@@ -57,10 +57,10 @@
                       </b-card>
                     </b-list-group-item>
                     <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="">
+                      <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <b-card-img src="/SiteAssets/images/offense.png" alt="Image" height="65"></b-card-img>
+                            <font-awesome-icon fas icon="project-diagram" class="pubicon text-yellow"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
@@ -70,10 +70,10 @@
                       </b-card>
                     </b-list-group-item>
                     <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="">
+                      <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <b-card-img src="/SiteAssets/images/bookshelf.png" alt="Image" height="65"></b-card-img>
+                            <font-awesome-icon fas icon="book" class="pubicon text-red"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
@@ -83,10 +83,10 @@
                       </b-card>
                     </b-list-group-item>
                     <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="">
+                      <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <b-card-img src="/SiteAssets/images/lightbulb.png" alt="Image" height="65"></b-card-img>
+                            <font-awesome-icon fas icon="lightbulb" class="pubicon text-orange"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Development TTP</b-card-sub-title>
@@ -102,7 +102,7 @@
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Collections</h4></b-card-header>
-                <b-card-body body-class="card-body-left">
+                <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
                     <li><a href="/Pages/alliedHome.aspx">Allied Publications</a></li>
@@ -120,7 +120,7 @@
               </b-card>
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Reference Materials</h4></b-card-header>
-                <b-card-body body-class="card-body-left">
+                <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
                     <li><a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a></li>
@@ -140,12 +140,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
   name: 'Home'
 })
 export default class Home extends Vue {
+  @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL }) readonly baseImageUrl!: string
+
   public interval: any
   public cards: Array<any> = [
     {
@@ -177,7 +179,10 @@ export default class Home extends Vue {
 }
 .pubType {
   font-family: 'Arial';
-  font-size: 16pt;
+  font-size: 14pt;
+}
+.pubicon {
+  font-size: 65px;
 }
 .list-group-item {
   position: relative;
