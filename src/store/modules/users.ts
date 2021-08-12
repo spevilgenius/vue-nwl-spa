@@ -22,8 +22,8 @@ class Users extends VuexModule {
   public currentUser!: UserInt
   public todoCount?: number
   public todos?: Array<TodoItem> = []
-  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'test.nwdc.navy.mil' */
-  public baseUrl = 'https://test.nwdc.navy.mil'
+  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'test.doctrine.navy.mil' */
+  public baseUrl = 'https://test.doctrine.navy.mil'
   public vm = this
 
   @Mutation updateDigest(digest: string): void {

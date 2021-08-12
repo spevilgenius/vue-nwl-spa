@@ -23,25 +23,10 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end">
         <b-navbar-nav class="ml-auto hidden-xs">
-          <!-- <b-nav-item-dropdown id="ContactsMenu" right no-caret menu-class="animated bounceInDown">
-            <template slot="button-content"> <font-awesome-icon fas icon="users" class="cog"></font-awesome-icon>Contacts </template>
-            <b-table-simple id="ContactsTable" v-for="contact in contacts" :key="contact">
-              <b-tbody>
-                <b-tr>
-                  <b-td rowspan="3" class="px40 p-0 pl-1">
-                    <a :href="contact.Email" rel="noopener noreferrer"><font-awesome-icon far icon="envelope" class="icon"></font-awesome-icon></a>
-                  </b-td>
-                  <b-td class="p-0">{{ contact.Name }}</b-td>
-                </b-tr>
-                <b-tr>
-                  <b-td class="p-0">{{ contact.Position }}</b-td>
-                </b-tr>
-                <b-tr v-if="contact.Phone !== 'Empty'">
-                  <b-td class="p-0">{{ contact.Phone }}</b-td>
-                </b-tr>
-              </b-tbody>
-            </b-table-simple>
-          </b-nav-item-dropdown> -->
+          <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
+            <input type="text" placeholder="Search..." class="form-control" />
+            <a href=""><i class="fa fa-search"></i></a>
+          </form>
           <b-nav-item-dropdown id="SettingsMenu" right no-caret menu-class="animated bounceInDown">
             <template slot="button-content">
               <font-awesome-icon fas icon="cog" class="cog"></font-awesome-icon>

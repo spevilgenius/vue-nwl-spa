@@ -97,7 +97,7 @@ export default class App extends Vue {
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 1000 !important;
+  z-index: 10000000 !important;
 }
 
 .hidden {
