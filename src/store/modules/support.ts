@@ -2,8 +2,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { LegendItem } from '@/interfaces/LegendItem'
+import { ObjectItem } from '@/interfaces/ObjectItem'
 import { EventBus } from '../../main'
+import axios from 'axios'
 // import { ThemeName } from '@/themes/theme.types'
+
+// are we on a localhost demo?
+let loc = String(window.location)
+let local = false
+if (loc.indexOf('localhost') >= 0) {
+  local = true
+}
+
+const baseUrl = process.env.VUE_APP_BASE_URL
 @Module({ namespaced: true })
 class Support extends VuexModule {
   public rect!: DOMRect
@@ -15,6 +26,30 @@ class Support extends VuexModule {
   public legendItems: Array<LegendItem> = []
   public legendLoaded = false
   public legendLoading = false
+  public bookshelves: Array<ObjectItem> = [
+    {
+      text: 'SHELF A',
+      value: 'SHELF A'
+    },
+    {
+      text: 'SHELF B',
+      value: 'SHELF B'
+    },
+    {
+      text: 'SHELF C',
+      value: 'SHELF C'
+    },
+    {
+      text: 'SHELF D',
+      value: 'SHELF D'
+    },
+    {
+      text: 'SHELF E',
+      value: 'SHELF E'
+    }
+  ]
+  public bsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
+
   @Mutation
   public updateRect(newVal: DOMRect): void {
     this.contentrect = newVal
@@ -26,6 +61,11 @@ class Support extends VuexModule {
   @Mutation
   public updateLegendItems(items: Array<LegendItem>): void {
     this.legendItems = items
+  }
+
+  @Mutation
+  public updateBookshelves(items: Array<ObjectItem>): void {
+    this.bookshelves = items
   }
 
   /* @Action
@@ -67,6 +107,39 @@ class Support extends VuexModule {
   @Action
   public setThemeSelectorShown(newVal: boolean): void {
     this.context.commit('updateThemeSelectorShown', newVal)
+  }
+
+  @Action
+  public async getBS(payload: any): Promise<boolean> {
+    let allBS: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllBS(url: string): Promise<void> {
+      if (url === '') {
+        url = baseUrl + that.bsUrl
+      }
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      allBS = allBS.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllBS(url)
+      } else {
+        for (let i = 0; i < allBS.length; i++) {
+          p.push({
+            text: allBS[i]['Title'],
+            value: allBS[i]['Title']
+          })
+        }
+        that.context.commit('updateBookshelves', p)
+      }
+    }
+    getAllBS('')
+    return true
   }
 
   /* @Mutation

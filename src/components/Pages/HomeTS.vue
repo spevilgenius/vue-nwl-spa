@@ -40,7 +40,7 @@
           <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Navy Doctrinal Publications</h4></b-card-header>
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Navy Doctrinal Publications</h4></b-card-header>
                 <b-card-body class="p-1">
                   <b-list-group>
                     <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
@@ -98,10 +98,14 @@
                   </b-list-group>
                 </b-card-body>
               </b-card>
+              <b-card no-body header-tag="header">
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Bookshelves</h4></b-card-header>
+                <b-card-body body-class="p-1"></b-card-body>
+              </b-card>
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Collections</h4></b-card-header>
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Collections</h4></b-card-header>
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
@@ -119,7 +123,7 @@
                 </b-card-body>
               </b-card>
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0">Warfighting Reference Materials</h4></b-card-header>
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Reference Materials</h4></b-card-header>
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
@@ -131,7 +135,12 @@
                 </b-card-body>
               </b-card>
             </b-col>
-            <b-col cols="4" class="m-0 p-1 bg-white"> RIGHT SIDE </b-col>
+            <b-col cols="4" class="m-0 p-1 bg-white">
+              <b-card no-body header-tag="header">
+                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Top Publications</h4></b-card-header>
+                <b-card-body body-class="p-1"></b-card-body>
+              </b-card>
+            </b-col>
           </b-row>
         </b-container>
       </b-col>
