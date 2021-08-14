@@ -68,11 +68,6 @@ class Support extends VuexModule {
     this.bookshelves = items
   }
 
-  /* @Action
-  public setRect(newVal: DOMRect): void {
-    this.context.commit('updateRect', newVal)
-  } */
-
   @Action
   public setRect(): void {
     const element = document.getElementById('maincontent')!

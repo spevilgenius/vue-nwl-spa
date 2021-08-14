@@ -100,7 +100,9 @@
               </b-card>
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Bookshelves</h4></b-card-header>
-                <b-card-body body-class="p-1"></b-card-body>
+                <b-card-body body-class="p-1">
+                  <b-form-select class="form-control-bookshelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
+                </b-card-body>
               </b-card>
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
@@ -130,7 +132,7 @@
                     <li><a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a></li>
                     <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a></li>
                     <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a></li>
-                    <li title="Coming soon!">Selected Instructions</li>
+                    <li title="Coming soon!"><a href="#">Selected Instructions</a></li>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -150,12 +152,22 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { ObjectItem } from '@/interfaces/ObjectItem'
+import { namespace } from 'vuex-class'
+
+const support = namespace('support')
 
 @Component({
   name: 'Home'
 })
 export default class Home extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL }) readonly baseImageUrl!: string
+
+  @support.State
+  public bookshelves!: Array<ObjectItem>
+
+  @support.Action
+  public getBS!: (payload: any) => Promise<boolean>
 
   public interval: any
   public cards: Array<any> = [
