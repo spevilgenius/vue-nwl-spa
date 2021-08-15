@@ -167,7 +167,7 @@ export default class Home extends Vue {
   public bookshelves!: Array<ObjectItem>
 
   @support.Action
-  public getBS!: (payload: any) => Promise<boolean>
+  public getBS!: () => Promise<boolean>
 
   public interval: any
   public cards: Array<any> = [
@@ -187,6 +187,14 @@ export default class Home extends Vue {
       text: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue massa felis, finibus dignissim augue lacinia id. Proin efficitur leo massa, eget faucibus est rhoncus eget.'
     }
   ]
+
+  mounted() {
+    this.getBS().then(response => {
+      if (response) {
+        console.log('Bookshelves Loaded')
+      }
+    })
+  }
 }
 </script>
 

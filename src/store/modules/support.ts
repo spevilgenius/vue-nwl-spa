@@ -26,28 +26,7 @@ class Support extends VuexModule {
   public legendItems: Array<LegendItem> = []
   public legendLoaded = false
   public legendLoading = false
-  public bookshelves: Array<ObjectItem> = [
-    {
-      text: 'SHELF A',
-      value: 'SHELF A'
-    },
-    {
-      text: 'SHELF B',
-      value: 'SHELF B'
-    },
-    {
-      text: 'SHELF C',
-      value: 'SHELF C'
-    },
-    {
-      text: 'SHELF D',
-      value: 'SHELF D'
-    },
-    {
-      text: 'SHELF E',
-      value: 'SHELF E'
-    }
-  ]
+  public bookshelves: Array<ObjectItem> = []
   public bsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
 
   @Mutation
@@ -105,36 +84,56 @@ class Support extends VuexModule {
   }
 
   @Action
-  public async getBS(payload: any): Promise<boolean> {
-    let allBS: any[] = []
-    let p: Array<ObjectItem> = []
-    const that = this
-    async function getAllBS(url: string): Promise<void> {
-      if (url === '') {
-        url = baseUrl + that.bsUrl
+  public async getBS(): Promise<boolean> {
+    if (!local) {
+      let allBS: any[] = []
+      let p: Array<ObjectItem> = []
+      const that = this
+      async function getAllBS(url: string): Promise<void> {
+        if (url === '') {
+          url = baseUrl + that.bsUrl
+        }
+        const response = await axios.get(url, {
+          headers: {
+            accept: 'application/json;odata=verbose'
+          }
+        })
+        allBS = allBS.concat(response.data.d.results)
+        // recursively load items if there is a next result
+        if (response.data.d.__next) {
+          url = response.data.d.__next
+          return getAllBS(url)
+        } else {
+          for (let i = 0; i < allBS.length; i++) {
+            p.push({
+              text: allBS[i]['Title'],
+              value: allBS[i]['Title']
+            })
+          }
+          that.context.commit('updateBookshelves', p)
+        }
       }
+      getAllBS('')
+      return true
+    } else {
+      let allBS: any[] = []
+      let p: Array<ObjectItem> = []
+      let url = 'http://localhost:3000/bookshelves'
       const response = await axios.get(url, {
         headers: {
           accept: 'application/json;odata=verbose'
         }
       })
-      allBS = allBS.concat(response.data.d.results)
-      // recursively load items if there is a next result
-      if (response.data.d.__next) {
-        url = response.data.d.__next
-        return getAllBS(url)
-      } else {
-        for (let i = 0; i < allBS.length; i++) {
-          p.push({
-            text: allBS[i]['Title'],
-            value: allBS[i]['Title']
-          })
-        }
-        that.context.commit('updateBookshelves', p)
+      allBS = response.data
+      for (let i = 0; i < allBS.length; i++) {
+        p.push({
+          text: allBS[i]['text'],
+          value: allBS[i]['value']
+        })
       }
+      this.context.commit('updateBookshelves', p)
+      return true
     }
-    getAllBS('')
-    return true
   }
 
   /* @Mutation
