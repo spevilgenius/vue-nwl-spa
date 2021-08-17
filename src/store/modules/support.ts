@@ -3,6 +3,7 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { LegendItem } from '@/interfaces/LegendItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import { Announcement } from '@/interfaces/Announcement'
 import { EventBus } from '../../main'
 import axios from 'axios'
 // import { ThemeName } from '@/themes/theme.types'
@@ -27,7 +28,9 @@ class Support extends VuexModule {
   public legendLoaded = false
   public legendLoading = false
   public bookshelves: Array<ObjectItem> = []
+  public announcements: Array<Announcement> = []
   public bsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
+  public aUrl!: "_api/lists/getbytitle('Announcements')/items?$select*"
 
   @Mutation
   public updateRect(newVal: DOMRect): void {
@@ -45,6 +48,11 @@ class Support extends VuexModule {
   @Mutation
   public updateBookshelves(items: Array<ObjectItem>): void {
     this.bookshelves = items
+  }
+
+  @Mutation
+  public updateAnnouncements(items: Array<Announcement>): void {
+    this.announcements = items
   }
 
   @Action
@@ -132,6 +140,55 @@ class Support extends VuexModule {
         })
       }
       this.context.commit('updateBookshelves', p)
+      return true
+    }
+  }
+
+  @Action
+  public async getAnnouncements(): Promise<boolean> {
+    if (!local) {
+      let allAnnouncements: any[] = []
+      let p: Array<Announcement> = []
+      let url = baseUrl + this.aUrl
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      allAnnouncements = response.data.d.results
+      for (let i = 0; i < allAnnouncements.length; i++) {
+        p.push({
+          id: allAnnouncements[i]['Id'],
+          title: allAnnouncements[i]['Title'],
+          link: allAnnouncements[i]['Link'],
+          date: allAnnouncements[i]['DatePublished'],
+          author: allAnnouncements[i]['Author'],
+          description: allAnnouncements[i]['Description']
+        })
+      }
+      this.context.commit('updateAnnouncements', p)
+      return true
+    } else {
+      let allAnnouncements: any[] = []
+      let p: Array<Announcement> = []
+      let url = 'http://localhost:3000/announcements'
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      allAnnouncements = response.data
+      for (let i = 0; i < allAnnouncements.length; i++) {
+        p.push({
+          id: allAnnouncements[i]['id'],
+          title: allAnnouncements[i]['title'],
+          link: allAnnouncements[i]['link'],
+          date: allAnnouncements[i]['date'],
+          author: allAnnouncements[i]['author'],
+          description: allAnnouncements[i]['description']
+        })
+      }
+      this.context.commit('updateAnnouncements', p)
       return true
     }
   }

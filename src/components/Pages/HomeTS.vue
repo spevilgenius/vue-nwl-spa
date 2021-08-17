@@ -6,16 +6,24 @@
           <b-row no-gutters>
             <b-col cols="12" class="m-0 p-0">
               <b-carousel>
-                <b-carousel-slide v-for="card in cards" :key="card">
+                <b-carousel-slide v-for="announcement in announcements" :key="announcement">
                   <template #img>
                     <b-card no-body class="">
                       <b-row no-gutters>
-                        <b-col md="4">
-                          <b-card-title>{{ card.title }}</b-card-title>
-                          <b-card-sub-title>{{ card.subtitle }}</b-card-sub-title>
+                        <b-col md="4" class="centerFlex">
+                          <h4 class="text-black">{{ announcement.title }}</h4>
+                          <h5 class="text-black">{{ announcement.date }}</h5>
+                          <h5 class="text-black">{{ announcement.author }}</h5>
                         </b-col>
                         <b-col md="8">
-                          <b-card-text class="text-dark">{{ card.text }}</b-card-text>
+                          <b-row class="text-center">
+                            <b-card-text class=" text-black">{{ announcement.description }}</b-card-text>
+                          </b-row>
+                          <b-row class="text-center">
+                            <h5 class="text-black">
+                              <a :href="announcement.link">{{ announcement.title }}</a>
+                            </h5>
+                          </b-row>
                         </b-col>
                       </b-row>
                     </b-card>
@@ -153,6 +161,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import { Announcement } from '@/interfaces/Announcement'
 import { namespace } from 'vuex-class'
 
 const support = namespace('support')
@@ -166,11 +175,17 @@ export default class Home extends Vue {
   @support.State
   public bookshelves!: Array<ObjectItem>
 
+  @support.State
+  public announcements!: Array<Announcement>
+
   @support.Action
   public getBS!: () => Promise<boolean>
 
+  @support.Action
+  public getAnnouncements!: () => Promise<boolean>
+
   public interval: any
-  public cards: Array<any> = [
+  /* public cards: Array<any> = [
     {
       title: 'Title 1',
       subtitle: 'Sub-title',
@@ -186,12 +201,17 @@ export default class Home extends Vue {
       subtitle: 'Sub-title',
       text: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue massa felis, finibus dignissim augue lacinia id. Proin efficitur leo massa, eget faucibus est rhoncus eget.'
     }
-  ]
+  ] */
 
   mounted() {
     this.getBS().then(response => {
       if (response) {
         console.log('Bookshelves Loaded')
+        this.getAnnouncements().then(response => {
+          if (response) {
+            console.log('Announcements Loaded')
+          }
+        })
       }
     })
   }
@@ -227,5 +247,12 @@ export default class Home extends Vue {
 }
 .card-body-left li a {
   color: black !important;
+}
+.centerFlex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1ch;
 }
 </style>
