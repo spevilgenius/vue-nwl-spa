@@ -2,12 +2,6 @@
 var moment = require('moment')
 var LoremIpsum = require('lorem-ipsum').LoremIpsum
 
-/* import { moment } from 'moment'
-import { LoremIpsum } from 'lorem-ipsum' */
-
-/* const moment = require('moment')
-const LoremIpsum = require('lorem-ipsum').LoremIpsum */
-
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     max: 8,

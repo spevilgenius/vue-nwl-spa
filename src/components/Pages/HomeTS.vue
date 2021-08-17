@@ -15,15 +15,11 @@
                           <h5 class="text-black">{{ announcement.date }}</h5>
                           <h5 class="text-black">{{ announcement.author }}</h5>
                         </b-col>
-                        <b-col md="8">
-                          <b-row class="text-center">
-                            <b-card-text class=" text-black">{{ announcement.description }}</b-card-text>
-                          </b-row>
-                          <b-row class="text-center">
-                            <h5 class="text-black">
-                              <a :href="announcement.link">{{ announcement.title }}</a>
-                            </h5>
-                          </b-row>
+                        <b-col md="8" class="centerFlex">
+                          <b-card-text class=" text-black">{{ announcement.description }}</b-card-text>
+                          <h5 class="text-black">
+                            <a :href="announcement.link">{{ announcement.title }}</a>
+                          </h5>
                         </b-col>
                       </b-row>
                     </b-card>
