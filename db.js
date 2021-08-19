@@ -15,7 +15,7 @@ const lorem = new LoremIpsum({
 
 module.exports = () => {
   let data = { bookshelves: [], announcements: [] }
-  var users = ['Mickey Mouse', 'Donald Duck', 'Goofy', 'Daffy Duck', 'Porky Pig', 'Yosimite Sam', 'Mighty Mouse', 'Woody Woodpecker', 'Sylvester', 'Bugs Bunny']
+  var users = ['User A', 'User B', 'User C', 'User D', 'User E', 'User F', 'User G', 'User H', 'User I', 'User J']
   /* var orgs = ['MA', 'MB', 'MC', 'QA', 'QB', 'QC']
   var years = ['2014', '2015', '2016', '2017', '2018', '2019']
   var causecats = ['Cat A', 'Cat B', 'Cat C', 'Cat D', 'Cat E', 'Cat F', 'Cat G']
