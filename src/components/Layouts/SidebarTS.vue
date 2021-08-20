@@ -108,7 +108,7 @@ export default class Sidebar extends Vue {
 
   /** @method - lifecycle hook */
   public mounted(): void {
-    this.getNavigation()
+    // this.getNavigation()
   }
 }
 </script>

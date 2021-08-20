@@ -2,17 +2,19 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <!-- <dynamic-table
-          v-if="pubsloaded"
+        <dynamic-table
+          v-if="queryset"
           :user="currentUser"
           :table="{
             id: id,
             list: list,
-            items: publications,
+            title: title,
+            query: query,
             headerClass: headerClass,
             buttons: buttons,
             fields: fields,
             isLibrary: isLibrary,
+            hasFolders: hasFolders,
             rowHeight: rowHeight,
             allowPaging: allowPaging,
             pageSize: pageSize,
@@ -20,27 +22,7 @@
             width: width
           }"
           :searchEnabled="true"
-        ></dynamic-table> -->
-        <b-table
-          v-model="shownData"
-          :id="'table_' + id"
-          :ref="'table_' + id"
-          :items="getItems"
-          :fields="fields"
-          :current-page="currentPage"
-          no-provider-paging="true"
-          no-provider-filtering="true"
-          no-provider-sorting="true"
-          :per-page="perPage"
-          :filter="filter"
-          :filter-included-fields="filterOn"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          :sort-direction="sortDirection"
-          show-empty
-          small
-          @filtered="onFiltered"
-        ></b-table>
+        ></dynamic-table>
       </b-col>
     </b-row>
   </b-container>
@@ -50,97 +32,47 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
-// import { PublicationItem } from '@/interfaces/PublicationItem'
-// import DynamicTable from '../Custom/DynamicTable.vue'
-import axios from 'axios'
+import DynamicTable from '../Custom/DynamicTable.vue'
 
-// const publication = namespace('publication')
 const users = namespace('users')
 
 @Component({
-  name: 'All'
+  name: 'All',
+  components: {
+    DynamicTable
+  }
 })
 export default class All extends Vue {
   @users.State
   public currentUser!: UserInt
 
-  /*  @publication.State
-  public publications!: Array<PublicationItem>
-
-  @publication.State
-  public pubsloaded!: boolean
-
-  @publication.Action
-  public getAllPublications!: () => Promise<boolean> */
-
+  id!: 'Publications'
+  list!: 'Publications'
+  title!: 'All Publications'
   searchPlaceholder!: 'Type to search.'
-  items!: []
-  selected!: []
-  shownData!: []
+  buttons: any = ['Edit, Export, Filter, Search, Print'] /* Add, Edit, Export, Filter, Search, Upload, Print */
   headerClass!: 'text-left bg-light-blue'
   fields: any = [
-    { key: 'actions', label: 'Select' },
-    { key: 'name', label: 'Name' },
-    { key: 'author', label: 'Uploaded By' }
+    { field: 'Actions', label: 'Actions', actions: ['Delete'], width: '80' },
+    { field: 'Name', label: 'Title', type: 'file', format: 'link', required: true, selected: '', url: '', rurl: '' },
+    { field: 'Author', label: 'Author', type: 'user', format: 'text' },
+    { field: 'Created', label: 'Created', type: 'default', format: 'date', dateformat: 'date-time' }
   ]
-  TotalRows!: 1
-  currentPage!: 1
-  perPage!: 15
-  sortBy!: 'name'
-  sortDesc!: false
-  sortDirection!: 'asc'
-  filter!: null
-  filterOn!: []
+  query!: string
+  queryset?: boolean = false
+  isLibrary?: boolean = true
+  hasFolders?: boolean = true
+  maximized?: boolean = true
+  rowHeight!: 20
+  allowPaging?: boolean = true
+  pageSize!: 0
+  height!: 0
+  width!: 0
 
-  /* mounted() {
-    this.getAllPublications().then(response => {
-      if (response) {
-        console.log('Publications Loaded.')
-      }
-    })
-  } */
-  public async getItems(ctx) {
-    let that = this
-    let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)"
-    let promise = this.getAllItems(url)
-    const j = await promise
-    // if (console) console.log('RESPONSE: ' + JSON.stringify(j))
-    let z: any = []
-    for (let i = 0; i < j.length; i++) {
-      z.push({
-        name: j[i]['File']['Name'],
-        id: j[i]['Id'],
-        author: j[i]['Author']['Title']
-      })
-    }
-    this.TotalRows = z.length
-    return z
-  }
-  public async getAllItems(iurl) {
-    let allItems = []
-    async function getAllItems(purl) {
-      let response = await axios.get(purl, {
-        headers: {
-          accept: 'application/json;odata=verbose'
-        }
-      })
-      let results = response.data.d.results
-      allItems = allItems.concat(results)
-      // recursively load
-      if (response.data.d.__next) {
-        purl = response.data.d.__next
-        return getAllItems(purl)
-      } else {
-        return allItems
-      }
-    }
-    return getAllItems(iurl)
-  }
-  public onFiltered(items) {
-    this.TotalRows = items.length
-    this.currentPage = 1
+  mounted() {
+    let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)&$orderby=Title"
+    this.query = url
+    this.queryset = true
   }
 }
 </script>
-
-<style scoped></style>
