@@ -24,6 +24,7 @@ class Support extends VuexModule {
   // public theme: ThemeName = ThemeName.DEFAULT
   public contentrect!: DOMRect
   public contentwidth!: number
+  public contentheight!: number
   public legendItems: Array<LegendItem> = []
   public legendLoaded = false
   public legendLoading = false
@@ -36,6 +37,7 @@ class Support extends VuexModule {
   public updateRect(newVal: DOMRect): void {
     this.contentrect = newVal
     this.contentwidth = newVal.width
+    this.contentheight = newVal.height
     console.log('SIDEBAR VISIBLE: ' + this.isShown + ', WIDTH: ' + this.contentwidth)
     EventBus.$emit('SidebarChanged', this.contentwidth)
   }

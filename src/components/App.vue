@@ -16,7 +16,7 @@ const users = namespace('users')
 @Component
 export default class App extends Vue {
   public userid = 0
-  public isVisible = false
+  public isVisible = true
 
   @notify.Action
   public add!: (notification: NotificationItem) => void

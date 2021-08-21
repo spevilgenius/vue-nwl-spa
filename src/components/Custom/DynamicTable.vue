@@ -110,6 +110,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import axios from 'axios'
 // import { EventBus } from '../../main'
 
+// are we on a localhost demo?
+let loc = String(window.location)
+let local = false
+if (loc.indexOf('localhost') >= 0) {
+  local = true
+}
+
 declare const _spPageContextInfo: any
 declare const SP: any
 
@@ -245,60 +252,117 @@ export default class DynamicTable extends Vue {
   }
 
   public async getData(): Promise<boolean> {
-    this.items = []
-    this.loading = true
-    this.loaded = false
-    let url = this.table.query
-    console.log('query url: ' + url)
-    let response = await axios.get(url, {
-      headers: {
-        accept: 'application/json;odata=verbose'
-      }
-    })
-    console.log('getData RESPONSE: ' + JSON.stringify(response))
-    let j = response.data.d.results
-    let fields = this.table.fields
-    for (let i = 0; i < j.length; i++) {
-      let f = {}
-      for (let k = 0; k < fields.length; k++) {
-        if (fields[k].field !== 'Actions') {
-          // actions are not part of the items array
-          f['id'] = j[i]['Id'] // add id regardless
-          f['AuthorId'] = j[i]['Author']['Id']
-          f['CreatedDate'] = new Date(j[i]['Created']).toLocaleString()
-          // f['Permissions'] = j[i]['Permissions']
-          let type = fields[k].type
-          switch (type) {
-            case 'file':
-              f[fields[k].field] = j[i]['File'][fields[k].field]
-              f['url'] = tp1 + slash + slash + tp2 + j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
-              f['rurl'] = j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
-              f['renderItems'] = []
-              break
+    if (!local) {
+      this.items = []
+      this.loading = true
+      this.loaded = false
+      let url = this.table.query
+      console.log('query url: ' + url)
+      let response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      // console.log('getData RESPONSE: ' + JSON.stringify(response))
+      let j = response.data.d.results
+      let fields = this.table.fields
+      for (let i = 0; i < j.length; i++) {
+        let f = {}
+        for (let k = 0; k < fields.length; k++) {
+          if (fields[k].field !== 'Actions') {
+            // actions are not part of the items array
+            f['id'] = j[i]['Id'] // add id regardless
+            f['AuthorId'] = j[i]['Author']['Id']
+            f['CreatedDate'] = new Date(j[i]['Created']).toLocaleString()
+            // f['Permissions'] = j[i]['Permissions']
+            let type = fields[k].type
+            switch (type) {
+              case 'file':
+                f[fields[k].field] = j[i]['File'][fields[k].field]
+                f['url'] = tp1 + slash + slash + tp2 + j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
+                f['rurl'] = j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
+                f['renderItems'] = []
+                break
 
-            case 'user':
-              f[fields[k].field] = j[i][fields[k].field]['Title']
-              break
+              case 'user':
+                f[fields[k].field] = j[i][fields[k].field]['Title']
+                break
 
-            case 'lookup':
-              f[fields[k].field] = j[i][fields[k].field]['Title']
-              break
+              case 'lookup':
+                f[fields[k].field] = j[i][fields[k].field]['Title']
+                break
 
-            case 'default':
-              f[fields[k].field] = j[i][fields[k].field]
-              break
+              case 'default':
+                f[fields[k].field] = j[i][fields[k].field]
+                break
+            }
           }
         }
+        that.items.push(f)
       }
-      that.items.push(f)
+      setTimeout(function() {
+        that.filtereditems = that.items
+        that.loading = false
+        that.loaded = true
+        that.formatCells()
+      }, 1000)
+      return true
+    } else {
+      this.items = []
+      this.loading = true
+      this.loaded = false
+      let url = 'http://localhost:3000/publications'
+      console.log('query url: ' + url)
+      let response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      // console.log('getData RESPONSE: ' + JSON.stringify(response))
+      let j = response.data
+      let fields = this.table.fields
+      for (let i = 0; i < j.length; i++) {
+        let f = {}
+        for (let k = 0; k < fields.length; k++) {
+          if (fields[k].field !== 'Actions') {
+            // actions are not part of the items array
+            f['id'] = j[i]['Id'] // add id regardless
+            f['AuthorId'] = j[i]['Author']['Id']
+            f['CreatedDate'] = new Date(j[i]['Created']).toLocaleString()
+            // f['Permissions'] = j[i]['Permissions']
+            let type = fields[k].type
+            switch (type) {
+              case 'file':
+                f[fields[k].field] = j[i]['File'][fields[k].field]
+                f['url'] = tp1 + slash + slash + tp2 + j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
+                f['rurl'] = j[i]['File']['ServerRelativeUrl'] // ServerRelativeUrl must be in the query
+                f['renderItems'] = []
+                break
+
+              case 'user':
+                f[fields[k].field] = j[i][fields[k].field]['Title']
+                break
+
+              case 'lookup':
+                f[fields[k].field] = j[i][fields[k].field]['Title']
+                break
+
+              case 'default':
+                f[fields[k].field] = j[i][fields[k].field]
+                break
+            }
+          }
+        }
+        that.items.push(f)
+      }
+      setTimeout(function() {
+        that.filtereditems = that.items
+        that.loading = false
+        that.loaded = true
+        that.formatCells()
+      }, 1000)
+      return true
     }
-    setTimeout(function() {
-      that.filtereditems = that.items
-      that.loading = false
-      that.loaded = true
-      that.formatCells()
-    }, 1000)
-    return true
   }
 
   public getStyle(element, field) {

@@ -119,7 +119,7 @@ export default class Layout extends Vue {
     }
   }
 
-  public getLegend() {
+  /* public getLegend() {
     let l = String(window.localStorage.getItem('legend'))
     if (l) {
       let legend = JSON.parse(l)
@@ -135,7 +135,7 @@ export default class Layout extends Vue {
       value: this.legendHeightExpanded
     }
     window.localStorage.setItem('legend', JSON.stringify(legend))
-  }
+  } */
 }
 </script>
 
@@ -151,7 +151,7 @@ export default class Layout extends Vue {
   background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
-.legend {
+/* .legend {
   display: block;
   position: absolute !important;
   bottom: 0;
@@ -159,7 +159,6 @@ export default class Layout extends Vue {
   background-color: black;
   opacity: 1;
   height: 50px;
-  /* overflow-y: auto; */
   width: 100%;
   margin: 0;
   padding: 0;
@@ -203,7 +202,7 @@ export default class Layout extends Vue {
 
 .legend-expanded-caret {
   transform: rotate(180deg);
-}
+} */
 
 #LoadingBars {
   position: relative;

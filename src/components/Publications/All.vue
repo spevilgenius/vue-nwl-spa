@@ -35,6 +35,7 @@ import { UserInt } from '../../interfaces/User'
 import DynamicTable from '../Custom/DynamicTable.vue'
 
 const users = namespace('users')
+const support = namespace('support')
 
 @Component({
   name: 'All',
@@ -46,6 +47,12 @@ export default class All extends Vue {
   @users.State
   public currentUser!: UserInt
 
+  @support.State
+  public contentwidth!: number
+
+  @support.State
+  public contentheight!: number
+
   id!: 'Publications'
   list!: 'Publications'
   title!: 'All Publications'
@@ -53,10 +60,15 @@ export default class All extends Vue {
   buttons: any = ['Edit, Export, Filter, Search, Print'] /* Add, Edit, Export, Filter, Search, Upload, Print */
   headerClass!: 'text-left bg-light-blue'
   fields: any = [
-    { field: 'Actions', label: 'Actions', actions: ['Delete'], width: '80' },
-    { field: 'Name', label: 'Title', type: 'file', format: 'link', required: true, selected: '', url: '', rurl: '' },
-    { field: 'Author', label: 'Author', type: 'user', format: 'text' },
-    { field: 'Created', label: 'Created', type: 'default', format: 'date', dateformat: 'date-time' }
+    { field: 'Actions', label: 'Actions', actions: ['View'], width: '80' },
+    { field: 'filetype', label: 'DocId', type: 'extension', format: 'text', width: '40' },
+    { field: 'docid', label: 'DocId', type: 'default', format: 'text', width: '120' },
+    { field: 'title', label: 'Name', type: 'default', format: 'text' },
+    { field: 'prefix', label: 'Prefix', type: 'default', format: 'text', width: '50' },
+    { field: 'category', label: 'Category', type: 'default', format: 'text', width: '50' },
+    { field: 'area', label: 'Mission Area', type: 'default', format: 'text', width: '50' },
+    { field: 'location', label: 'Location', type: 'default', format: 'text', width: '50' }
+    /* { field: 'Created', label: 'Created', type: 'default', format: 'date', dateformat: 'date-time' } */
   ]
   query!: string
   queryset?: boolean = false
@@ -66,10 +78,12 @@ export default class All extends Vue {
   rowHeight!: 20
   allowPaging?: boolean = true
   pageSize!: 0
-  height!: 0
-  width!: 0
+  height?: number
+  width?: number
 
   mounted() {
+    this.width = this.contentwidth
+    this.height = this.contentheight - 165
     let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)&$orderby=Title"
     this.query = url
     this.queryset = true

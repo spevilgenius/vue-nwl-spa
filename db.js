@@ -14,8 +14,67 @@ const lorem = new LoremIpsum({
 })
 
 module.exports = () => {
-  let data = { bookshelves: [], announcements: [] }
+  ;(function() {
+    var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+
+    Math.uuid = function(len, radix) {
+      var chars = CHARS,
+        uuid = [],
+        i
+      radix = radix || chars.length
+
+      if (len) {
+        for (i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)]
+      } else {
+        var r
+        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-'
+        uuid[14] = '4'
+        for (i = 0; i < 36; i++) {
+          if (!uuid[i]) {
+            r = 0 | (Math.random() * 16)
+            uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r]
+          }
+        }
+      }
+      return uuid.join('')
+    }
+
+    Math.uuidFast = function() {
+      var chars = CHARS,
+        uuid = new Array(36),
+        rnd = 0,
+        r
+      for (var i = 0; i < 36; i++) {
+        if (i == 8 || i == 13 || i == 18 || i == 23) {
+          uuid[i] = '-'
+        } else if (i == 14) {
+          uuid[i] = '4'
+        } else {
+          if (rnd <= 0x02) rnd = (0x2000000 + Math.random() * 0x1000000) | 0
+          r = rnd & 0xf
+          rnd = rnd >> 4
+          uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r]
+        }
+      }
+      return uuid.join('')
+    }
+
+    Math.uuidCompact = function() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+    }
+  })()
+
+  let data = { bookshelves: [], announcements: [], publications: [] }
   var users = ['User A', 'User B', 'User C', 'User D', 'User E', 'User F', 'User G', 'User H', 'User I', 'User J']
+  var filetypes = ['.pdf', '.doc', '.docx', '.txt', '.rtf']
+  var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+  var cats = ['Category A', 'Category B', 'Category C', 'Category D', 'Category E', 'Category F', 'Category G', 'Category H']
+  var areas = ['Mission Area A', 'Mission Area B', 'Mission Area C', 'Mission Area D', 'Mission Area E', 'Mission Area F', 'Mission Area G', 'Mission Area H']
+  var prefixes = ['Prefix A', 'Prefix B', 'Prefix C', 'Prefix D', 'Prefix E', 'Prefix F', 'Prefix G', 'Prefix H']
   /* var orgs = ['MA', 'MB', 'MC', 'QA', 'QB', 'QC']
   var years = ['2014', '2015', '2016', '2017', '2018', '2019']
   var causecats = ['Cat A', 'Cat B', 'Cat C', 'Cat D', 'Cat E', 'Cat F', 'Cat G']
@@ -53,6 +112,24 @@ module.exports = () => {
       date: moment().format('MM/DD/YYYY'),
       author: users[getRandomInt(10)],
       description: lorem.generateSentences(4)
+    })
+  }
+
+  for (let i = 0; i < 500; i++) {
+    let ext = filetypes[getRandomInt(5)]
+    let title = 'Publication-' + letters[getRandomInt(8)] + '-' + i + '-' + letters[getRandomInt(8)]
+    let name = title + ext
+    let location = 'Folder-' + letters[getRandomInt(8)] + '/' + name
+    data.publications.push({
+      id: i,
+      docid: Math.uuid(),
+      title: title,
+      name: name,
+      location: location,
+      filetype: ext,
+      category: cats[getRandomInt(8)],
+      area: areas[getRandomInt(8)],
+      prefix: prefixes[getRandomInt(8)]
     })
   }
   return data
