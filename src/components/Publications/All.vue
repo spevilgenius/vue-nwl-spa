@@ -11,8 +11,6 @@
             buttons: buttons,
             fields: fields,
             items: publications,
-            rowHeight: rowHeight,
-            pageSize: pageSize,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"

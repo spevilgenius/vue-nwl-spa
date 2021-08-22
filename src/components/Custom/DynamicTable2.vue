@@ -2,24 +2,20 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" :style="getStyle('table', null)">
-          <!-- <b-table-simple :ref="'DynamicTable_' + table.id" hover bordered striped :style="getStyle('table', null)" table-variant="light" table-class="table-full">
-            <b-thead>
-              <b-tr>
-                <b-th v-for="field in table.fields" :key="field.id" :style="getStyle('th', field)">{{ field.label }}</b-th>
-              </b-tr>
-            </b-thead>
-            <b-tbody>
-              <b-tr v-for="item in filtereditems" :key="item.id" :style="getStyle('tr', null)">
-                <b-td v-for="field in table.fields" :key="field.id" class="text-black">
-                  <span v-if="field.field === 'Actions'" :id="field.field + '_' + item.id" :ref="field.field + '_' + item.id">
-                  </span>
-                  <span v-else :id="field.field + '_' + item.id" :ref="field.field + '_' + item.id"></span>
-                </b-td>
-              </b-tr>
-            </b-tbody>
-          </b-table-simple> -->
-          <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey"></b-table>
+        <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
+          <b-container fluid class="contentHeight m-0 p-0">
+            <b-row no-gutters :style="getStyle('buttonrow', null)"></b-row>
+            <b-row no-gutters :style="getStyle('tablerow', null)">
+              <b-col cols="12">
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light"></b-table>
+              </b-col>
+            </b-row>
+            <b-row no-gutters :style="getStyle('pagingrow', null)">
+              <b-col cols="12">
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
+              </b-col>
+            </b-row>
+          </b-container>
           <template #overlay>
             <div class="text-center">
               <p id="busy-label">{{ table.overlayText }}</p>
@@ -65,8 +61,6 @@ let that: any
           buttons: ['Add', 'Edit', 'Export', 'Filter', 'Search', 'Upload'] /* Add, Edit, Export, Filter, Search, Upload */,
           fields: [],
           items: [],
-          rowHeight: 20,
-          pageSize: 0 /* 0 default means dynamic based on space available and rowHeight */,
           overlayText: 'Loading. Please Wait...',
           overlayVariant: 'success'
         }
@@ -86,8 +80,10 @@ export default class DynamicTable extends Vue {
   public contentwidth!: number
 
   interval!: any
-
   filtereditems: Array<any> = []
+  currentPage = 1
+  totalRows = 0
+  perPage = 20 // default
 
   created() {
     that = this
@@ -102,7 +98,12 @@ export default class DynamicTable extends Vue {
     if (this.$props.table.items.length > 0) {
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
-      that.filtereditems = that.$props.table.items // set initially to all items
+      this.totalRows = this.$props.table.items.length
+      this.filtereditems = that.$props.table.items // set initially to all items
+      // TODO: calculate perPage based on counting the number of rows that will fit in the available space
+      let available = this.contentheight - 100
+      let amount = Math.floor(available / 30)
+      this.perPage = amount
     }
   }
 
@@ -127,6 +128,22 @@ export default class DynamicTable extends Vue {
           style.width = field.width + 'px'
           style.color = 'black'
         }
+        break
+
+      case 'buttonrow':
+        style.background = '#ffffff'
+        style.height = '50px'
+        style.width = that.contentwidth + 'px'
+        break
+
+      case 'tablerow':
+        style.height = that.contentheight - 100 + 'px'
+        style.width = that.contentwidth + 'px'
+        break
+
+      case 'pagingrow':
+        style.height = '50px'
+        style.width = that.contentwidth + 'px'
         break
     }
     return style

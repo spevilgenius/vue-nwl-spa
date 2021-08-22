@@ -73,14 +73,14 @@ class Publication extends VuexModule {
       console.log(JSON.stringify(allPubs))
       for (let i = 0; i < allPubs.length; i++) {
         p.push({
-          docid: allPubs[i]['text'],
-          title: allPubs[i]['text'],
-          name: allPubs[i]['text'],
-          location: allPubs[i]['text'],
-          filetype: allPubs[i]['text'],
-          category: allPubs[i]['text'],
-          area: allPubs[i]['text'],
-          prefix: allPubs[i]['text'],
+          docid: allPubs[i]['docid'],
+          title: allPubs[i]['title'],
+          name: allPubs[i]['name'],
+          location: allPubs[i]['location'],
+          filetype: allPubs[i]['filetype'],
+          category: allPubs[i]['category'],
+          area: allPubs[i]['area'],
+          prefix: allPubs[i]['prefix'],
           id: allPubs[i]['id']
         })
       }

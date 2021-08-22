@@ -75,10 +75,6 @@ module.exports = () => {
   var cats = ['Category A', 'Category B', 'Category C', 'Category D', 'Category E', 'Category F', 'Category G', 'Category H']
   var areas = ['Mission Area A', 'Mission Area B', 'Mission Area C', 'Mission Area D', 'Mission Area E', 'Mission Area F', 'Mission Area G', 'Mission Area H']
   var prefixes = ['Prefix A', 'Prefix B', 'Prefix C', 'Prefix D', 'Prefix E', 'Prefix F', 'Prefix G', 'Prefix H']
-  /* var orgs = ['MA', 'MB', 'MC', 'QA', 'QB', 'QC']
-  var years = ['2014', '2015', '2016', '2017', '2018', '2019']
-  var causecats = ['Cat A', 'Cat B', 'Cat C', 'Cat D', 'Cat E', 'Cat F', 'Cat G']
-  var causes = ['Cause 1', 'Cause 2', 'Cause 3', 'Cause 4', 'Cause 5', 'Cause 6', 'Cause 7'] */
 
   function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max))
