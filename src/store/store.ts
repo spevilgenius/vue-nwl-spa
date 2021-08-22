@@ -4,7 +4,7 @@ import notify from './modules/notify'
 import support from './modules/support'
 import users from './modules/users'
 import sidebar from './modules/sidebar'
-import publications from './modules/publications'
+import publication from './modules/publication'
 
 Vue.use(Vuex)
 
@@ -16,6 +16,6 @@ export default new Vuex.Store({
     support,
     sidebar,
     notify,
-    publications
+    publication
   }
 })

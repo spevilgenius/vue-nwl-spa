@@ -2,27 +2,27 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="filtereditems.length === 0" :opacity="100" :variant="overlayVariant" :style="getStyle('table', null)">
-          <b-table-simple :ref="'DynamicTable_' + tblId" hover bordered small striped :style="getStyle('table', null)" table-variant="warning">
+        <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" :style="getStyle('table', null)">
+          <!-- <b-table-simple :ref="'DynamicTable_' + table.id" hover bordered striped :style="getStyle('table', null)" table-variant="light" table-class="table-full">
             <b-thead>
               <b-tr>
-                <b-th v-for="field in table.fields" :key="field" :style="getStyle('th', field)">{{ field.label }}</b-th>
+                <b-th v-for="field in table.fields" :key="field.id" :style="getStyle('th', field)">{{ field.label }}</b-th>
               </b-tr>
             </b-thead>
             <b-tbody>
-              <b-tr v-for="item in filtereditems" :key="item" :style="getStyle('tr', null)">
-                <b-td v-for="field in fields" :key="field" class="text-black">
+              <b-tr v-for="item in filtereditems" :key="item.id" :style="getStyle('tr', null)">
+                <b-td v-for="field in table.fields" :key="field.id" class="text-black">
                   <span v-if="field.field === 'Actions'" :id="field.field + '_' + item.id" :ref="field.field + '_' + item.id">
-                    <!-- <component v-for="comp in item.renderItems" :key="comp.id" :is="comp.component" v-bind="comp.props"></component> -->
                   </span>
                   <span v-else :id="field.field + '_' + item.id" :ref="field.field + '_' + item.id"></span>
                 </b-td>
               </b-tr>
             </b-tbody>
-          </b-table-simple>
+          </b-table-simple> -->
+          <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey"></b-table>
           <template #overlay>
             <div class="text-center">
-              <p id="busy-label">{{ overlayText }}</p>
+              <p id="busy-label">{{ table.overlayText }}</p>
             </div>
           </template>
         </b-overlay>
@@ -33,6 +33,7 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 
@@ -46,7 +47,36 @@ var tp2 = String(window.location.host)
 let that: any
 
 @Component({
-  name: 'dynamic-table'
+  name: 'dynamic-table',
+  props: {
+    hascomponents: {
+      type: Boolean,
+      default: false
+    },
+    user: {
+      type: Object
+    },
+    table: {
+      type: Object,
+      default: () => {
+        return {
+          id: 'DynamicTable',
+          primaryKey: 'id',
+          buttons: ['Add', 'Edit', 'Export', 'Filter', 'Search', 'Upload'] /* Add, Edit, Export, Filter, Search, Upload */,
+          fields: [],
+          items: [],
+          rowHeight: 20,
+          pageSize: 0 /* 0 default means dynamic based on space available and rowHeight */,
+          overlayText: 'Loading. Please Wait...',
+          overlayVariant: 'success'
+        }
+      }
+    },
+    searchEnabled: {
+      type: Boolean,
+      default: false
+    }
+  }
 })
 export default class DynamicTable extends Vue {
   @support.State
@@ -55,21 +85,9 @@ export default class DynamicTable extends Vue {
   @support.State
   public contentwidth!: number
 
-  public notice!: 'Hello'
-  public interval!: any
-  @Prop({ default: false }) searchEnabled!: boolean
-  @Prop({ default: [] }) items!: any
-  @Prop({ default: [] }) filtereditems!: any
-  @Prop({ default: [] }) fields!: any
-  @Prop({ default: ['Add', 'Edit', 'Export', 'Filter', 'Search'] }) buttons!: any
-  @Prop({ default: 20 }) pageSize!: number
-  @Prop({ default: 1 }) currentPage!: number
-  @Prop({ default: 20 }) rowheight!: number
-  @Prop({ default: 'DynamicTable' }) tblId!: string
-  @Prop({ default: 'Loading. Please Wait...' }) overlayText!: string
-  @Prop({ default: 'success' }) overlayVariant!: string
-  /* @Prop({ default: true }) loading!: boolean
-  @Prop({ default: false }) loaded!: boolean */
+  interval!: any
+
+  filtereditems: Array<any> = []
 
   created() {
     that = this
@@ -81,9 +99,10 @@ export default class DynamicTable extends Vue {
   }
 
   public waitForIt() {
-    if (this.items.length > 0) {
+    if (this.$props.table.items.length > 0) {
+      console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
-      that.filtereditems = that.items // set initially to all items
+      that.filtereditems = that.$props.table.items // set initially to all items
     }
   }
 
@@ -96,16 +115,17 @@ export default class DynamicTable extends Vue {
         break
 
       case 'tr':
-        if (that.rowheight === 0) {
+        if (that.$props.table.rowheight === 0) {
           style.height = '20px'
         } else {
-          style.height = that.rowheight + 'px'
+          style.height = that.$props.table.rowheight + 'px'
         }
         break
 
       case 'th':
         if (field.width) {
           style.width = field.width + 'px'
+          style.color = 'black'
         }
         break
     }

@@ -18,24 +18,25 @@ const baseUrl = process.env.VUE_APP_BASE_URL
 @Module({ namespaced: true })
 class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
-  public pubsloaded?: false
-  public pubsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
+  public pubsloaded?: boolean = false
+  public pubsUrl!: "_api/lists/getbytitle('Publications')/items?$select*&$orderby=Title"
   public pubsUrl2!: "_api/lists/getbytitle('Publications')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)"
 
   @Mutation
   public updatePublications(items: Array<PublicationItem>): void {
     this.publications = items
+    this.pubsloaded = true
   }
 
   @Action
   public async getAllPublications(): Promise<boolean> {
     if (!local) {
-      let allPubs: any[] = []
+      /* let allPubs: any[] = []
       let p: Array<PublicationItem> = []
       const that = this
       async function getAllPubs(url: string): Promise<void> {
         if (url === '') {
-          url = baseUrl + that.pubsUrl2
+          url = baseUrl + that.pubsUrl
         }
         const response = await axios.get(url, {
           headers: {
@@ -57,25 +58,33 @@ class Publication extends VuexModule {
           that.context.commit('updatePublications', p)
         }
       }
-      getAllPubs('')
+      getAllPubs('') */
       return true
     } else {
-      /* let allPubs: any[] = []
-      let p: Array<ObjectItem> = []
-      let url = 'http://localhost:3000/bookshelves'
+      let allPubs: any[] = []
+      let p: Array<PublicationItem> = []
+      let url = 'http://localhost:3000/publications'
       const response = await axios.get(url, {
         headers: {
           accept: 'application/json;odata=verbose'
         }
       })
       allPubs = response.data
+      console.log(JSON.stringify(allPubs))
       for (let i = 0; i < allPubs.length; i++) {
         p.push({
-          text: allPubs[i]['text'],
-          value: allPubs[i]['value']
+          docid: allPubs[i]['text'],
+          title: allPubs[i]['text'],
+          name: allPubs[i]['text'],
+          location: allPubs[i]['text'],
+          filetype: allPubs[i]['text'],
+          category: allPubs[i]['text'],
+          area: allPubs[i]['text'],
+          prefix: allPubs[i]['text'],
+          id: allPubs[i]['id']
         })
       }
-      this.context.commit('updateBookshelves', p) */
+      this.context.commit('updatePublications', p)
       return true
     }
   }
