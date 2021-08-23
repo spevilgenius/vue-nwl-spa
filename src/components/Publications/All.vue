@@ -75,7 +75,7 @@ export default class All extends Vue {
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View'], width: '80', id: 0 },
-    { key: 'filetype', label: 'FileType', type: 'extension', format: 'text', width: '40', id: 1 },
+    { key: 'filetype', label: 'FileType', type: 'default', format: 'extension', width: '40', id: 1 },
     { key: 'docid', label: 'DocId', type: 'default', format: 'text', width: '120', id: 2 },
     { key: 'title', label: 'Name', type: 'default', format: 'text', id: 3 },
     { key: 'prefix', label: 'Prefix', type: 'default', format: 'text', width: '50', id: 4 },

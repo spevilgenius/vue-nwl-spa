@@ -7,7 +7,11 @@
             <b-row no-gutters :style="getStyle('buttonrow', null)"></b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light"></b-table>
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light">
+                  <template #cell()="data">
+                    <div>{{ renderElement(data) }}</div>
+                  </template>
+                </b-table>
               </b-col>
             </b-row>
             <b-row no-gutters :style="getStyle('pagingrow', null)">
@@ -105,6 +109,20 @@ export default class DynamicTable extends Vue {
       let amount = Math.floor(available / 30)
       this.perPage = amount
     }
+  }
+
+  public renderElement(data) {
+    let html = ''
+    switch (data.field.format) {
+      case 'extension':
+        html = 'icon'
+        break
+
+      default:
+        html = data.value
+        break
+    }
+    return html
   }
 
   public getStyle(element, field) {
