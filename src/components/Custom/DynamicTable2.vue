@@ -4,12 +4,40 @@
       <b-col cols="12" class="m-0 p-0">
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
-            <b-row no-gutters :style="getStyle('buttonrow', null)"></b-row>
+            <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
+              <b-col cols="6" class="m-0 p-0" v-if="table.buttons.length > 0">
+                <div class="flexCenter">
+                  <span v-for="button in table.buttons" :key="button">
+                    <b-button v-if="button == 'Add'" variant="success" class="m-1 px100 text-white"><font-awesome-icon fas icon="folder" class="icon"></font-awesome-icon>&nbsp;Add</b-button>
+                    <b-button v-if="button == 'Edit'" variant="warning" class="m-1 px100 text-white"><font-awesome-icon fas icon="folder-open" class="icon"></font-awesome-icon>&nbsp;Edit</b-button>
+                    <b-button v-if="button == 'Delete'" variant="danger" class="m-1 px100 text-white"><font-awesome-icon fas icon="trash-alt" class="icon"></font-awesome-icon>&nbsp;Delete</b-button>
+                    <b-button v-if="button == 'Export'" variant="success" class="m-1 px100 text-white"><font-awesome-icon fas icon="download" class="icon"></font-awesome-icon>&nbsp;Export</b-button>
+                  </span>
+                </div>
+              </b-col>
+              <b-col cols="6" class="mt-1 pr-3">
+                <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
+                <b-input-group class="float-right">
+                  <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+                <!-- </b-form> -->
+              </b-col>
+            </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light">
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
                   <template #cell()="data">
-                    <div>{{ renderElement(data) }}</div>
+                    <div v-if="data.field.format === 'extension'">
+                      <font-awesome-icon v-if="data.item.filetype === '.doc'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-if="data.item.filetype === '.docx'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-if="data.item.filetype === '.pdf'" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-if="data.item.filetype === '.txt'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-if="data.item.filetype === '.rtf'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                    </div>
+                    <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
                   </template>
                 </b-table>
               </b-col>
@@ -62,7 +90,7 @@ let that: any
         return {
           id: 'DynamicTable',
           primaryKey: 'id',
-          buttons: ['Add', 'Edit', 'Export', 'Filter', 'Search', 'Upload'] /* Add, Edit, Export, Filter, Search, Upload */,
+          buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
           fields: [],
           items: [],
           overlayText: 'Loading. Please Wait...',
@@ -77,6 +105,9 @@ let that: any
   }
 })
 export default class DynamicTable extends Vue {
+  filter = null
+  filterOn = []
+
   @support.State
   public contentheight!: number
 
@@ -106,18 +137,19 @@ export default class DynamicTable extends Vue {
       this.filtereditems = that.$props.table.items // set initially to all items
       // TODO: calculate perPage based on counting the number of rows that will fit in the available space
       let available = this.contentheight - 100
-      let amount = Math.floor(available / 30)
+      let amount = Math.floor(available / 30) // 30 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
     }
+  }
+
+  public onFiltered(filtereditems) {
+    this.totalRows = filtereditems.length
+    this.currentPage = 1
   }
 
   public renderElement(data) {
     let html = ''
     switch (data.field.format) {
-      case 'extension':
-        html = 'icon'
-        break
-
       default:
         html = data.value
         break
@@ -128,26 +160,6 @@ export default class DynamicTable extends Vue {
   public getStyle(element, field) {
     let style: any = {}
     switch (element) {
-      case 'table':
-        style.height = that.contentheight + 'px'
-        style.width = that.contentwidth + 'px'
-        break
-
-      case 'tr':
-        if (that.$props.table.rowheight === 0) {
-          style.height = '20px'
-        } else {
-          style.height = that.$props.table.rowheight + 'px'
-        }
-        break
-
-      case 'th':
-        if (field.width) {
-          style.width = field.width + 'px'
-          style.color = 'black'
-        }
-        break
-
       case 'buttonrow':
         style.background = '#ffffff'
         style.height = '50px'
@@ -170,10 +182,6 @@ export default class DynamicTable extends Vue {
 </script>
 
 <style lang="scss">
-.dt-button-row,
-.dt-paging-row {
-  height: 40px !important;
-}
 .table-full,
 .table-full td,
 .table-full th {

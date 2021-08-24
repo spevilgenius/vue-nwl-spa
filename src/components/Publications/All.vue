@@ -43,7 +43,7 @@ export default class All extends Vue {
   tblId = 'AllPubs'
   primaryKey = 'docid'
   overlayText = 'Getting Publications. Please wait...'
-  overlayVariant = 'success'
+  overlayVariant = 'danger'
   rowHeight = 0
   pageSize = 20
 
@@ -60,18 +60,7 @@ export default class All extends Vue {
   public getAllPublications!: () => Promise<boolean>
 
   items!: any
-  buttons: any = ['Add', 'Edit', 'Export', 'Filter', 'Search']
-
-  /* public fields: any = [
-    { field: 'actions', label: 'Actions', actions: ['View'], width: '80', id: 0 },
-    { field: 'filetype', label: 'DocId', type: 'extension', format: 'text', width: '40', id: 1 },
-    { field: 'docid', label: 'DocId', type: 'default', format: 'text', width: '120', id: 2 },
-    { field: 'title', label: 'Name', type: 'default', format: 'text', id: 3 },
-    { field: 'prefix', label: 'Prefix', type: 'default', format: 'text', width: '50', id: 4 },
-    { field: 'category', label: 'Category', type: 'default', format: 'text', width: '50', id: 5 },
-    { field: 'area', label: 'Mission Area', type: 'default', format: 'text', width: '50', id: 6 },
-    { field: 'location', label: 'Location', type: 'default', format: 'text', width: '50', id: 7 }
-  ] */
+  buttons: any = ['Add', 'Edit', 'Export']
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View'], width: '80', id: 0 },
