@@ -91,7 +91,8 @@ export default class Developer extends Vue {
   natodata = []
   ActivePubsArea = ''
   baseUrl = tp1 + slash + slash + tp2
-  activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields"
+  // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields"
+  activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Folder/Name,File/Name,File/ServerRelativeUrl&$expand=Folder,File"
 
   public GetPubs() {
     let j: any[] = []
