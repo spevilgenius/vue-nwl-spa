@@ -200,7 +200,7 @@ export default class Home extends Vue {
   ] */
 
   mounted() {
-    this.getBS().then(response => {
+    /* this.getBS().then(response => {
       if (response) {
         console.log('Bookshelves Loaded')
         this.getAnnouncements().then(response => {
@@ -209,7 +209,7 @@ export default class Home extends Vue {
           }
         })
       }
-    })
+    }) */
   }
 }
 </script>

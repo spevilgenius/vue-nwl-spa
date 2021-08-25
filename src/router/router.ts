@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
+import Developer from '@/components/Pages/Developer.vue'
 
 Vue.use(VueRouter)
 
@@ -90,6 +91,11 @@ const routes = [
         path: 'Home',
         name: 'Home',
         component: Home
+      },
+      {
+        path: 'Developer',
+        name: 'Developer',
+        component: Developer
       }
     ]
   }

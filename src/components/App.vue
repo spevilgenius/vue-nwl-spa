@@ -100,6 +100,10 @@ export default class App extends Vue {
   z-index: 10000000 !important;
 }
 
+.app {
+  background-color: black;
+}
+
 .hidden {
   display: none;
   z-index: -1000;

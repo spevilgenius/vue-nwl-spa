@@ -59,6 +59,9 @@ export default class All extends Vue {
   @publication.Action
   public getAllPublications!: () => Promise<boolean>
 
+  @publication.Action
+  public getAllNatoPublications!: () => Promise<boolean>
+
   items!: any
   buttons: any = ['Add', 'Edit', 'Export']
 
@@ -77,8 +80,11 @@ export default class All extends Vue {
     // let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)&$orderby=Title"
     this.getAllPublications().then(response => {
       if (response) {
-        console.log('Publications Loaded')
-        // this.interval = setInterval(this.waitForIt, 500)
+        this.getAllNatoPublications().then(response => {
+          if (response) {
+            console.log('Publications Loaded')
+          }
+        })
       }
     })
   }

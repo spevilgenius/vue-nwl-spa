@@ -134,7 +134,7 @@ export default class DynamicTable extends Vue {
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.totalRows = this.$props.table.items.length
-      this.filtereditems = that.$props.table.items // set initially to all items
+      this.filtereditems = this.$props.table.items // set initially to all items
       // TODO: calculate perPage based on counting the number of rows that will fit in the available space
       let available = this.contentheight - 100
       let amount = Math.floor(available / 30) // 30 is based on the height of the rows used by the 'small' attribute on the b-table component

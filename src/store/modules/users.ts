@@ -8,6 +8,10 @@ import moment from 'moment'
 
 declare const _spPageContextInfo: any
 
+var slash = '/'
+var tp1 = String(window.location.protocol)
+var tp2 = String(window.location.host)
+
 // are we on a localhost demo?
 let loc = String(window.location)
 let local = false
@@ -22,8 +26,8 @@ class Users extends VuexModule {
   public currentUser!: UserInt
   public todoCount?: number
   public todos?: Array<TodoItem> = []
-  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'test.doctrine.navy.mil' */
-  public baseUrl = 'https://test.doctrine.navy.mil'
+  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'doctrine.navy.mil' */
+  public baseUrl = tp1 + slash + slash + tp2 // 'https://doctrine.navy.mil'
   public vm = this
 
   @Mutation updateDigest(digest: string): void {
@@ -250,6 +254,7 @@ class Users extends VuexModule {
   public async getUserPermissions(id: number): Promise<UserInt> {
     if (!local) {
       const groupurl = this.baseUrl + "/_api/web/getuserbyid('" + id + "')/groups"
+      console.log('groupurl: ' + groupurl)
       const response = await axios.get(groupurl, {
         headers: {
           accept: 'application/json;odata=verbose'

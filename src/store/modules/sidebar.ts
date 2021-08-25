@@ -33,7 +33,9 @@ function formatNavigation(j: any): Array<SidebarItem> {
         path: j[i]['path'],
         children: [],
         library: j[i]['library'],
-        icon: j[i]['icon']
+        icon: j[i]['icon'],
+        permission: j[i]['permission'],
+        permissionvalue: j[i]['permissionvalue']
       })
     }
   }
@@ -52,7 +54,9 @@ function formatNavigation(j: any): Array<SidebarItem> {
             path: j[i]['path'],
             library: j[i]['library'],
             icon: j[i]['icon'],
-            filtertype: j[i]['filtertype']
+            filtertype: j[i]['filtertype'],
+            permission: j[i]['permission'],
+            permissionvalue: j[i]['permissionvalue']
           })
         }
       }
@@ -295,6 +299,17 @@ class Sidebar extends VuexModule {
       path: '/search/home',
       library: 'fas',
       icon: 'search-plus'
+    },
+    {
+      id: 1500,
+      isMenu: false,
+      children: [],
+      name: 'Developer',
+      path: '/pages/Developer',
+      library: 'fas',
+      icon: 'user-shield',
+      permission: 'isDeveloper',
+      permissionvalue: true
     }
   ]
 
