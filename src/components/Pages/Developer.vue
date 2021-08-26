@@ -48,7 +48,7 @@
                           <b-textarea v-model="ActivePubsArea" class="area"></b-textarea>
                           <template #overlay>
                             <div class="text-center">
-                              <p id="busy-label">Loading...</p>
+                              <p id="busy-label">Loading Pubs...</p>
                             </div>
                           </template>
                         </b-overlay>
