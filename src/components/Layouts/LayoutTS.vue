@@ -12,26 +12,6 @@
           <template v-slot:default>
             <Sidebar v-if="userloaded"></Sidebar>
           </template>
-          <!-- <template v-slot:footer>
-            <div class="accordion legend" role="tablist" :class="{ 'legend-expanded': legendHeightExpanded }">
-              <b-card no-body>
-                <b-card-header header-tag="header" class="p-1" role="tab">
-                  <b-button @click="setLegend" block size="sm" v-b-toggle.legend-accordion variant="secondary" class="text-center legend-button">Legend<span class="caret legend-caret" :class="{ 'legend-expanded-caret': legendHeightExpanded }"></span></b-button>
-                </b-card-header>
-                <b-collapse id="legend-accordion" accordion="legend-accordion" role="tabpanel">
-                  <b-list-group>
-                    <b-list-group-item v-for="item in legendItems" :key="item.id" :item="item" class="list-group-item-sm">
-                      <b-button block size="sm" class="text-left legend-btn" :class="item.class">
-                        {{ item.name }}
-                        <font-awesome-icon v-if="item.hasIcon && item.library === 'fas'" fas :icon="item.icon" class="icon float-right ml-1" :class="'text-' + item.iconVariant"></font-awesome-icon>
-                        <font-awesome-icon v-else-if="item.hasIcon && item.library === 'far'" far :icon="item.icon" class="icon float-right ml-1" :class="'text-' + item.iconVariant"></font-awesome-icon>
-                      </b-button>
-                    </b-list-group-item>
-                  </b-list-group>
-                </b-collapse>
-              </b-card>
-            </div>
-          </template> -->
         </b-sidebar>
         <div v-if="userloaded" class="main-panel" :class="isShown === true ? 'sidebarOpen' : 'sidebarClosed'">
           <Header />
