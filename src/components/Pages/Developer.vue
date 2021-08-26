@@ -84,7 +84,6 @@ var tp2 = String(window.location.host)
 
 @Component
 export default class Developer extends Vue {
-  nothing = null
   activepubs = []
   natopubs = []
   pubsdata = []
