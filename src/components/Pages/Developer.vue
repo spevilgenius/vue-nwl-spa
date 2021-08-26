@@ -44,7 +44,7 @@
                     <template slot="title">Active Pubs</template>
                     <b-row no-gutters>
                       <b-col cols="12">
-                        <b-overlay :show="ActivePubsArea !== ''" variant="success" class="mtab">
+                        <b-overlay :show="!ActivePubsLoaded" variant="success" class="mtab">
                           <b-textarea v-model="ActivePubsArea" class="area"></b-textarea>
                           <template #overlay>
                             <div class="text-center">
@@ -89,10 +89,12 @@ export default class Developer extends Vue {
   pubsdata = []
   natodata = []
   ActivePubsArea = ''
+  ActivePubsLoaded = false
   baseUrl = tp1 + slash + slash + tp2
   // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields"
   // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File"
-  activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Folder/Name,File/Name,File/ServerRelativeUrl&$expand=Folder,File"
+  // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Publications')/items?$select*,Folder/Name,File/Name,File/ServerRelativeUrl&$expand=Folder,File"
+  activePubsUrl = this.baseUrl + "/_api/Web/GetFolderByServerRelativeUrl('pubs')?$expand=Folders,Folders/Files"
 
   public GetPubs() {
     let j: any[] = []
@@ -106,7 +108,8 @@ export default class Developer extends Vue {
           accept: 'application/json;odata=verbose'
         }
       })
-      j = j.concat(response.data.d.results)
+      console.log(response)
+      j = j.concat(response.data.d.Folders.results)
       // recursively load items if there is a next result
       if (response.data.d.__next) {
         url = response.data.d.__next
@@ -114,6 +117,7 @@ export default class Developer extends Vue {
       } else {
         // just write the JSON
         that.ActivePubsArea = JSON.stringify(j)
+        that.ActivePubsLoaded = true
       }
     }
     getAllPubs('')
