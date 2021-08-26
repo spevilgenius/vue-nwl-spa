@@ -89,7 +89,7 @@ export default class Developer extends Vue {
   pubsdata = []
   natodata = []
   ActivePubsArea = ''
-  ActivePubsLoaded = false
+  ActivePubsLoaded = true
   baseUrl = tp1 + slash + slash + tp2
   // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields"
   // activePubsUrl = this.baseUrl + "/_api/lists/getbytitle('Pubs')/items?$select*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File"
@@ -97,6 +97,7 @@ export default class Developer extends Vue {
   activePubsUrl = this.baseUrl + "/_api/Web/GetFolderByServerRelativeUrl('pubs')?$expand=Folders,Folders/Files"
 
   public GetPubs() {
+    this.ActivePubsLoaded = false
     let j: any[] = []
     let that = this
     async function getAllPubs(url: string): Promise<void> {
