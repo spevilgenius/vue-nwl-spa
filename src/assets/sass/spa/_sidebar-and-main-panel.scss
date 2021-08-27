@@ -548,7 +548,7 @@ a[aria-controls~="menu"] .caret {
       100vh - 150px
     ); /* TODO: validate conentheight in bootstrap.scss is set to this same style.    */
     width: calc(100vw - 300px);
-    background: #000000; /* $BACKGROUNDCOLOR; */
+    background: $light; /* $BACKGROUNDCOLOR; */
     display: flex;
     justify-content: center;
     align-items: center;

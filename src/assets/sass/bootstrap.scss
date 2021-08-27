@@ -65,6 +65,12 @@ $modal-sm:                          300px !default;
 
 .contentHeight { height: calc(100vh - 150px) !important; }
 
+.cui {
+  height: 25px;
+  line-height: 25px;
+  background-color: $success;
+}
+
 .banner {
   /* background-image: url('/images/banner.jpg'); */
   height: 130px;
