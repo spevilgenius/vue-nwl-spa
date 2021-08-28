@@ -95,9 +95,9 @@ $modal-sm:                          300px !default;
 .btn-burger {
   height: 35px;
   width: 35px;
-  color: white;
+  color: $dark;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid $dark;
 }
 
 .btn-burger .svg-inline--fa {
@@ -206,13 +206,13 @@ input[type=button], input[type=reset], input[type=submit], button {
   position: absolute;
   top: 20px;
   right: 10px;
-  color: #4c5667
+  color: $dark
 }
 
 .app-search .form-control, .app-search .form-control:focus {
   border: none;
   font-size: 13px;
-  color: #4c5667;
+  color: $dark;
   padding-left: 20px;
   padding-right: 40px;
   background: rgba(255, 255, 255, .9);
@@ -228,17 +228,17 @@ input[type=button], input[type=reset], input[type=submit], button {
 }
 
 .app-search .form-control::-moz-placeholder {
-  color: #4c5667;
+  color: $dark;
   opacity: .5
 }
 
 .app-search .form-control::-webkit-input-placeholder {
-  color: #4c5667;
+  color: $dark;
   opacity: .5
 }
 
 .app-search .form-control::-ms-placeholder {
-  color: #4c5667;
+  color: $dark;
   opacity: .5
 }
 
