@@ -44,14 +44,14 @@
           <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Navy Doctrinal Publications</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Navy Doctrinal Publications</h4></b-card-header>
                 <b-card-body class="p-1">
                   <b-list-group>
-                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
                       <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <font-awesome-icon fas icon="book-open" class="pubicon text-green"></font-awesome-icon>
+                            <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Doctrine</b-card-sub-title>
@@ -60,11 +60,11 @@
                         </b-row>
                       </b-card>
                     </b-list-group-item>
-                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
                       <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <font-awesome-icon fas icon="project-diagram" class="pubicon text-yellow"></font-awesome-icon>
+                            <font-awesome-icon fas icon="project-diagram" class="pubicon text-info"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
@@ -73,11 +73,11 @@
                         </b-row>
                       </b-card>
                     </b-list-group-item>
-                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
                       <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <font-awesome-icon fas icon="book" class="pubicon text-red"></font-awesome-icon>
+                            <font-awesome-icon fas icon="book" class="pubicon text-danger"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
@@ -86,11 +86,11 @@
                         </b-row>
                       </b-card>
                     </b-list-group-item>
-                    <b-list-group-item variant="info" href="#" class="flex-column align-items-start">
+                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
                       <b-card no-body class="p-1">
                         <b-row no-gutters>
                           <b-col md="2">
-                            <font-awesome-icon fas icon="lightbulb" class="pubicon text-orange"></font-awesome-icon>
+                            <font-awesome-icon fas icon="lightbulb" class="pubicon text-warning"></font-awesome-icon>
                           </b-col>
                           <b-col md="10" class="p-1">
                             <b-card-sub-title>Navy Development TTP</b-card-sub-title>
@@ -103,7 +103,7 @@
                 </b-card-body>
               </b-card>
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Bookshelves</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Bookshelves</h4></b-card-header>
                 <b-card-body body-class="p-1">
                   <b-form-select class="form-control-bookshelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
                 </b-card-body>
@@ -111,7 +111,7 @@
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Collections</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Collections</h4></b-card-header>
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
@@ -129,7 +129,7 @@
                 </b-card-body>
               </b-card>
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Reference Materials</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Reference Materials</h4></b-card-header>
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
@@ -143,7 +143,7 @@
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="info" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Top Publications</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Top Publications</h4></b-card-header>
                 <b-card-body body-class="p-1"></b-card-body>
               </b-card>
             </b-col>
@@ -233,7 +233,7 @@ export default class Home extends Vue {
   position: relative;
   display: block;
   padding: 0.5rem;
-  background-color: #fff;
+  background-color: $light;
   border: none;
 }
 .card-body-left {
@@ -242,7 +242,7 @@ export default class Home extends Vue {
   text-align: left !important;
 }
 .card-body-left li a {
-  color: black !important;
+  color: $dark !important;
 }
 .centerFlex {
   display: flex;

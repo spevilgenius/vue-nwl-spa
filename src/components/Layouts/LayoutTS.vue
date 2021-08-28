@@ -140,11 +140,6 @@ export default class Layout extends Vue {
 </script>
 
 <style lang="scss">
-.bsvSidebar,
-.bg-dark {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-}
-
 /* .legend {
   display: block;
   position: absolute !important;
@@ -207,7 +202,7 @@ export default class Layout extends Vue {
 
 .blockG {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.69);
+  background-color: $blue-200;
   width: 39px;
   height: 93px;
   border-radius: 31px 31px 0 0;

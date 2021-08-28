@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-dark navbar-expand-lg">
     <!-- <b-modal id="ActivityLog" ref="ActivityLog" size="xl" centered :header-bg-variant="warning" @close="onModalHide" v-model="Show">
       <template v-slot:modal-title>Activity Log</template>
       <b-container fluid class="p-0">

@@ -158,7 +158,7 @@ a[aria-controls~="menu"] .caret {
       font-weight: $font-weight-normal;
       line-height: 30px;
       white-space: nowrap;
-      color: $dark;
+      color: $light;
       overflow: hidden;
     }
 
@@ -192,7 +192,7 @@ a[aria-controls~="menu"] .caret {
       min-height: 20px;
     }
 
-    .nav .nav-item {
+    /* .nav .nav-item {
       cursor: pointer;
       [data-toggle="collapse"] ~ div {
         .nav {
@@ -203,7 +203,7 @@ a[aria-controls~="menu"] .caret {
               text-transform: capitalize;
               padding: 0.25rem 0.5rem 0.25rem 0.5rem;
               font-weight: 400;
-              font-size: 0.75rem;
+              font-size: 1rem;
             }
 
             &:hover,
@@ -233,7 +233,7 @@ a[aria-controls~="menu"] .caret {
               text-transform: capitalize;
               padding: 0.25rem 0.5rem 0.25rem 0.5rem;
               font-weight: 400;
-              font-size: 0.75rem;
+              font-size: 1rem;
             }
 
             &:hover,
@@ -249,15 +249,17 @@ a[aria-controls~="menu"] .caret {
           }
         }
       }
-    }
+    } */
 
     .nav .nav-header {
       height: 50px !important;
       .nav-link {
         height: 50px;
         padding: 15px;
+        background-color: $blue-800;
+        color: $light;
         .sidebar-icon {
-          font-size: 1.25rem;
+          font-size: 1.5rem;
         }
       }
     }
@@ -266,7 +268,7 @@ a[aria-controls~="menu"] .caret {
       p {
         margin: 0;
         line-height: 1.5rem;
-        font-size: 0.75rem;
+        font-size: 1rem;
         font-weight: 600;
         text-transform: uppercase;
         white-space: nowrap;
@@ -392,14 +394,14 @@ a[aria-controls~="menu"] .caret {
       }
 
       .nav-link {
-        color: $dark;
+        color: $light;
         margin: 0;
         opacity: 1;
         text-transform: uppercase;
         line-height: 1.5rem;
-        font-size: 0.75rem;
+        font-size: 1rem;
         font-weight: 600;
-        padding: 0.25rem 0.5rem;
+        padding: 0.25rem 0.2rem;
         white-space: nowrap;
         text-align: left;
 
@@ -466,7 +468,7 @@ a[aria-controls~="menu"] .caret {
       }
 
       &:not(.collapse .nav-link):hover .nav-link {
-        background: rgba(255, 255, 255, 0.13);
+        background: $blue-500;
         opacity: 1;
       }
 
@@ -530,7 +532,7 @@ a[aria-controls~="menu"] .caret {
 
   &:before {
     opacity: 1;
-    background: $blue-100;
+    background: $blue-500;
   }
 }
 

@@ -117,7 +117,7 @@ $theme-colors: map-merge(
     "danger":     $danger,
     "light":      $light,
     "dark":       $dark,
-    /* "blue":       $blue,
+    "blue":       $blue,
     "indigo":     $indigo,
     "purple":     $purple,
     "pink":       $pink,
@@ -127,7 +127,7 @@ $theme-colors: map-merge(
     "green":      $green,
     "teal":       $teal,
     "cyan":       $cyan,
-    "azure":      $azure, */
+    "azure":      $azure,
     "white":      $white,
     "gray":       $gray-600,
     "gray-dark":  $gray-800,
@@ -843,7 +843,7 @@ $navbar-toggler-padding-x:          .75rem !default;
 $navbar-toggler-font-size:          $font-size-lg !default;
 $navbar-toggler-border-radius:      $btn-border-radius !default;
 
-$navbar-dark-color:                 rgba($white, .5) !default;
+$navbar-dark-color:                 rgba($blue-800, 1) !default;
 $navbar-dark-hover-color:           rgba($white, .75) !default;
 $navbar-dark-active-color:          $white !default;
 $navbar-dark-disabled-color:        rgba($white, .25) !default;
@@ -1122,26 +1122,26 @@ $progress-bar-transition:           width .6s ease !default;
 
 $list-group-color:                  null !default;
 $list-group-bg:                     $white !default;
-$list-group-border-color:           rgba($black, .125) !default;
+$list-group-border-color:           $blue-800 !default;
 $list-group-border-width:           $border-width !default;
 $list-group-border-radius:          $border-radius !default;
 
 $list-group-item-padding-y:         .75rem !default;
 $list-group-item-padding-x:         1.25rem !default;
 
-$list-group-hover-bg:               $gray-100 !default;
+$list-group-hover-bg:               $blue-600 !default;
 $list-group-active-color:           $component-active-color !default;
 $list-group-active-bg:              $component-active-bg !default;
 $list-group-active-border-color:    $list-group-active-bg !default;
 
-$list-group-disabled-color:         $gray-600 !default;
+$list-group-disabled-color:         $blue-600 !default;
 $list-group-disabled-bg:            $list-group-bg !default;
 
-$list-group-action-color:           $gray-700 !default;
+$list-group-action-color:           $blue-700 !default;
 $list-group-action-hover-color:     $list-group-action-color !default;
 
 $list-group-action-active-color:    $body-color !default;
-$list-group-action-active-bg:       $gray-200 !default;
+$list-group-action-active-bg:       $blue-600 !default;
 
 
 // Image thumbnails
