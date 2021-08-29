@@ -192,65 +192,6 @@ a[aria-controls~="menu"] .caret {
       min-height: 20px;
     }
 
-    /* .nav .nav-item {
-      cursor: pointer;
-      [data-toggle="collapse"] ~ div {
-        .nav {
-          .nav-item {
-            .nav-link {
-              background: $light;
-              padding-left: 55px;
-              text-transform: capitalize;
-              padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-              font-weight: 400;
-              font-size: 1rem;
-            }
-
-            &:hover,
-            &:focus,
-            &.active {
-              .nav-link {
-                background: $light;
-              }
-            }
-          }
-          .sidebar-normal {
-            left: 0.5rem;
-          }
-        }
-      }
-    }
-
-    .nav .nav-item {
-      cursor: pointer;
-      [accordion="sidebar-accordion"] ~ div {
-        .nav {
-          .nav-item {
-            .nav-link {
-              background: $light;
-              color: $dark;
-              padding-left: 55px;
-              text-transform: capitalize;
-              padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-              font-weight: 400;
-              font-size: 1rem;
-            }
-
-            &:hover,
-            &:focus,
-            &.active {
-              .nav-link {
-                background: $warning;
-              }
-            }
-          }
-          .sidebar-normal {
-            left: 0.5rem;
-          }
-        }
-      }
-    } */
-
     .nav .nav-header {
       height: 50px !important;
       .nav-link {
