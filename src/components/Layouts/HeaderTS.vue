@@ -10,12 +10,12 @@
     </b-modal> -->
     <div class="container-fluid">
       <div class="navbar-minimize">
-        <button class="btn btn-outline btn-fill btn-round btn-icon d-none d-lg-block btn-burger" @click.prevent="toggler">
+        <b-button class="btn btn-outline btn-fill btn-round btn-icon d-none d-lg-block btn-burger" variant="light" @click.prevent="toggler">
           <font-awesome-icon fas :icon="isShown === true ? 'ellipsis-v' : 'bars'" class="icon"></font-awesome-icon>
-        </button>
+        </b-button>
       </div>
       <a class="navbar-brand">{{ this.$route.name }}</a>
-      <span id="PageTitle"></span>
+      <!-- <span id="PageTitle"></span> -->
       <button type="button" class="navbar-toggler navbar-toggler-right btn-burger">
         <span class="navbar-toggler-bar burger-lines"></span>
         <span class="navbar-toggler-bar burger-lines"></span>
