@@ -95,9 +95,23 @@ $modal-sm:                          300px !default;
 .btn-burger {
   height: 35px;
   width: 35px;
-  color: $dark;
+  color: $light;
   border-radius: 50%;
-  border: 2px solid $dark;
+  border: 2px solid $light;
+  background-color: transparent;
+}
+
+.btn-burger:not(:disabled):not(.disabled):active, .btn-burger:not(:disabled):not(.disabled).active, .show > .btn-burger.dropdown-toggle {
+  color: $light;
+  border: 2px solid $light;
+  background-color: transparent;
+}
+
+.btn-burger:hover {
+  color: $light;
+  border-radius: 50%;
+  border: 2px solid $light;
+  background-color: $blue-900;
 }
 
 .btn-burger .svg-inline--fa {
@@ -215,31 +229,31 @@ input[type=button], input[type=reset], input[type=submit], button {
   color: $dark;
   padding-left: 20px;
   padding-right: 40px;
-  background: rgba(255, 255, 255, .9);
+  background: $light;
   box-shadow: none;
   height: 30px;
   font-weight: 600;
   width: 180px;
   display: inline-block;
   line-height: 30px;
-  margin-top: 15px;
+  margin-top: 18px;
   /* border-radius: 40px; */
   transition: .5s ease-out
 }
 
 .app-search .form-control::-moz-placeholder {
   color: $dark;
-  opacity: .5
+  opacity: 1
 }
 
 .app-search .form-control::-webkit-input-placeholder {
   color: $dark;
-  opacity: .5
+  opacity: 1
 }
 
 .app-search .form-control::-ms-placeholder {
   color: $dark;
-  opacity: .5
+  opacity: 1
 }
 
 @media (min-width:1024px) {
@@ -251,16 +265,6 @@ input[type=button], input[type=reset], input[type=submit], button {
 .list-group-item-sm {
   padding: 0 !important;
   border: none;
-}
-
-.e-input-group.e-control-wrapper .e-input-group-icon,
-.e-input-group .e-input-group-icon {
-  min-height: 20px !important;
-}
-
-.e-icon-grightarrow,
-.e-icon-gdownarrow {
-  color: black !important;
 }
 
 /* #region Travel Status Colors */

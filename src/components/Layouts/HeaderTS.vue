@@ -10,7 +10,7 @@
     </b-modal> -->
     <div class="container-fluid">
       <div class="navbar-minimize">
-        <b-button class="btn btn-outline btn-fill btn-round btn-icon d-none d-lg-block btn-burger" variant="light" @click.prevent="toggler">
+        <b-button class="btn btn-outline btn-fill btn-round btn-icon d-none d-lg-block btn-burger" @click.prevent="toggler">
           <font-awesome-icon fas :icon="isShown === true ? 'ellipsis-v' : 'bars'" class="icon"></font-awesome-icon>
         </b-button>
       </div>
