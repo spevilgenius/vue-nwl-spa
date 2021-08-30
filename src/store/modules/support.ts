@@ -30,8 +30,9 @@ class Support extends VuexModule {
   public legendLoading = false
   public bookshelves: Array<ObjectItem> = []
   public announcements: Array<Announcement> = []
+  today = new Date().toISOString()
   public bsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
-  public aUrl!: "_api/lists/getbytitle('Announcements')/items?$select*"
+  public aUrl = "_api/lists/getbytitle('Announcements')/items?$select=*,Editor/Id,Editor/Title,Editor/EMail&$expand=Editor&$filter=Expires ge '" + this.today + "'"
 
   @Mutation
   public updateRect(newVal: DOMRect): void {
@@ -149,7 +150,7 @@ class Support extends VuexModule {
   @Action
   public async getAnnouncements(): Promise<boolean> {
     if (!local) {
-      let allAnnouncements: any[] = []
+      let j: any[] = []
       let p: Array<Announcement> = []
       let url = baseUrl + this.aUrl
       const response = await axios.get(url, {
@@ -157,21 +158,28 @@ class Support extends VuexModule {
           accept: 'application/json;odata=verbose'
         }
       })
-      allAnnouncements = response.data.d.results
-      for (let i = 0; i < allAnnouncements.length; i++) {
+      j = response.data.d.results
+      for (let i = 0; i < j.length; i++) {
         p.push({
-          id: allAnnouncements[i]['Id'],
-          title: allAnnouncements[i]['Title'],
-          link: allAnnouncements[i]['Link'],
-          date: allAnnouncements[i]['DatePublished'],
-          author: allAnnouncements[i]['Author'],
-          description: allAnnouncements[i]['Description']
+          Id: j[i]['Id'],
+          Title: j[i]['Title'],
+          Body: j[i]['Body'],
+          // Info: j[i]['Body'],
+          Info: this.limitText(j[i]['Body']),
+          Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+          Expires: new Date(j[i]['Expires']).toLocaleDateString(),
+          Sticky: j[i]['Sticky'],
+          ModifiedBy: {
+            Title: j[i]['Editor']['Title'],
+            Id: j[i]['Editor']['Id'],
+            Email: j[i]['Editor']['EMail']
+          }
         })
       }
       this.context.commit('updateAnnouncements', p)
       return true
     } else {
-      let allAnnouncements: any[] = []
+      /* let j: any[] = []
       let p: Array<Announcement> = []
       let url = 'http://localhost:3000/announcements'
       const response = await axios.get(url, {
@@ -179,20 +187,38 @@ class Support extends VuexModule {
           accept: 'application/json;odata=verbose'
         }
       })
-      allAnnouncements = response.data
-      for (let i = 0; i < allAnnouncements.length; i++) {
+      j = response.data
+      for (let i = 0; i < j.length; i++) {
         p.push({
-          id: allAnnouncements[i]['id'],
-          title: allAnnouncements[i]['title'],
-          link: allAnnouncements[i]['link'],
-          date: allAnnouncements[i]['date'],
-          author: allAnnouncements[i]['author'],
-          description: allAnnouncements[i]['description']
+          id: j[i]['id'],
+          title: j[i]['title'],
+          link: j[i]['link'],
+          date: j[i]['date'],
+          author: j[i]['author'],
+          description: j[i]['description']
         })
       }
-      this.context.commit('updateAnnouncements', p)
+      this.context.commit('updateAnnouncements', p) */
       return true
     }
+  }
+
+  public limitText(text: string) {
+    let elem = new Element()
+    let node: any
+    let tagname: any
+
+    elem.innerHTML = text
+    const nodes = elem.childNodes
+    let newelem = new Element()
+    for (let i = 0; i < nodes.length; i++) {
+      node = nodes[i]
+      tagname = node.tagName && node.tagName.toLowerCase();
+      if (tagname === 'p') {
+
+      }
+    }
+    return lines[0] + '\n' + lines[1] + '\n' + lines[2]
   }
 
   /* @Mutation

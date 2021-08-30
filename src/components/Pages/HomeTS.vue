@@ -11,15 +11,16 @@
                     <b-card no-body class="">
                       <b-row no-gutters>
                         <b-col md="4" class="centerFlex">
-                          <h4 class="text-black">{{ announcement.title }}</h4>
-                          <h5 class="text-black">{{ announcement.date }}</h5>
-                          <h5 class="text-black">{{ announcement.author }}</h5>
+                          <h4 class="text-black">{{ announcement.Title }}</h4>
+                          <h5 class="text-black">{{ announcement.Modified }}</h5>
+                          <h5 class="text-black">{{ announcement.ModifiedBy.Title }}</h5>
                         </b-col>
                         <b-col md="8" class="centerFlex">
-                          <b-card-text class=" text-black">{{ announcement.description }}</b-card-text>
-                          <h5 class="text-black">
+                          <b-card-text class="text-black">{{ announcement.Body }}</b-card-text>
+                          <!-- <b-card-text class="text-black" v-html="announcement.Info"></b-card-text> -->
+                          <!-- <h5 class="text-black">
                             <a :href="announcement.link">{{ announcement.title }}</a>
-                          </h5>
+                          </h5> -->
                         </b-col>
                       </b-row>
                     </b-card>
@@ -200,6 +201,11 @@ export default class Home extends Vue {
   ] */
 
   mounted() {
+    this.getAnnouncements().then(response => {
+      if (response) {
+        console.log('Announcements Loaded')
+      }
+    })
     /* this.getBS().then(response => {
       if (response) {
         console.log('Bookshelves Loaded')

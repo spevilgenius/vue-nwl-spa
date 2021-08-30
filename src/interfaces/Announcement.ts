@@ -1,9 +1,11 @@
 interface Announcement {
-  id: number
-  title: string
-  link: string
-  date: string
-  author: string
-  description: string
+  Id: number
+  Title: string
+  Body: string
+  Info: string
+  Expires: string
+  Sticky: string
+  Modified: string
+  ModifiedBy: {}
 }
 export { Announcement }
