@@ -215,7 +215,7 @@ class Support extends VuexModule {
       node = nodes[i]
       tagname = node.tagName && node.tagName.toLowerCase();
       if (tagname === 'p') {
-
+        // boohoo
       }
     }
     return lines[0] + '\n' + lines[1] + '\n' + lines[2]
