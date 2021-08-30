@@ -104,7 +104,7 @@ $modal-sm:                          300px !default;
 .btn-burger:not(:disabled):not(.disabled):active, .btn-burger:not(:disabled):not(.disabled).active, .show > .btn-burger.dropdown-toggle {
   color: $light;
   border: 2px solid $light;
-  background-color: transparent;
+  background-color: transparent !important;
 }
 
 .btn-burger:hover {

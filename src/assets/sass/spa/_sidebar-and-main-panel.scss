@@ -111,74 +111,6 @@ a[aria-controls~="menu"] .caret {
   background-color: $light !important; */
   font-weight: 200;
 
-  .logo-img {
-    width: 34px;
-    display: inline-block;
-    height: 34px;
-    margin-left: 0;
-    margin-right: 10px;
-    background: $light;
-    border-radius: 40px;
-    text-align: center;
-    line-height: 34px;
-
-    img {
-      max-width: 18px;
-      position: relative;
-    }
-  }
-
-  .logo {
-    padding: 12px 0px 9px;
-    margin: 0;
-    position: relative;
-    z-index: 4;
-    display: block;
-
-    a.logo-mini {
-      float: left;
-      width: 30px;
-      text-align: center;
-      margin-left: 23px;
-      margin-right: 15px;
-      position: relative;
-    }
-
-    a.logo-normal {
-      display: block;
-      opacity: 1;
-      @include transform-translate-x(0px);
-    }
-
-    .simple-text {
-      text-transform: uppercase;
-      padding: $padding-small-vertical $padding-zero;
-      display: inline-block;
-      font-size: $font-size-lg;
-      font-weight: $font-weight-normal;
-      line-height: 30px;
-      white-space: nowrap;
-      color: $light;
-      overflow: hidden;
-    }
-
-    p {
-      float: left;
-      font-size: 20px;
-      margin: 10px 10px;
-      line-height: 20px;
-    }
-
-    &:before {
-      content: "";
-      position: absolute;
-      bottom: 0px;
-      right: 15px;
-      width: calc(100% - 30px);
-      height: 1px;
-    }
-  }
-
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -186,22 +118,42 @@ a[aria-controls~="menu"] .caret {
     overflow: auto;
     width: 300px;
     z-index: 4;
-    /* padding-bottom: 100px; */
+    /* padding-bottom: 100px; */    
 
     .nav {
       min-height: 20px;
     }
 
     .nav .nav-header {
-      height: 50px !important;
-      .nav-link {
-        height: 50px;
-        padding: 15px;
-        background-color: $blue-800;
+      height: 150px !important;
+      .nav-header-link {
+        height: 150px;
+        background-color: transparent;
         color: $light;
-        .sidebar-icon {
-          font-size: 1.5rem;
+        width: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        .nav-header-logo-container {
+          height: 100px;
+          width: 300px;
+          .nav-header-logo {
+            height: 100px;
+            width: 100px;
+            margin: 0 auto;
+          }
         }
+        .nav-header-title {
+          height: 50px;
+          width: 300px;
+          line-height: 1.25rem;
+          margin-top: 18px;
+          font-size: 1.25rem;
+        }
+      }
+      .sidebar-logo {
+        height: 100px !important;
       }
     }
 
@@ -339,8 +291,8 @@ a[aria-controls~="menu"] .caret {
         margin: 0;
         opacity: 1;
         text-transform: uppercase;
-        line-height: 1.5rem;
-        font-size: 1rem;
+        line-height: 1.25rem;
+        font-size: 0.9rem;
         font-weight: 600;
         padding: 0.25rem 0.2rem;
         white-space: nowrap;
