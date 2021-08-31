@@ -40,12 +40,12 @@
     "vuex-module-decorators": "^1.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.162",
     "@types/vue-moment": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@vue/cli-plugin-babel": "^4.5.12",
     "@vue/cli-plugin-eslint": "^4.5.12",
     "@vue/cli-plugin-router": "^4.5.12",
@@ -66,6 +66,7 @@
     "replace-in-file": "^6.1.0",
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
+    "vue-eslint-parser": "^7.10.0",
     "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [

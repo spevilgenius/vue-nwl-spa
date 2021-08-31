@@ -11,13 +11,16 @@
                     <b-card no-body class="">
                       <b-row no-gutters>
                         <b-col md="4" class="centerFlex">
-                          <h4 class="text-black">{{ announcement.Title }}</h4>
-                          <h5 class="text-black">{{ announcement.Modified }}</h5>
-                          <h5 class="text-black">{{ announcement.ModifiedBy.Title }}</h5>
+                          <h5 class="text-black">{{ announcement.Title }}</h5>
+                          <h6 class="text-black">
+                            {{ announcement.Modified }}
+                          </h6>
+                          <h6 class="text-black">
+                            {{ announcement.ModifiedBy.Title }}
+                          </h6>
                         </b-col>
                         <b-col md="8" class="centerFlex">
-                          <b-card-text class="text-black">{{ announcement.Body }}</b-card-text>
-                          <!-- <b-card-text class="text-black" v-html="announcement.Info"></b-card-text> -->
+                          <b-card-text class="text-black" v-html="limitText(announcement.Info)"></b-card-text>
                           <!-- <h5 class="text-black">
                             <a :href="announcement.link">{{ announcement.title }}</a>
                           </h5> -->
@@ -34,8 +37,12 @@
               <b-container fluid class="m-0 p-0">
                 <b-row no-gutters class="titleRow">
                   <div class="mx-auto text-center text-light">
-                    <div class="upper" id="NWLTitle">Welcome to The Navy Warfare Library</div>
-                    <div class="pubType" align="center">The Navy Warfare Library (NWL) is the authoritative repository for Navy Doctrine and terminology.</div>
+                    <div class="upper" id="NWLTitle">
+                      Welcome to The Navy Warfare Library
+                    </div>
+                    <div class="pubType" align="center">
+                      The Navy Warfare Library (NWL) is the authoritative repository for Navy Doctrine and terminology.
+                    </div>
                   </div>
                 </b-row>
               </b-container>
@@ -45,7 +52,11 @@
           <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Navy Doctrinal Publications</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                  ><h4 class="text-white p-0 mb-0">
+                    Navy Doctrinal Publications
+                  </h4></b-card-header
+                >
                 <b-card-body class="p-1">
                   <b-list-group>
                     <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
@@ -104,7 +115,11 @@
                 </b-card-body>
               </b-card>
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Bookshelves</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                  ><h4 class="text-white p-0 mb-0">
+                    Bookshelves
+                  </h4></b-card-header
+                >
                 <b-card-body body-class="p-1">
                   <b-form-select class="form-control-bookshelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
                 </b-card-body>
@@ -112,39 +127,81 @@
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Collections</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                  ><h4 class="text-white p-0 mb-0">
+                    Warfighting Collections
+                  </h4></b-card-header
+                >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li><a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a></li>
-                    <li><a href="/Pages/alliedHome.aspx">Allied Publications</a></li>
-                    <li><a href="/pubs/Forms/joint.aspx">Joint Publications</a></li>
-                    <li><a href="/pubs/Forms/multinational.aspx">Multinational Publications</a></li>
-                    <li><a href="/pubs/Forms/concepts.aspx">Navy Concepts</a></li>
+                    <li>
+                      <a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a>
+                    </li>
+                    <li>
+                      <a href="/Pages/alliedHome.aspx">Allied Publications</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/joint.aspx">Joint Publications</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/multinational.aspx">Multinational Publications</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/concepts.aspx">Navy Concepts</a>
+                    </li>
                     <li><a href="/pubs/Forms/conops.aspx">Fleet CONOPS</a></li>
-                    <li><a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a></li>
-                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a></li>
-                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a></li>
-                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a></li>
-                    <li><a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a></li>
+                    <li>
+                      <a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a>
+                    </li>
+                    <li>
+                      <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
+                    </li>
                   </ul>
                 </b-card-body>
               </b-card>
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Warfighting Reference Materials</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                  ><h4 class="text-white p-0 mb-0">
+                    Warfighting Reference Materials
+                  </h4></b-card-header
+                >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li><a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a></li>
-                    <li><a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a></li>
-                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a></li>
-                    <li><a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a></li>
-                    <li title="Coming soon!"><a href="#">Selected Instructions</a></li>
+                    <li>
+                      <a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a>
+                    </li>
+                    <li>
+                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a>
+                    </li>
+                    <li title="Coming soon!">
+                      <a href="#">Selected Instructions</a>
+                    </li>
                   </ul>
                 </b-card-body>
               </b-card>
             </b-col>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"><h4 class="text-white p-0 mb-0">Top Publications</h4></b-card-header>
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                  ><h4 class="text-white p-0 mb-0">
+                    Top Publications
+                  </h4></b-card-header
+                >
                 <b-card-body body-class="p-1"></b-card-body>
               </b-card>
             </b-col>
@@ -167,7 +224,8 @@ const support = namespace('support')
   name: 'Home'
 })
 export default class Home extends Vue {
-  @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL }) readonly baseImageUrl!: string
+  @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
+  readonly baseImageUrl!: string
 
   @support.State
   public bookshelves!: Array<ObjectItem>
@@ -182,23 +240,6 @@ export default class Home extends Vue {
   public getAnnouncements!: () => Promise<boolean>
 
   public interval: any
-  /* public cards: Array<any> = [
-    {
-      title: 'Title 1',
-      subtitle: 'Sub-title',
-      text: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue massa felis, finibus dignissim augue lacinia id. Proin efficitur leo massa, eget faucibus est rhoncus eget.'
-    },
-    {
-      title: 'Title 2',
-      subtitle: 'Sub-title',
-      text: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue massa felis, finibus dignissim augue lacinia id. Proin efficitur leo massa, eget faucibus est rhoncus eget.'
-    },
-    {
-      title: 'Title 3',
-      subtitle: 'Sub-title',
-      text: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue massa felis, finibus dignissim augue lacinia id. Proin efficitur leo massa, eget faucibus est rhoncus eget.'
-    }
-  ] */
 
   mounted() {
     this.getAnnouncements().then(response => {
@@ -216,6 +257,24 @@ export default class Home extends Vue {
         })
       }
     }) */
+  }
+
+  limitText(text: string) {
+    let parser = new DOMParser()
+    let doc = parser.parseFromString(text, 'text/html')
+    let p = doc.getElementsByTagName('p')
+    let elem = document.createElement('div') as Element
+    let count = 0
+    for (let i = 0; i < p.length; i++) {
+      count += 1
+      if (count === 1) {
+        elem.innerHTML += p[i].innerHTML
+      }
+      if (count > 1 && count < 4) {
+        elem.innerHTML += '<br/>' + p[i].innerHTML
+      }
+    }
+    return elem.innerHTML
   }
 }
 </script>

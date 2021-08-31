@@ -129,3 +129,4 @@ dist
 .tern-port
 dummy.html
 dummy.html
+*.txt

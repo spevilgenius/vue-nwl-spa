@@ -165,7 +165,8 @@ class Support extends VuexModule {
           Title: j[i]['Title'],
           Body: j[i]['Body'],
           // Info: j[i]['Body'],
-          Info: this.limitText(j[i]['Body']),
+          Info: j[i]['Body'],
+          // Info: this.limitText(String(j[i]['Body'])),
           Modified: new Date(j[i]['Modified']).toLocaleDateString(),
           Expires: new Date(j[i]['Expires']).toLocaleDateString(),
           Sticky: j[i]['Sticky'],
@@ -203,23 +204,31 @@ class Support extends VuexModule {
     }
   }
 
-  public limitText(text: string) {
+  /* public limitText(text: string) {
     let elem = new Element()
     let node: any
     let tagname: any
-
     elem.innerHTML = text
     const nodes = elem.childNodes
     let newelem = new Element()
+    let count = 0
+    console.log('NODES LENGTH: ' + nodes.length)
     for (let i = 0; i < nodes.length; i++) {
       node = nodes[i]
-      tagname = node.tagName && node.tagName.toLowerCase();
+      tagname = node.tagName && node.tagName.toLowerCase()
+      console.log('TAGNAME: ' + tagname)
       if (tagname === 'p') {
-        // boohoo
+        count += 1
+        if (count === 1) {
+          newelem.innerHTML += node.innerHTML
+        }
+        if (count > 1 && count < 4) {
+          newelem.innerHTML += '<br/>' + node.innerHTML
+        }
       }
     }
-    return lines[0] + '\n' + lines[1] + '\n' + lines[2]
-  }
+    return newelem.innerHTML
+  } */
 
   /* @Mutation
   private SET_THEME(theme: ThemeName): void {
