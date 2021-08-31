@@ -8,9 +8,9 @@
               <b-carousel>
                 <b-carousel-slide v-for="announcement in announcements" :key="announcement">
                   <template #img>
-                    <b-card no-body class="">
-                      <b-row no-gutters>
-                        <b-col md="4" class="centerFlex">
+                    <b-container fluid class="py100">
+                      <b-row>
+                        <b-col md="4" class="centerFlex py100">
                           <h5 class="text-black">{{ announcement.Title }}</h5>
                           <h6 class="text-black">
                             {{ announcement.Modified }}
@@ -19,14 +19,14 @@
                             {{ announcement.ModifiedBy.Title }}
                           </h6>
                         </b-col>
-                        <b-col md="8" class="centerFlex">
-                          <b-card-text class="text-black" v-html="limitText(announcement.Info)"></b-card-text>
+                        <b-col md="8" class="centerFlex py100">
+                          <span class="text-black" v-html="limitText(announcement.Info)"></span>
                           <!-- <h5 class="text-black">
                             <a :href="announcement.link">{{ announcement.title }}</a>
                           </h5> -->
                         </b-col>
                       </b-row>
-                    </b-card>
+                    </b-container>
                   </template>
                 </b-carousel-slide>
               </b-carousel>
@@ -270,7 +270,7 @@ export default class Home extends Vue {
       if (count === 1) {
         elem.innerHTML += p[i].innerHTML
       }
-      if (count > 1 && count < 4) {
+      if (count === 3) {
         elem.innerHTML += '<br/>' + p[i].innerHTML
       }
     }

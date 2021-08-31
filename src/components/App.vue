@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="isVisible ? 'app' : 'hidden'">
+  <div id="app">
     <router-view></router-view>
   </div>
 </template>
@@ -38,6 +38,10 @@ export default class App extends Vue {
     let loc = String(window.location)
     if (loc.indexOf('WSSWebPartPage') >= 0) {
       this.isVisible = false
+      let doc = document?.getElementById('app')
+      if (doc !== null) {
+        doc.style.display = 'none'
+      }
     } else {
       this.isVisible = true
       console.log('APP VISIBLE')
@@ -85,7 +89,7 @@ export default class App extends Vue {
 </script>
 
 <style>
-.app {
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -98,14 +102,5 @@ export default class App extends Vue {
   width: 100%;
   height: 100vh;
   z-index: 10000000 !important;
-}
-
-.app {
-  background-color: black;
-}
-
-.hidden {
-  display: none;
-  z-index: -1000;
 }
 </style>
