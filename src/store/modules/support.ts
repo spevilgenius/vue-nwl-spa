@@ -127,6 +127,7 @@ class Support extends VuexModule {
       getAllBS('')
       return true
     } else {
+      console.log('LOCAL')
       let allBS: any[] = []
       let p: Array<ObjectItem> = []
       let url = 'http://localhost:3000/bookshelves'
@@ -203,32 +204,6 @@ class Support extends VuexModule {
       return true
     }
   }
-
-  /* public limitText(text: string) {
-    let elem = new Element()
-    let node: any
-    let tagname: any
-    elem.innerHTML = text
-    const nodes = elem.childNodes
-    let newelem = new Element()
-    let count = 0
-    console.log('NODES LENGTH: ' + nodes.length)
-    for (let i = 0; i < nodes.length; i++) {
-      node = nodes[i]
-      tagname = node.tagName && node.tagName.toLowerCase()
-      console.log('TAGNAME: ' + tagname)
-      if (tagname === 'p') {
-        count += 1
-        if (count === 1) {
-          newelem.innerHTML += node.innerHTML
-        }
-        if (count > 1 && count < 4) {
-          newelem.innerHTML += '<br/>' + node.innerHTML
-        }
-      }
-    }
-    return newelem.innerHTML
-  } */
 
   /* @Mutation
   private SET_THEME(theme: ThemeName): void {
