@@ -242,12 +242,7 @@ export default class Home extends Vue {
   public interval: any
 
   mounted() {
-    this.getAnnouncements().then(response => {
-      if (response) {
-        console.log('Announcements Loaded')
-      }
-    })
-    /* this.getBS().then(response => {
+    this.getBS().then(response => {
       if (response) {
         console.log('Bookshelves Loaded')
         this.getAnnouncements().then(response => {
@@ -256,7 +251,7 @@ export default class Home extends Vue {
           }
         })
       }
-    }) */
+    })
   }
 
   limitText(text: string) {
