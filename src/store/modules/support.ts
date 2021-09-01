@@ -31,7 +31,7 @@ class Support extends VuexModule {
   public bookshelves: Array<ObjectItem> = []
   public announcements: Array<Announcement> = []
   today = new Date().toISOString()
-  public bsUrl!: "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
+  public bsUrl = "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
   public aUrl = "_api/lists/getbytitle('Announcements')/items?$select=*,Editor/Id,Editor/Title,Editor/EMail&$expand=Editor&$filter=Expires ge '" + this.today + "'"
 
   @Mutation
@@ -101,9 +101,6 @@ class Support extends VuexModule {
       let p: Array<ObjectItem> = []
       const that = this
       async function getAllBS(url: string): Promise<void> {
-        if (url === '') {
-          url = baseUrl + that.bsUrl
-        }
         const response = await axios.get(url, {
           headers: {
             accept: 'application/json;odata=verbose'
@@ -124,7 +121,8 @@ class Support extends VuexModule {
           that.context.commit('updateBookshelves', p)
         }
       }
-      getAllBS('')
+      let turl = baseUrl + this.bsUrl
+      getAllBS(turl)
       return true
     } else {
       console.log('LOCAL')

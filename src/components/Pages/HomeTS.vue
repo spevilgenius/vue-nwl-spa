@@ -274,7 +274,7 @@ export default class Home extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #NWLTitle {
   text-align: center;
   font-family: 'Arial', Gadget, sans-serif;
@@ -310,5 +310,13 @@ export default class Home extends Vue {
   align-items: center;
   justify-content: center;
   gap: 1ch;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: auto;
 }
 </style>
