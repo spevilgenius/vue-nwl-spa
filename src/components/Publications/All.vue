@@ -27,6 +27,7 @@ import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '../../interfaces/PublicationItem'
 import DynamicTable from '../Custom/DynamicTable2.vue'
+import { EventBus } from '../../main'
 
 const users = namespace('users')
 // const support = namespace('support')
@@ -66,27 +67,41 @@ export default class All extends Vue {
   buttons: any = ['Add', 'Edit', 'Export']
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View'], width: '80', id: 0 },
-    { key: 'filetype', label: 'FileType', type: 'default', format: 'extension', width: '40', id: 1 },
-    { key: 'docid', label: 'DocId', type: 'default', format: 'text', width: '120', id: 2 },
-    { key: 'title', label: 'Name', type: 'default', format: 'text', id: 3 },
-    { key: 'prefix', label: 'Prefix', type: 'default', format: 'text', width: '50', id: 4 },
-    { key: 'category', label: 'Category', type: 'default', format: 'text', width: '50', id: 5 },
-    { key: 'area', label: 'Mission Area', type: 'default', format: 'text', width: '50', id: 6 },
-    { key: 'location', label: 'Location', type: 'default', format: 'text', width: '50', id: 7 }
+    { key: 'actions', label: 'Actions', actions: ['View'], tdClass: 'px80', id: 0 },
+    { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70', id: 1 },
+    { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px100', id: 2 },
+    { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px400', id: 3 },
+    /* { key: 'Name', label: 'Name', type: 'default', format: 'text', id: 3 }, */
+    { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100', id: 4 },
+    { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px100', id: 5 },
+    { key: 'Resourced', label: 'Resourced', type: 'default', format: 'text', tdClass: 'px80', id: 6 },
+    { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px240', id: 7 },
+    /* { key: 'Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100', id: 8 }, */
+    /* { key: 'NWDCAO.Title', label: 'NWDCAO', type: 'default', format: 'text', tdClass: 'px200', id: 9 }, */
+    { key: 'Class', label: 'Classification', type: 'default', format: 'text', tdClass: 'px100', id: 10 }
   ]
+
+  created() {
+    EventBus.$on('viewItem', id => {
+      this.viewPub(id)
+    })
+  }
 
   mounted() {
     // let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)&$orderby=Title"
     this.getAllPublications().then(response => {
       if (response) {
-        this.getAllNatoPublications().then(response => {
+        /* this.getAllNatoPublications().then(response => {
           if (response) {
             console.log('Publications Loaded')
           }
-        })
+        }) */
       }
     })
+  }
+  viewPub(id: string) {
+    // alert(id)
+    this.$router.push({ name: 'View Publication', query: { Id: id }, params: { Id: id } })
   }
 }
 </script>

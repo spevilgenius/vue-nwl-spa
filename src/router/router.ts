@@ -58,6 +58,12 @@ const pubsMenu = {
       name: 'Pubs In Development',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
       props: true
+    },
+    {
+      path: 'forms/view',
+      name: 'View Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
     }
   ]
 }

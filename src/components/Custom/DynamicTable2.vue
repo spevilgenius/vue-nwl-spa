@@ -29,15 +29,23 @@
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
                 <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
+                  <template #cell(actions)="data">
+                    <b-button size="sm" variant="outline-success" class="actionbutton" @click="viewItem(data.item.Id)">
+                      <font-awesome-icon far icon="eye" :style="{ color: 'red' }"></font-awesome-icon>
+                    </b-button>
+                  </template>
                   <template #cell()="data">
-                    <div v-if="data.field.format === 'extension'">
+                    <!-- <div v-if="data.field.format === 'extension'">
                       <font-awesome-icon v-if="data.item.filetype === '.doc'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-if="data.item.filetype === '.docx'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-if="data.item.filetype === '.pdf'" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-if="data.item.filetype === '.txt'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-if="data.item.filetype === '.rtf'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
-                    </div>
+                    </div> -->
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                    <!-- <div v-if="data.field.key === 'actions'">
+                      <component v-for="comp in data.item.ActionButtons" :key="comp.id" :is="comp.component" v-bind="comp.props"></component>
+                    </div> -->
                   </template>
                 </b-table>
               </b-col>
@@ -64,6 +72,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { EventBus } from '../../main'
 
 const support = namespace('support')
 const users = namespace('users')
@@ -89,6 +98,7 @@ let that: any
       default: () => {
         return {
           id: 'DynamicTable',
+          list: 'ActivePublications',
           primaryKey: 'id',
           buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
           fields: [],
@@ -139,6 +149,7 @@ export default class DynamicTable extends Vue {
       let available = this.contentheight - 100
       let amount = Math.floor(available / 30) // 30 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
+      // format any cells that need it
     }
   }
 
@@ -177,6 +188,10 @@ export default class DynamicTable extends Vue {
         break
     }
     return style
+  }
+
+  public viewItem(id: string) {
+    EventBus.$emit('viewItem', id)
   }
 }
 </script>

@@ -41,6 +41,7 @@ export default class App extends Vue {
       let doc = document?.getElementById('app')
       if (doc !== null) {
         doc.style.display = 'none'
+        doc.style.zIndex = '-1000'
       }
     } else {
       this.isVisible = true

@@ -15,6 +15,7 @@ interface PublicationItem {
   LibrarianRemarks?: string
   LongTitle?: string
   Media?: string
+  Modified?: string
   MA?: string
   NSN?: string
   NWDCAO?: {}
@@ -28,5 +29,6 @@ interface PublicationItem {
   Replaces?: string
   Bookshelf?: string
   AdditionalData?: string
+  ActionButtons?: []
 }
 export { PublicationItem }
