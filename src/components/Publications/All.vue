@@ -70,7 +70,8 @@ export default class All extends Vue {
     { key: 'actions', label: 'Actions', actions: ['View'], tdClass: 'px80', id: 0 },
     { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70', id: 1 },
     { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px100', id: 2 },
-    { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px400', id: 3 },
+    /* { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px200', id: 3 }, */
+    { key: 'Title', label: 'Title', type: 'default', format: 'text', tdClass: 'px500', id: 3 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', id: 3 }, */
     { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100', id: 4 },
     { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px100', id: 5 },
