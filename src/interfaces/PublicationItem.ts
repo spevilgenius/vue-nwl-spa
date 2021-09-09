@@ -28,7 +28,56 @@ interface PublicationItem {
   StatusComments?: string
   Replaces?: string
   Bookshelf?: string
-  AdditionalData?: string
+  AdditionalData: {
+    AdminComments: string
+    Archived: string
+    ArchivedRemarks: string
+    Cancel: string
+    CancelDate: string
+    CancelRemarks: string
+    ChangeAO: string
+    ChangeLibrarian: string
+    CoordinatingRAPLA: string
+    CreatedRemarks: string
+    CurrentPhase: string
+    DateofIssue: string
+    Description: string
+    Dissemination: string
+    DisseminationAbbrev: string
+    DraftDate: string
+    Edition: string
+    EditionDate: string
+    EnterpriseKeywords: string
+    FinalDraft: string
+    FinalManuscript: string
+    FirstDraft: string
+    FunctionalField: string
+    FunctionalSeries: string
+    Hidden: string
+    NewPub: string
+    NWDCSignature: string
+    OldShortTitles: string
+    ParentWDC: string
+    PDDTG: string
+    PhaseFinish: string
+    PhaseStart: string
+    PRAAbbrev: string
+    PRAApproval: string
+    PRAID: string
+    PRAPLA: string
+    ProgramDirective: string
+    ProjectFinish: string
+    ProjectStatus: string
+    PubCategory: string
+    RELTO: string
+    Remarks: string
+    Reviewed: string
+    SignatureDraft: string
+    Status: string
+    GeneralStatus: string
+    SupersededBy: string
+    Update: string
+  }
   ActionButtons?: []
 }
 export { PublicationItem }

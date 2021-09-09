@@ -4,14 +4,21 @@
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
           <b-row no-gutters>
-            <b-col cols="6" class="m-0 p-0"></b-col>
-            <b-col cols="6" class="m-0 p-0">
+            <b-col id="FrameColumn" cols="8" class="m-0 p-0"></b-col>
+            <b-col cols="4" class="m-0 p-0">
               <b-card no-body>
                 <b-tabs v-model="rightTabs" card>
                   <b-tab class="mtab" active>
                     <template slot="title">Data</template>
                     <b-row no-gutters>
-                      <b-col cols="12"></b-col>
+                      <b-col cols="12">
+                        <b-container fluid class="m-0 p-0">
+                          <b-row no-gutters>
+                            <b-col id="PRAIcon" cols="4"></b-col>
+                            <b-col cols="8"></b-col>
+                          </b-row>
+                        </b-container>
+                      </b-col>
                     </b-row>
                   </b-tab>
                   <b-tab class="mtab">
@@ -42,11 +49,17 @@ import { PublicationItem } from '../../../interfaces/PublicationItem'
 const users = namespace('users')
 const publication = namespace('publication')
 
+var slash = '/'
+var tp1 = String(window.location.protocol)
+var tp2 = String(window.location.host)
+
 @Component({
   name: 'ViewPub'
 })
 export default class ViewPub extends Vue {
   rightTabs = []
+  interval!: any
+  iconsource!: any
 
   @users.State
   public currentUser!: UserInt
@@ -65,10 +78,37 @@ export default class ViewPub extends Vue {
       let id = this.$route.query.Id
       if (id !== null) {
         console.log('TEST B')
-        this.getPublicationById(String(id))
+        this.getPublicationById(String(id)).then(response => {
+          if (response) {
+            this.interval = setInterval(this.waitForIt, 500)
+          }
+        })
       } else {
         console.log('TEST A')
       }
+    }
+  }
+
+  public waitForIt() {
+    if (this.publoaded) {
+      console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+      clearInterval(this.interval)
+      let ad = this.publication.AdditionalData
+      let pra = ad.PRAAbbrev
+      let src = tp1 + slash + slash + tp2 + '/PublishingImages/PRA/'
+      src += pra
+      src += '.png'
+      console.log('Set Image Source: ' + src)
+      let img = document.createElement('img')
+      img.src = src
+      document.getElementById('PRAIcon')?.appendChild(img)
+      // TODO: set frame to document url
+      let iframe = document.createElement('iframe')
+      iframe.style.width = '100%'
+      iframe.style.height = '100%'
+      iframe.id = 'PublicationFrame'
+      iframe.src = this.publication.RelativeURL + '?isDlg=1'
+      document.getElementById('FrameColumn')?.appendChild(iframe)
     }
   }
 }

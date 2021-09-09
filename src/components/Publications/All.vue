@@ -67,29 +67,31 @@ export default class All extends Vue {
   buttons: any = ['Add', 'Edit', 'Export']
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View'], tdClass: 'px80', id: 0 },
-    { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70', id: 1 },
-    { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px100', id: 2 },
+    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], tdClass: 'px60 text-nowrap', id: 0 },
+    { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70 text-nowrap', id: 1 },
+    { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 2 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px200', id: 3 }, */
-    { key: 'Title', label: 'Title', type: 'default', format: 'text', tdClass: 'px500', id: 3 },
+    { key: 'Title', label: 'Title', type: 'default', format: 'text', tdClass: 'px500 text-nowrap', id: 3 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', id: 3 }, */
-    { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100', id: 4 },
-    { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px100', id: 5 },
-    { key: 'Resourced', label: 'Resourced', type: 'default', format: 'text', tdClass: 'px80', id: 6 },
-    { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px240', id: 7 },
-    /* { key: 'Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100', id: 8 }, */
-    /* { key: 'NWDCAO.Title', label: 'NWDCAO', type: 'default', format: 'text', tdClass: 'px200', id: 9 }, */
-    { key: 'Class', label: 'Classification', type: 'default', format: 'text', tdClass: 'px100', id: 10 }
+    { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 4 },
+    { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 5 },
+    { key: 'Resourced', label: 'Resourced', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 6 },
+    { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 7 },
+    /* { key: 'Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 8 }, */
+    /* { key: 'NWDCAO.Title', label: 'NWDCAO', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 9 }, */
+    { key: 'Class', label: 'Classification', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 10 }
   ]
 
   created() {
     EventBus.$on('viewItem', id => {
       this.viewPub(id)
     })
+    EventBus.$on('editItem', id => {
+      this.editPub(id)
+    })
   }
 
   mounted() {
-    // let url = "https://test.doctrine.navy.mil/_api/web/lists/getByTitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)&$orderby=Title"
     this.getAllPublications().then(response => {
       if (response) {
         /* this.getAllNatoPublications().then(response => {
@@ -101,8 +103,10 @@ export default class All extends Vue {
     })
   }
   viewPub(id: string) {
-    // alert(id)
     this.$router.push({ name: 'View Publication', query: { Id: id }, params: { Id: id } })
+  }
+  editPub(id: string) {
+    this.$router.push({ name: 'Edit Publication', query: { Id: id }, params: { Id: id } })
   }
 }
 </script>

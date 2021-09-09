@@ -74,20 +74,16 @@ class Users extends VuexModule {
 
   @Mutation
   public updateUserPermissions(data: any): void {
-    this.currentUser.isPM = data.isPM === true ? true : false
     this.currentUser.isSecurity = data.isSecurity === true ? true : false
     this.currentUser.isDeveloper = data.isDeveloper === true ? true : false
     this.currentUser.isOwner = data.isOwner === true ? true : false
-    this.currentUser.isWPManager = data.isWPManager === true ? true : false
-    this.currentUser.isApprover = data.isApprover === true ? true : false
-    this.currentUser.isTravelApprover = data.isTravelApprover === true ? true : false
-    this.currentUser.isPCA = data.isPCA === true ? true : false
-    this.currentUser.isQA = data.isQA === true ? true : false
-    this.currentUser.isMember = data.isMember === true ? true : false
-    this.currentUser.isSubcontractor = data.isSubcontractor === true ? true : false
+    this.currentUser.isActionOfficer = data.isActionOfficer === true ? true : false
+    this.currentUser.isLibrarian = data.isLibrarian === true ? true : false
     this.currentUser.isAdmin = data.isAdmin === true ? true : false
-    this.currentUser.isAFRL = data.isAFRL === true ? true : false
-    this.currentUser.isAFRLCEU = data.isAFRLCEU === true ? true : false
+    this.currentUser.isVisitor = data.isVisitor === true ? true : false
+    this.currentUser.isNATOVisitor = data.isNATOVisitor === true ? true : false
+    this.currentUser.isNATOApprover = data.isNATOApprover === true ? true : false
+    this.currentUser.isNATOLibrarian = data.isNATOLibrarian === true ? true : false
   }
 
   @Action
@@ -264,28 +260,36 @@ class Users extends VuexModule {
       const permissions = {} as any
       for (let i = 0; i < usergroups.length; i++) {
         switch (usergroups[i].Title) {
-          case 'Approvers':
-            permissions.isApprover = true
-            break
-
-          case 'Visitors':
-            permissions.isVisitor = true
-            break
-
-          case 'Members':
-            permissions.isMember = true
-            break
-
           case 'Developers':
             permissions.isDeveloper = true
             break
 
-          case 'Owners':
-            permissions.isOwner = true
+          case 'Library Visitors':
+            permissions.isVisitor = true
+            break
+
+          case 'Doctrine Action Officers':
+            permissions.isActionOfficer = true
+            break
+
+          case 'Doctrine Librarian':
+            permissions.isLibrarian = true
             break
 
           case 'Library Administrators':
             permissions.isAdmin = true
+            break
+
+          case 'NATO Approvers':
+            permissions.isNATOApprover = true
+            break
+
+          case 'NATO Librarians':
+            permissions.isNATOLibrarian = true
+            break
+
+          case 'NATO Visitors':
+            permissions.isNATOVisitor = true
             break
         }
       }

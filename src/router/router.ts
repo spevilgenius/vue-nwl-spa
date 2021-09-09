@@ -64,6 +64,12 @@ const pubsMenu = {
       name: 'View Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
       props: true
+    },
+    {
+      path: 'forms/edit',
+      name: 'Edit Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
+      props: true
     }
   ]
 }

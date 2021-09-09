@@ -30,18 +30,18 @@
               <b-col cols="12">
                 <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
                   <template #cell(actions)="data">
-                    <b-button size="sm" variant="outline-success" class="actionbutton" @click="viewItem(data.item.Id)">
-                      <font-awesome-icon far icon="eye" :style="{ color: 'red' }"></font-awesome-icon>
+                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id)">
+                      <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                    </b-button>
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id)">
+                      <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
                   <template #cell()="data">
-                    <!-- <div v-if="data.field.format === 'extension'">
-                      <font-awesome-icon v-if="data.item.filetype === '.doc'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-if="data.item.filetype === '.docx'" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-if="data.item.filetype === '.pdf'" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-if="data.item.filetype === '.txt'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-if="data.item.filetype === '.rtf'" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
-                    </div> -->
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
                     <!-- <div v-if="data.field.key === 'actions'">
                       <component v-for="comp in data.item.ActionButtons" :key="comp.id" :is="comp.component" v-bind="comp.props"></component>
@@ -73,6 +73,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
+import { UserInt } from '../../interfaces/User'
 
 const support = namespace('support')
 const users = namespace('users')
@@ -117,6 +118,9 @@ let that: any
 export default class DynamicTable extends Vue {
   filter = null
   filterOn = []
+
+  @users.State
+  public currentUser!: UserInt
 
   @support.State
   public contentheight!: number
@@ -192,6 +196,10 @@ export default class DynamicTable extends Vue {
 
   public viewItem(id: string) {
     EventBus.$emit('viewItem', id)
+  }
+
+  public editItem(id: string) {
+    EventBus.$emit('editItem', id)
   }
 }
 </script>

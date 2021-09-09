@@ -20,8 +20,8 @@ class Publication extends VuexModule {
   public publication?: PublicationItem
   public pubsloaded?: boolean = false
   public publoaded?: boolean = false // single publication
-  pubsUrl = "_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
-  natoUrl = "_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  pubsUrl = "_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  natoUrl = "_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   pubsUrl2 = "_api/lists/getbytitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)"
 
   @Mutation
@@ -62,8 +62,9 @@ class Publication extends VuexModule {
           url = response.data.d.__next
           return getAllPubs(url)
         } else {
-          console.log('getAllPublications Response: ' + j)
+          // console.log('getAllPublications Response: ' + j)
           for (let i = 0; i < j.length; i++) {
+            let ad = JSON.parse(j[i]['AdditionalData'])
             p.push({
               Id: j[i]['Id'],
               DocID: j[i]['DocID'],
@@ -97,14 +98,14 @@ class Publication extends VuexModule {
               StatusComments: j[i]['statuscomments'],
               Replaces: j[i]['Replaces'],
               Bookshelf: j[i]['Bookshelf'],
-              AdditionalData: JSON.parse(j[i]['AdditionalData'])
+              AdditionalData: ad
             })
           }
           that.context.commit('createPublications', p)
         }
       }
       let turl = baseUrl + this.pubsUrl
-      console.log('getAllPublications URL: ' + turl)
+      // console.log('getAllPublications URL: ' + turl)
       getAllPubs(turl)
       return true
     } else {
@@ -117,8 +118,8 @@ class Publication extends VuexModule {
         }
       })
       j = response.data
-      console.log(JSON.stringify(j))
-      for (let i = 0; i < j.length; i++) {
+      // console.log(JSON.stringify(j))
+      /* for (let i = 0; i < j.length; i++) {
         p.push({
           DocID: j[i]['docid'],
           Title: j[i]['title'],
@@ -127,7 +128,7 @@ class Publication extends VuexModule {
           Prfx: j[i]['prefix'],
           Bookshelf: j[i]['location']
         })
-      }
+      } */
       this.context.commit('createPublications', p)
       return true
     }
@@ -162,7 +163,7 @@ class Publication extends VuexModule {
               Name: j[i]['Name'],
               RelativeURL: j[i]['File']['ServerRelativeUrl'],
               Availability: j[i]['Availability'],
-              Branch: j[i]['Branch'],
+              Branch: j[i]['BranchTitle'],
               Class: j[i]['Class'],
               ClassAbv: j[i]['ClassAbv'],
               CoordinatingRA: j[i]['CoordinatingRA'],
@@ -205,8 +206,8 @@ class Publication extends VuexModule {
         }
       })
       j = response.data
-      console.log(JSON.stringify(j))
-      for (let i = 0; i < j.length; i++) {
+      // console.log(JSON.stringify(j))
+      /* for (let i = 0; i < j.length; i++) {
         p.push({
           DocID: j[i]['docid'],
           Title: j[i]['title'],
@@ -215,7 +216,7 @@ class Publication extends VuexModule {
           Prfx: j[i]['prefix'],
           Bookshelf: j[i]['location']
         })
-      }
+      } */
       this.context.commit('updatePublications', p)
       return true
     }
@@ -224,16 +225,18 @@ class Publication extends VuexModule {
   @Action
   public async getPublicationById(id: string): Promise<boolean> {
     if (!local) {
+      // console.log('Getting Publication ID: ' + id)
       let url = baseUrl + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+      // console.log('Get Publication URL: ' + url)
       const response = await axios.get(url, {
         headers: {
           accept: 'application/json;odata=verbose'
         }
       })
-      console.log('GETPUBLICATIONBYID RESPONSE: ' + response)
-      let j = response.data.d.results[0]
+      // console.log('GETPUBLICATIONBYID RESPONSE: ' + response)
+      let j = response.data.d.results
       let p = {} as PublicationItem
-
+      let ad = JSON.parse(j[0]['AdditionalData'])
       p.Id = j[0]['Id']
       p.DocID = j[0]['DocID']
       p.Title = j[0]['Title']
@@ -265,7 +268,7 @@ class Publication extends VuexModule {
       p.StatusComments = j[0]['StatusComments']
       p.Replaces = j[0]['Replaces']
       p.Bookshelf = j[0]['Bookshelf']
-      p.AdditionalData = j[0]['AdditionalData']
+      p.AdditionalData = ad
       p.ActionButtons = []
       this.context.commit('updatePublication', p)
       return true
@@ -279,8 +282,8 @@ class Publication extends VuexModule {
         }
       })
       j = response.data
-      console.log(JSON.stringify(j))
-      for (let i = 0; i < j.length; i++) {
+      // console.log(JSON.stringify(j))
+      /* for (let i = 0; i < j.length; i++) {
         p.push({
           DocID: j[i]['docid'],
           Title: j[i]['title'],
@@ -289,7 +292,7 @@ class Publication extends VuexModule {
           Prfx: j[i]['prefix'],
           Bookshelf: j[i]['location']
         })
-      }
+      } */
       this.context.commit('createPublications', p)
       return true
     }
