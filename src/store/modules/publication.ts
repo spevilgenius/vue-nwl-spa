@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { PublicationItem } from '@/interfaces/PublicationItem'
+import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
 
@@ -12,6 +13,10 @@ if (loc.indexOf('localhost') >= 0) {
   local = true
 }
 
+var slash = '/'
+var tp1 = String(window.location.protocol)
+var tp2 = String(window.location.host)
+
 const baseUrl = process.env.VUE_APP_BASE_URL
 
 @Module({ namespaced: true })
@@ -20,9 +25,12 @@ class Publication extends VuexModule {
   public publication?: PublicationItem
   public pubsloaded?: boolean = false
   public publoaded?: boolean = false // single publication
+  public prefixes: Array<ObjectItem> = []
+
   pubsUrl = "_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   pubsUrl2 = "_api/lists/getbytitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)"
+  prefixUrl = "/_api/lists/getbytitle('lu_prefix')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -42,6 +50,11 @@ class Publication extends VuexModule {
   public updatePublication(item: PublicationItem): void {
     this.publication = item
     this.publoaded = true
+  }
+
+  @Mutation
+  public createPrefixes(items: Array<ObjectItem>): void {
+    this.prefixes = items
   }
 
   @Action
@@ -72,7 +85,7 @@ class Publication extends VuexModule {
               Name: j[i]['File']['Name'],
               RelativeURL: j[i]['File']['ServerRelativeUrl'],
               Availability: j[i]['Availability'],
-              Branch: j[i]['BranchTitle'],
+              Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
               Class: j[i]['Class'],
               ClassAbv: j[i]['ClassAbv'],
               CoordinatingRA: j[i]['CoordinatingRA'],
@@ -91,7 +104,7 @@ class Publication extends VuexModule {
               },
               PRA: j[i]['PRA'],
               PRAPOC: j[i]['PRAPOC'],
-              Prfx: j[i]['Prfx'],
+              Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
               PubID: j[i]['PubID'],
               Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
               ReviewDate: j[i]['ReviewDate'],
@@ -163,7 +176,7 @@ class Publication extends VuexModule {
               Name: j[i]['Name'],
               RelativeURL: j[i]['File']['ServerRelativeUrl'],
               Availability: j[i]['Availability'],
-              Branch: j[i]['BranchTitle'],
+              Branch: j[i]['BranchTitle'] !== null ? j[i]['BranchTitle'] : '',
               Class: j[i]['Class'],
               ClassAbv: j[i]['ClassAbv'],
               CoordinatingRA: j[i]['CoordinatingRA'],
@@ -243,7 +256,7 @@ class Publication extends VuexModule {
       p.Name = j[0]['Name']
       p.RelativeURL = j[0]['File']['ServerRelativeUrl']
       p.Availability = j[0]['Availability']
-      p.Branch = j[0]['BranchTitle']
+      p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
       p.Class = j[0]['Class']
       p.ClassAbv = j[0]['ClassAbv']
       p.CoordinatingRA = j[0]['CoordinatingRA']
@@ -261,7 +274,7 @@ class Publication extends VuexModule {
       }
       p.PRA = j[0]['PRA']
       p.PRAPOC = j[0]['PRAPOC']
-      p.Prfx = j[0]['Prfx']
+      p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
       p.PubID = j[0]['PubID']
       p.Resourced = j[0]['Resourced']
       p.ReviewDate = j[0]['ReviewDate']
@@ -294,6 +307,61 @@ class Publication extends VuexModule {
         })
       } */
       this.context.commit('createPublications', p)
+      return true
+    }
+  }
+
+  @Action
+  public async getPrefixesByBranch(branch: string): Promise<boolean> {
+    if (!local) {
+      let j: any[] = []
+      let p: Array<ObjectItem> = []
+      const that = this
+      async function getAllPrefixes(url: string): Promise<void> {
+        const response = await axios.get(url, {
+          headers: {
+            accept: 'application/json;odata=verbose'
+          }
+        })
+        j = j.concat(response.data.d.results)
+        // recursively load items if there is a next result
+        if (response.data.d.__next) {
+          url = response.data.d.__next
+          return getAllPrefixes(url)
+        } else {
+          // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
+          for (let i = 0; i < j.length; i++) {
+            p.push({
+              value: j[i]['Title'],
+              text: j[i]['Title']
+            })
+          }
+          that.context.commit('createPrefixes', p)
+        }
+      }
+      let turl = tp1 + slash + slash + tp2 + this.prefixUrl
+      turl += branch
+      turl += "')"
+      console.log('getPrefixesByBranch URL: ' + turl)
+      getAllPrefixes(turl)
+      return true
+    } else {
+      let j: any[] = []
+      let p: Array<ObjectItem> = []
+      /* let url = 'http://localhost:3000/prefixes'
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = response.data
+      for (let i = 0; i < j.length; i++) {
+        p.push({
+          value: j[i]['Title'],
+          text: j[i]['Title']
+        })
+      } */
+      this.context.commit('createPrefixes', p)
       return true
     }
   }

@@ -2,8 +2,8 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="!publoaded" :variant="success" class="contentHeight">
-          <b-container fluid class="contentHeight m-0 p-0">
+        <b-overlay :show="!formReady" :variant="success" class="contentHeight">
+          <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
             <b-row no-gutters>
               <b-col cols="12" class="m-0 p-0">
                 <b-card no-body>
@@ -13,15 +13,54 @@
                       <b-row no-gutters>
                         <b-col cols="12">
                           <b-form>
-                            <b-form-group id="input-group-title" label="Title:" label-for="txtTitle" :state="ValidateMe('Title')" :invalid-feedback="invalidTitle">
-                              <b-form-input class="form-control-sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" required :state="ValidateMe('Title')" ref="Title"></b-form-input>
-                              <b-form-invalid-feedback>
-                                Enter a title for this publication
-                              </b-form-invalid-feedback>
-                            </b-form-group>
-                            <b-form-group id="input-group-branch" label="Branch:" label-for="ddBranch" :state="ValidateMe('Branch')" :invalid-feedback="invalidBranch" description="Indicates the branch of the library to which the publication belongs. Supports filtering of publications.">
-                              <b-form-select class="form-control-sm" id="ddBranch" v-model="publication.Branch" :options="branches" required :state="ValidateMe('Branch')" ref="Branch"></b-form-select>
-                            </b-form-group>
+                            <b-row>
+                              <b-col cols="6" class="text-center text-dark">Title</b-col>
+                              <b-col cols="2" class="text-center text-dark">Branch</b-col>
+                              <b-col cols="2" class="text-center text-dark">Prefix</b-col>
+                              <b-col cols="2" class="text-center text-dark">Pub ID</b-col>
+                            </b-row>
+                            <b-row>
+                              <b-col cols="6">
+                                <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
+                                <b-form-invalid-feedback>Please input a title.</b-form-invalid-feedback>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-select
+                                  class="form-control"
+                                  size="sm"
+                                  id="ddBranch"
+                                  v-model="publication.Branch"
+                                  :options="branches"
+                                  @change="onBranchSelect"
+                                  :state="ValidateMe('Branch')"
+                                  ref="Branch"
+                                  v-b-tooltip.hover.v-dark
+                                  title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."
+                                ></b-form-select>
+                                <b-form-invalid-feedback>Please select a valid branch.</b-form-invalid-feedback>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-select class="form-control" size="sm" id="ddPrefix" v-model="publication.Prfx" :options="prefixes" :state="ValidateMe('Prefix')" ref="Prefix"></b-form-select>
+                                <b-form-invalid-feedback>Please select a valid prefix.</b-form-invalid-feedback>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
+                                <b-form-invalid-feedback>Please input a valid Pub ID.</b-form-invalid-feedback>
+                              </b-col>
+                            </b-row>
+                            <b-row>
+                              <b-col cols="6" class="text-center text-dark">Long Title</b-col>
+                              <b-col cols="6" class="text-center text-dark">Description</b-col>
+                            </b-row>
+                            <b-row>
+                              <b-col cols="6">
+                                <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle" :state="ValidateMe('LongTitle')"></b-form-input>
+                                <b-form-invalid-feedback>Please input a long title.</b-form-invalid-feedback>
+                              </b-col>
+                              <b-col cols="6">
+                                <b-form-textarea class="form-control" id="txtDescription" v-model="publication.AdditionalData.Description" size="lg" placeholder="Large textarea"></b-form-textarea>
+                              </b-col>
+                            </b-row>
                           </b-form>
                         </b-col>
                       </b-row>
@@ -77,6 +116,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
+import { ObjectItem } from '@/interfaces/ObjectItem'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -90,6 +130,7 @@ export default class EditPub extends Vue {
   interval!: any
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
+  formReady = false
 
   @users.State
   public currentUser!: UserInt
@@ -100,8 +141,14 @@ export default class EditPub extends Vue {
   @publication.State
   public publication!: PublicationItem
 
+  @publication.State
+  public prefixes!: Array<ObjectItem>
+
   @publication.Action
   public getPublicationById!: (id: string) => Promise<boolean>
+
+  @publication.Action
+  public getPrefixesByBranch!: (branch: string) => Promise<boolean>
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -133,22 +180,57 @@ export default class EditPub extends Vue {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
+      // is the branch available to get the prefixes
+      if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
+        this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
+          if (response) {
+            /* dont care here */
+          }
+        })
+      }
+      this.formReady = true
     }
   }
 
   public ValidateMe(control: string) {
-    let ret = false
+    if (this.formReady) {
+      let ret = false
+      switch (control) {
+        case 'Title':
+          ret = this.publication.Title === null || this.publication.Title === '' ? false : true
+          break
 
-    switch (control) {
-      case 'Title':
-        ret = this.publication.Title !== null ? true : false
-        break
+        case 'Branch':
+          ret = this.publication.Branch === null || this.publication.Branch === 'Please Select...' ? false : true
+          break
 
-      case 'Branch':
-        ret = this.publication.Branch !== null || this.publication.Branch !== 'Please Select...' ? true : false
-        break
+        case 'Prefix':
+          ret = this.publication.Prfx === null || this.publication.Prfx === 'Please Select...' ? false : true
+          break
+
+        case 'PubID':
+          ret = this.publication.PubID === null || this.publication.PubID === '' ? false : true
+          break
+
+        case 'LongTitle':
+          ret = this.publication.LongTitle === null || this.publication.LongTitle === '' ? false : true
+          break
+      }
+      return ret
+    } else {
+      return false
     }
-    return ret
+  }
+
+  public onBranchSelect() {
+    if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
+      // call getPrefixesByBranch
+      this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
+        if (response) {
+          /* dont care here */
+        }
+      })
+    }
   }
 }
 </script>

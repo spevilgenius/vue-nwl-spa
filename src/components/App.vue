@@ -95,8 +95,8 @@ export default class App extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #ffffff;
-  background-color: black;
+  color: #000000;
+  background-color: #ffffff;
   position: fixed;
   top: 0;
   left: 0;

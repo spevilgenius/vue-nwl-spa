@@ -1,11 +1,11 @@
 interface PublicationItem {
   Id?: number
   DocID?: string
-  Title?: string
+  Title: string
   Name?: string
   RelativeURL?: string
   Availability?: string
-  Branch?: string
+  Branch: string
   FileType?: string
   Class?: string
   ClassAbv?: string
