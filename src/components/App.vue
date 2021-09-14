@@ -9,9 +9,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
 import { NotificationItem } from '../interfaces/NotificationItem'
+import { PublicationItem } from '../interfaces/PublicationItem'
 
 const notify = namespace('notify')
 const users = namespace('users')
+const publication = namespace('publication')
 
 @Component
 export default class App extends Vue {
@@ -32,6 +34,12 @@ export default class App extends Vue {
 
   @users.Action
   public getTodosByUser!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllNatoPublications!: () => Promise<boolean>
 
   /** @method - lifecycle hook */
   public created(): void {
@@ -85,7 +93,17 @@ export default class App extends Vue {
   }
 
   /** @method - lifecycle hook */
-  // public mounted(): void {}
+  mounted() {
+    this.getAllPublications().then(response => {
+      if (response) {
+        this.getAllNatoPublications().then(response => {
+          if (response) {
+            console.log('Publications Loaded')
+          }
+        })
+      }
+    })
+  }
 }
 </script>
 
