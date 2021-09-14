@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
@@ -5,17 +6,15 @@
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="6" class="m-0 p-0" v-if="table.buttons.length > 0">
-                <div class="flexCenter">
-                  <span v-for="button in table.buttons" :key="button">
-                    <b-button v-if="button == 'Add'" variant="success" class="m-1 px100 text-white"><font-awesome-icon fas icon="folder" class="icon"></font-awesome-icon>&nbsp;Add</b-button>
-                    <b-button v-if="button == 'Edit'" variant="warning" class="m-1 px100 text-white"><font-awesome-icon fas icon="folder-open" class="icon"></font-awesome-icon>&nbsp;Edit</b-button>
-                    <b-button v-if="button == 'Delete'" variant="danger" class="m-1 px100 text-white"><font-awesome-icon fas icon="trash-alt" class="icon"></font-awesome-icon>&nbsp;Delete</b-button>
-                    <b-button v-if="button == 'Export'" variant="success" class="m-1 px100 text-white"><font-awesome-icon fas icon="download" class="icon"></font-awesome-icon>&nbsp;Export</b-button>
-                  </span>
-                </div>
+              <b-col cols="8" class="mt-1 p-0">
+                <!-- <b-container fluid class="m-0 p-0">
+                  <b-row no-gutters>
+                    <b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select>
+                    <b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"></b-form-select>
+                  </b-row>
+                </b-container> -->
               </b-col>
-              <b-col cols="6" class="mt-1 pr-3">
+              <b-col cols="4" class="mt-1 pr-3">
                 <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
                 <b-input-group class="float-right">
                   <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
@@ -28,7 +27,25 @@
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
+                  <template #thead-top="">
+                    <b-tr>
+                      <b-th>Filters</b-th>
+                      <b-th><b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select></b-th>
+                      <b-th
+                        ><b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"
+                          ><template #first>
+                            <b-form-select-option value="" disabled>Select Branch</b-form-select-option>
+                          </template></b-form-select
+                        ></b-th
+                      >
+                      <b-th><b-form-input class="form-control" size="sm" v-model="PubID" @input="onPubIDSelected"></b-form-input></b-th>
+                      <b-th><b-form-input class="form-control" size="sm" v-model="Title" @input="onTitleSelected"></b-form-input></b-th>
+                      <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
+                      <b-th></b-th>
+                      <b-th></b-th>
+                    </b-tr>
+                  </template>
                   <template #cell(actions)="data">
                     <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
@@ -70,13 +87,16 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
+/* eslint-disable vue/no-unused-vars */
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
 import { UserInt } from '../../interfaces/User'
+import { ObjectItem } from '@/interfaces/ObjectItem'
 
 const support = namespace('support')
 const users = namespace('users')
+const publication = namespace('publication')
 
 var slash = '/'
 var tp1 = String(window.location.protocol)
@@ -104,6 +124,11 @@ let that: any
           buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
           fields: [],
           items: [],
+          filterField: {
+            Type: String,
+            default: ''
+          },
+          filterValue: '',
           overlayText: 'Loading. Please Wait...',
           overlayVariant: 'success'
         }
@@ -117,7 +142,13 @@ let that: any
 })
 export default class DynamicTable extends Vue {
   filter = null
-  filterOn = []
+  filterOn: Array<any> = []
+  checkBoxes: Array<any> = ['Prfx', 'Branch']
+  Branch!: any
+  Prfx!: any
+  PubID!: any
+  Title!: any
+  Bookshelf!: any
 
   @users.State
   public currentUser!: UserInt
@@ -128,11 +159,32 @@ export default class DynamicTable extends Vue {
   @support.State
   public contentwidth!: number
 
+  @publication.State
+  public prefixes!: Array<ObjectItem>
+
+  @publication.Action
+  public getPrefixesByBranch!: (branch: string) => Promise<boolean>
+
+  @support.State
+  public bookshelves!: Array<ObjectItem>
+
+  @support.Action
+  public getBS!: () => Promise<boolean>
+
   interval!: any
   filtereditems: Array<any> = []
   currentPage = 1
   totalRows = 0
   perPage = 20 // default
+
+  branches = [
+    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'Navy', text: 'Navy' },
+    { value: 'Allied', text: 'Allied' },
+    { value: 'Joint', text: 'Joint' },
+    { value: 'Other', text: 'Other' },
+    { value: 'Multinational', text: 'Multinational' }
+  ]
 
   created() {
     that = this
@@ -147,13 +199,58 @@ export default class DynamicTable extends Vue {
     if (this.$props.table.items.length > 0) {
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
+      this.getBS()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
+      if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
+        this.filter = this.$props.table.filterValue
+        this.filterOn.push(this.$props.table.filterField)
+      }
       // TODO: calculate perPage based on counting the number of rows that will fit in the available space
-      let available = this.contentheight - 100
+      let available = this.contentheight - 130
       let amount = Math.floor(available / 30) // 30 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
       // format any cells that need it
+    }
+  }
+
+  public onBranchSelect() {
+    if (this.Branch !== null && this.Branch !== 'Please Select...') {
+      // call getPrefixesByBranch
+      this.getPrefixesByBranch(String(this.Branch)).then(response => {
+        if (response) {
+          this.filter = this.Branch
+          this.filterOn = ['Branch']
+        }
+      })
+    }
+  }
+
+  public onPrfxSelect() {
+    if (this.Prfx !== null && this.Prfx !== 'Please Select...') {
+      this.filter = this.Prfx
+      this.filterOn = ['Prfx']
+    }
+  }
+
+  public onPubIDSelected() {
+    if (this.PubID !== null && this.PubID !== '') {
+      this.filter = this.PubID
+      this.filterOn = ['PubID']
+    }
+  }
+
+  public onTitleSelected() {
+    if (this.Title !== null && this.Title !== '') {
+      this.filter = this.Title
+      this.filterOn = ['Title']
+    }
+  }
+
+  public onBookshelfSelected() {
+    if (this.Bookshelf !== null && this.Bookshelf !== '') {
+      this.filter = this.Bookshelf
+      this.filterOn = ['Bookshelf']
     }
   }
 

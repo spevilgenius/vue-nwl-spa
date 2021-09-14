@@ -22,13 +22,17 @@ const baseUrl = process.env.VUE_APP_BASE_URL
 @Module({ namespaced: true })
 class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
+  public natopublications: Array<PublicationItem> = []
+  public allpublications: Array<PublicationItem> = []
   public publication?: PublicationItem
   public pubsloaded?: boolean = false
+  public natopubsloaded?: boolean = false
+  public allpubsloaded?: boolean = false
   public publoaded?: boolean = false // single publication
   public prefixes: Array<ObjectItem> = []
 
-  pubsUrl = "_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
-  natoUrl = "_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   pubsUrl2 = "_api/lists/getbytitle('Publications')/items?$select=*,Author/Title,File/Name,File/ServerRelativeUrl&$expand=Author,File,File/ListItemAllFields&$filter=(FSObjType ne 1)"
   prefixUrl = "/_api/lists/getbytitle('lu_prefix')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
 
@@ -36,14 +40,22 @@ class Publication extends VuexModule {
   public createPublications(items: Array<PublicationItem>): void {
     this.publications = items
     this.pubsloaded = true
+    console.log('publications length: ' + items.length)
   }
 
   @Mutation
-  public updatePublications(items: Array<PublicationItem>): void {
+  public createNatoPublications(items: Array<PublicationItem>): void {
+    this.natopublications = items
+    this.natopubsloaded = true
+    console.log('Nato publications length: ' + items.length)
+  }
+
+  @Mutation
+  public createAllPublications(): void {
     let p: Array<PublicationItem>
-    p = this.publications.concat(items)
-    this.publications = p
-    this.pubsloaded = true
+    p = this.publications.concat(this.natopublications)
+    this.allpublications = p
+    this.allpubsloaded = true
   }
 
   @Mutation
@@ -75,7 +87,7 @@ class Publication extends VuexModule {
           url = response.data.d.__next
           return getAllPubs(url)
         } else {
-          // console.log('getAllPublications Response: ' + j)
+          console.log('getAllPublications Response: ' + j)
           for (let i = 0; i < j.length; i++) {
             let ad = JSON.parse(j[i]['AdditionalData'])
             p.push({
@@ -117,7 +129,7 @@ class Publication extends VuexModule {
           that.context.commit('createPublications', p)
         }
       }
-      let turl = baseUrl + this.pubsUrl
+      let turl = tp1 + slash + slash + tp2 + this.pubsUrl
       // console.log('getAllPublications URL: ' + turl)
       getAllPubs(turl)
       return true
@@ -142,7 +154,7 @@ class Publication extends VuexModule {
           Bookshelf: j[i]['location']
         })
       } */
-      this.context.commit('createPublications', p)
+      this.context.commit('updatePublications', p)
       return true
     }
   }
@@ -153,10 +165,7 @@ class Publication extends VuexModule {
       let j: any[] = []
       let p: Array<PublicationItem> = []
       const that = this
-      async function getAllPubs(url: string): Promise<void> {
-        if (url === '') {
-          url = baseUrl + that.natoUrl
-        }
+      async function getAllNatoPubs(url: string): Promise<void> {
         const response = await axios.get(url, {
           headers: {
             accept: 'application/json;odata=verbose'
@@ -166,25 +175,28 @@ class Publication extends VuexModule {
         // recursively load items if there is a next result
         if (response.data.d.__next) {
           url = response.data.d.__next
-          return getAllPubs(url)
+          return getAllNatoPubs(url)
         } else {
+          console.log('getAllNatoPublications Response: ' + j)
           for (let i = 0; i < j.length; i++) {
+            let ad = JSON.parse(j[i]['AdditionalData'])
             p.push({
               Id: j[i]['Id'],
               DocID: j[i]['DocID'],
               Title: j[i]['Title'],
-              Name: j[i]['Name'],
+              Name: j[i]['File']['Name'],
               RelativeURL: j[i]['File']['ServerRelativeUrl'],
               Availability: j[i]['Availability'],
-              Branch: j[i]['BranchTitle'] !== null ? j[i]['BranchTitle'] : '',
+              Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
               Class: j[i]['Class'],
               ClassAbv: j[i]['ClassAbv'],
               CoordinatingRA: j[i]['CoordinatingRA'],
               CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
-              DTIC: j[i]['DTIC'],
+              DTIC: j[i]['Distribution'],
               LibrarianRemarks: j[i]['LibrarianRemarks'],
               LongTitle: j[i]['LongTitle'],
-              Media: j[i]['Media'],
+              Media: j[i]['Media'], // returns array of multiple choices
+              Modified: new Date(j[i]['Modified']).toLocaleDateString(),
               MA: j[i]['MA'],
               NSN: j[i]['NSN'],
               NWDCAO: {
@@ -194,20 +206,21 @@ class Publication extends VuexModule {
               },
               PRA: j[i]['PRA'],
               PRAPOC: j[i]['PRAPOC'],
-              Prfx: j[i]['Prfx'],
+              Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
               PubID: j[i]['PubID'],
-              Resourced: j[i]['Resourced'],
+              Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
               ReviewDate: j[i]['ReviewDate'],
-              StatusComments: j[i]['StatusComments'],
+              StatusComments: j[i]['statuscomments'],
               Replaces: j[i]['Replaces'],
               Bookshelf: j[i]['Bookshelf'],
-              AdditionalData: j[i]['AdditionalData']
+              AdditionalData: ad
             })
           }
-          that.context.commit('updatePublications', p)
+          that.context.commit('createNatoPublications', p)
         }
       }
-      getAllPubs('')
+      let turl = tp1 + slash + slash + tp2 + this.natoUrl
+      getAllNatoPubs(turl)
       return true
     } else {
       let j: any[] = []
@@ -230,7 +243,7 @@ class Publication extends VuexModule {
           Bookshelf: j[i]['location']
         })
       } */
-      this.context.commit('updatePublications', p)
+      this.context.commit('createPublications', p)
       return true
     }
   }
@@ -295,17 +308,6 @@ class Publication extends VuexModule {
         }
       })
       j = response.data
-      // console.log(JSON.stringify(j))
-      /* for (let i = 0; i < j.length; i++) {
-        p.push({
-          DocID: j[i]['docid'],
-          Title: j[i]['title'],
-          Name: j[i]['name'],
-          Branch: j[i]['category'],
-          Prfx: j[i]['prefix'],
-          Bookshelf: j[i]['location']
-        })
-      } */
       this.context.commit('createPublications', p)
       return true
     }
@@ -364,6 +366,12 @@ class Publication extends VuexModule {
       this.context.commit('createPrefixes', p)
       return true
     }
+  }
+
+  @Action
+  public async createAllPubs(): Promise<boolean> {
+    this.context.commit('createAllPublications')
+    return true
   }
 }
 export default Publication

@@ -19,6 +19,16 @@ const publication = namespace('publication')
 export default class App extends Vue {
   public userid = 0
   public isVisible = true
+  interval!: any
+
+  @publication.State
+  public allpubsloaded!: boolean
+
+  @publication.State
+  public natopubsloaded!: boolean
+
+  @publication.State
+  public pubsloaded!: boolean
 
   @notify.Action
   public add!: (notification: NotificationItem) => void
@@ -40,6 +50,9 @@ export default class App extends Vue {
 
   @publication.Action
   public getAllNatoPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public createAllPubs!: () => Promise<boolean>
 
   /** @method - lifecycle hook */
   public created(): void {
@@ -94,15 +107,15 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
-    this.getAllPublications().then(response => {
-      if (response) {
-        this.getAllNatoPublications().then(response => {
-          if (response) {
-            console.log('Publications Loaded')
-          }
-        })
-      }
-    })
+    this.getAllNatoPublications()
+    this.getAllPublications()
+    this.interval = setInterval(this.waitForIt, 500)
+  }
+
+  public waitForIt() {
+    if (this.pubsloaded && this.natopubsloaded) {
+      this.createAllPubs()
+    }
   }
 }
 </script>

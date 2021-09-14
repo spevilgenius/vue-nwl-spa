@@ -3,14 +3,14 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
-          v-if="pubsloaded"
+          v-if="allpubsloaded"
           :user="currentUser"
           :table="{
             id: tblId,
             primaryKey: primaryKey,
             buttons: buttons,
             fields: fields,
-            items: publications,
+            items: allpublications,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -30,7 +30,6 @@ import DynamicTable from '../Custom/DynamicTable2.vue'
 import { EventBus } from '../../main'
 
 const users = namespace('users')
-// const support = namespace('support')
 const publication = namespace('publication')
 
 @Component({
@@ -40,7 +39,6 @@ const publication = namespace('publication')
   }
 })
 export default class All extends Vue {
-  interval: any
   tblId = 'AllPubs'
   primaryKey = 'docid'
   overlayText = 'Getting Publications. Please wait...'
@@ -52,29 +50,22 @@ export default class All extends Vue {
   public currentUser!: UserInt
 
   @publication.State
-  public pubsloaded!: boolean
+  public allpublications!: Array<PublicationItem>
 
   @publication.State
-  public publications!: Array<PublicationItem>
-
-  @publication.Action
-  public getAllPublications!: () => Promise<boolean>
-
-  @publication.Action
-  public getAllNatoPublications!: () => Promise<boolean>
-
-  items!: any
-  buttons: any = ['Add', 'Edit', 'Export']
+  public allpubsloaded!: boolean
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], tdClass: 'px60 text-nowrap', id: 0 },
+    { key: 'Branch', label: 'Branch', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 20 },
     { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70 text-nowrap', id: 1 },
     { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 2 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px200', id: 3 }, */
     { key: 'Title', label: 'Title', type: 'default', format: 'text', tdClass: 'px500 text-nowrap', id: 3 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', id: 3 }, */
-    { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 4 },
-    { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 5 },
+    /* { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 4 },
+    { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 5 }, */
+    { key: 'Bookshelf', label: 'Bookshelf', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 11 },
     { key: 'Resourced', label: 'Resourced', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 6 },
     { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 7 },
     /* { key: 'Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 8 }, */
@@ -91,17 +82,6 @@ export default class All extends Vue {
     })
   }
 
-  mounted() {
-    this.getAllPublications().then(response => {
-      if (response) {
-        /* this.getAllNatoPublications().then(response => {
-          if (response) {
-            console.log('Publications Loaded')
-          }
-        }) */
-      }
-    })
-  }
   viewPub(id: string) {
     this.$router.push({ name: 'View Publication', query: { Id: id }, params: { Id: id } })
   }
