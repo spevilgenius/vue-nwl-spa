@@ -68,7 +68,55 @@
                     <b-tab class="mtab">
                       <template slot="title">Status</template>
                       <b-row no-gutters>
-                        <b-col cols="12"></b-col>
+                        <b-col cols="12">
+                          <b-form>
+                            <b-row>
+                              <b-col cols="2" class="text-center text-dark">Edition</b-col>
+                              <b-col cols="2" class="text-center text-dark">Edition Date</b-col>
+                              <b-col cols="2" class="text-center text-dark">Change</b-col>
+                              <b-col cols="2" class="text-center text-dark">Date of Issue</b-col>
+                              <b-col cols="2" class="text-center text-dark">Resourced?</b-col>
+                              <!-- <b-col cols="2" class="text-center text-dark">Status</b-col> -->
+                            </b-row>
+                            <b-row>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtEdition" v-model="publication.AdditionalData.Edition" placeholder="Enter Edition" ref="Edition"></b-form-input>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtEditionDate" v-model="publication.AdditionalData.EditionDate" placeholder="" ref="EditionDate" type="date"></b-form-input>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtChange" v-model="publication.AdditionalData.Change" placeholder="Enter Change" ref="Change"></b-form-input>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
+                              </b-col>
+                              <b-col cols="2">
+                                <b-form-input class="form-control" size="sm" id="txtDateofIssue" v-model="publication.DateofIssue" placeholder="" ref="DateofIssue" type="date"></b-form-input>
+                              </b-col>
+                              <!-- <b-col cols="2">
+                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" :state="ValidateMe('Status')" ref="Status" v-b-tooltip.hover.v-dark></b-form-select>
+                              </b-col> -->
+                            </b-row>
+                            <b-row>
+                              <b-col cols="6" class="text-center text-dark">Status Comments</b-col>
+                              <b-col cols="6" class="text-center text-dark">Supersedes</b-col>
+                            </b-row>
+                            <b-row>
+                              <b-col cols="6">
+                                <b-form-textarea class="form-control" id="txtStatusComments" v-model="publication.StatusComments" size="lg" placeholder="Status Comments"></b-form-textarea>
+                              </b-col>
+                              <b-col cols="6">
+                                <b-row no-gutters>
+                                  <b-form-input class="form-control" size="sm" id="txtReplacesLink" v-model="publication.Replaces.Link" placeholder="Link to Document" ref="ReplacesLink"></b-form-input>
+                                </b-row>
+                                <b-row no-gutters>
+                                  <b-form-input class="form-control" size="sm" id="txtReplacesDescription" v-model="publication.Replaces.Description" placeholder="Description (Title)" ref="ReplacesDescription"></b-form-input>
+                                </b-row>
+                              </b-col>
+                            </b-row>
+                          </b-form>
+                        </b-col>
                       </b-row>
                     </b-tab>
                     <b-tab class="mtab">

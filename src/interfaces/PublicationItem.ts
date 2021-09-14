@@ -26,7 +26,10 @@ interface PublicationItem {
   Resourced?: string
   ReviewDate?: string
   StatusComments?: string
-  Replaces?: string
+  Replaces: {
+    Link?: string
+    Description?: string
+  }
   Bookshelf?: string
   AdditionalData: {
     AdminComments: string
@@ -35,8 +38,7 @@ interface PublicationItem {
     Cancel: string
     CancelDate: string
     CancelRemarks: string
-    ChangeAO: string
-    ChangeLibrarian: string
+    Change: string
     CoordinatingRAPLA: string
     CreatedRemarks: string
     CurrentPhase: string
