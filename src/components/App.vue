@@ -9,14 +9,26 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
 import { NotificationItem } from '../interfaces/NotificationItem'
+import { PublicationItem } from '../interfaces/PublicationItem'
 
 const notify = namespace('notify')
 const users = namespace('users')
+const publication = namespace('publication')
 
 @Component
 export default class App extends Vue {
   public userid = 0
   public isVisible = true
+  interval!: any
+
+  @publication.State
+  public allpubsloaded!: boolean
+
+  @publication.State
+  public natopubsloaded!: boolean
+
+  @publication.State
+  public pubsloaded!: boolean
 
   @notify.Action
   public add!: (notification: NotificationItem) => void
@@ -32,6 +44,15 @@ export default class App extends Vue {
 
   @users.Action
   public getTodosByUser!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllNatoPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public createAllPubs!: () => Promise<boolean>
 
   /** @method - lifecycle hook */
   public created(): void {
@@ -85,7 +106,17 @@ export default class App extends Vue {
   }
 
   /** @method - lifecycle hook */
-  // public mounted(): void {}
+  mounted() {
+    this.getAllNatoPublications()
+    this.getAllPublications()
+    this.interval = setInterval(this.waitForIt, 500)
+  }
+
+  public waitForIt() {
+    if (this.pubsloaded && this.natopubsloaded) {
+      this.createAllPubs()
+    }
+  }
 }
 </script>
 
