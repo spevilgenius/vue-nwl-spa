@@ -71,6 +71,23 @@ const pubsMenu = {
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
       props: true
     }
+    
+
+
+  ]
+}
+
+const termsMenu = {
+  path: '/terminology',
+  component: Layout,
+  redirect: '/terminology/home',
+  children: [
+    {
+      path: 'home',
+      name: 'Terminology',
+      component: () => import(/* webpackChunkName: "Terminology" */ '../components/Pages/Terminologycopy2.vue'),
+      props: true
+    }
   ]
 }
 
@@ -80,6 +97,7 @@ const routes = [
     redirect: '/pages/Home'
   },
   pubsMenu,
+  termsMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,
