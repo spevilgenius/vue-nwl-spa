@@ -47,14 +47,14 @@
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">
-                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id)">
+                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
@@ -206,11 +206,10 @@ export default class DynamicTable extends Vue {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
       }
-      // TODO: calculate perPage based on counting the number of rows that will fit in the available space
+      // Calculate perPage based on counting the number of rows that will fit in the available space
       let available = this.contentheight - 130
-      let amount = Math.floor(available / 30) // 30 is based on the height of the rows used by the 'small' attribute on the b-table component
+      let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
-      // format any cells that need it
     }
   }
 
@@ -291,12 +290,18 @@ export default class DynamicTable extends Vue {
     return style
   }
 
-  public viewItem(id: string) {
-    EventBus.$emit('viewItem', id)
+  public viewItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('viewItem', args)
   }
 
-  public editItem(id: string) {
-    EventBus.$emit('editItem', id)
+  public editItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('editItem', args)
   }
 }
 </script>

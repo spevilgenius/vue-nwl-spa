@@ -74,19 +74,19 @@ export default class All extends Vue {
   ]
 
   created() {
-    EventBus.$on('viewItem', id => {
-      this.viewPub(id)
+    EventBus.$on('viewItem', args => {
+      this.viewPub(args)
     })
-    EventBus.$on('editItem', id => {
-      this.editPub(id)
+    EventBus.$on('editItem', args => {
+      this.editPub(args)
     })
   }
 
-  viewPub(id: string) {
-    this.$router.push({ name: 'View Publication', query: { Id: id }, params: { Id: id } })
+  viewPub(args: any) {
+    this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
   }
-  editPub(id: string) {
-    this.$router.push({ name: 'Edit Publication', query: { Id: id }, params: { Id: id } })
+  editPub(args: any) {
+    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
   }
 }
 </script>

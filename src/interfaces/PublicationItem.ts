@@ -3,6 +3,7 @@ interface PublicationItem {
   DocID?: string
   Title: string
   Name?: string
+  IsNato?: string
   RelativeURL?: string
   Availability?: string
   Branch: string
@@ -26,10 +27,7 @@ interface PublicationItem {
   Resourced?: string
   ReviewDate?: string
   StatusComments?: string
-  Replaces: {
-    Link?: string
-    Description?: string
-  }
+  Replaces: string
   Bookshelf?: string
   AdditionalData: {
     AdminComments: string

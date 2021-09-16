@@ -114,6 +114,7 @@ export default class App extends Vue {
 
   public waitForIt() {
     if (this.pubsloaded && this.natopubsloaded) {
+      clearInterval(this.interval)
       this.createAllPubs()
     }
   }

@@ -71,14 +71,15 @@ export default class ViewPub extends Vue {
   public publication!: PublicationItem
 
   @publication.Action
-  public getPublicationById!: (id: string) => Promise<boolean>
+  public getPublicationById!: (id: string, nato: string) => Promise<boolean>
 
   mounted() {
     if (this.$route) {
       let id = this.$route.query.Id
+      let nato = this.$route.query.Nato
       if (id !== null) {
         console.log('TEST B')
-        this.getPublicationById(String(id)).then(response => {
+        this.getPublicationById(String(id), String(nato)).then(response => {
           if (response) {
             this.interval = setInterval(this.waitForIt, 500)
           }
