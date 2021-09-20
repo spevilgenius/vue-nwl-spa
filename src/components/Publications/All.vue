@@ -11,6 +11,8 @@
             buttons: buttons,
             fields: fields,
             items: allpublications,
+            filterField: filterField,
+            filterValue: filterValue,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -45,6 +47,8 @@ export default class All extends Vue {
   overlayVariant = 'danger'
   rowHeight = 0
   pageSize = 20
+  filterField: any
+  filterValue: any
 
   @users.State
   public currentUser!: UserInt
@@ -80,6 +84,14 @@ export default class All extends Vue {
     EventBus.$on('editItem', args => {
       this.editPub(args)
     })
+  }
+
+  /** @method - lifecycle hook */
+  mounted() {
+    if (this.$route) {
+      this.filterField = this.$route.query.Field
+      this.filterValue = this.$route.query.Value
+    }
   }
 
   viewPub(args: any) {

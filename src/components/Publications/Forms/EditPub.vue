@@ -13,13 +13,13 @@
                       <b-row no-gutters>
                         <b-col cols="12">
                           <b-form class="mt-0">
-                            <b-row>
-                              <b-col cols="6" class="text-center text-dark">Title</b-col>
-                              <b-col cols="2" class="text-center text-dark">Branch</b-col>
-                              <b-col cols="2" class="text-center text-dark">Prefix</b-col>
-                              <b-col cols="2" class="text-center text-dark">Pub ID</b-col>
+                            <b-row class="m-1">
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Title</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Branch</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Prefix</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Pub ID</b-col>
                             </b-row>
-                            <b-row class="mb-1">
+                            <b-row class="m-1">
                               <b-col cols="6">
                                 <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
                                 <b-form-invalid-feedback>Please input a title.</b-form-invalid-feedback>
@@ -48,23 +48,23 @@
                                 <b-form-invalid-feedback>Please input a valid Pub ID.</b-form-invalid-feedback>
                               </b-col>
                             </b-row>
-                            <b-row>
-                              <b-col cols="6" class="text-center text-dark">Long Title</b-col>
-                              <b-col cols="6" class="text-center text-dark">Description</b-col>
+                            <b-row class="m-1">
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Long Title</b-col>
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Bookshelf</b-col>
                             </b-row>
-                            <b-row class="mb-1">
+                            <b-row class="m-1">
                               <b-col cols="6">
                                 <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle"></b-form-input>
                               </b-col>
                               <b-col cols="6">
-                                <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea>
+                                <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
                               </b-col>
                             </b-row>
-                            <b-row>
-                              <b-col cols="6" class="text-center text-dark">Functional Series</b-col>
-                              <b-col cols="6" class="text-center text-dark">Functional Field</b-col>
+                            <b-row class="m-1">
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Series</b-col>
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Field</b-col>
                             </b-row>
-                            <b-row class="mb-1">
+                            <b-row class="m-1">
                               <b-col cols="6" class="text-center text-dark">
                                 <b-form-select class="form-control" size="sm" id="ddFunctionalSeries" v-model="publication.AdditionalData.FunctionalSeries" :options="functionalseries" @change="onSeriesSelect"></b-form-select>
                               </b-col>
@@ -72,13 +72,13 @@
                                 <b-form-select class="form-control" size="sm" id="ddFunctionalField" v-model="publication.AdditionalData.FunctionalField" :options="functionalfields"></b-form-select>
                               </b-col>
                             </b-row>
-                            <b-row>
-                              <b-col cols="6" class="text-center text-dark">Bookshelf</b-col>
-                              <b-col cols="6" class="text-center text-dark">Admin Comments</b-col>
+                            <b-row class="m-1">
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Description</b-col>
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Admin Comments</b-col>
                             </b-row>
-                            <b-row>
+                            <b-row class="m-1">
                               <b-col cols="6" class="text-center text-dark">
-                                <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
+                                <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea>
                               </b-col>
                               <b-col cols="6" class="text-center text-dark">
                                 <b-form-textarea class="form-control" rows="8" id="txtAdminComments" v-model="publication.AdditionalData.AdminComments" size="sm" placeholder="Admin Comments"></b-form-textarea>
@@ -94,11 +94,11 @@
                         <b-col cols="12">
                           <b-form class="mt-0">
                             <b-row>
-                              <b-col cols="2" class="text-center text-dark">Edition</b-col>
-                              <b-col cols="3" class="text-center text-dark">Change</b-col>
-                              <b-col cols="2" class="text-center text-dark">Date of Issue</b-col>
-                              <b-col cols="2" class="text-center text-dark">Resourced?</b-col>
-                              <b-col cols="3" class="text-center text-dark">Status</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Edition</b-col>
+                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Change</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Date of Issue</b-col>
+                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Resourced?</b-col>
+                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Status</b-col>
                             </b-row>
                             <b-row class="mb-1">
                               <b-col cols="2">
@@ -114,12 +114,12 @@
                                 <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip.hover.v-dark title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
                               </b-col>
                               <b-col cols="3">
-                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" :state="ValidateMe('Status')" ref="Status" v-b-tooltip.hover.v-dark title="Status of publication. Choices depend on the Branch."></b-form-select>
+                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip.hover.v-dark title="Status of publication. Choices depend on the Branch."></b-form-select>
                               </b-col>
                             </b-row>
                             <b-row>
-                              <b-col cols="6" class="text-center text-dark">Status Comments</b-col>
-                              <b-col cols="6" class="text-center text-dark">Supersedes</b-col>
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Status Comments</b-col>
+                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Supersedes</b-col>
                             </b-row>
                             <b-row class="mb-1">
                               <b-col cols="6">
@@ -136,13 +136,7 @@
                       </b-row>
                     </b-tab>
                     <b-tab class="mtab">
-                      <template slot="title">Security</template>
-                      <b-row no-gutters>
-                        <b-col cols="12"></b-col>
-                      </b-row>
-                    </b-tab>
-                    <b-tab class="mtab">
-                      <template slot="title">Availability</template>
+                      <template slot="title">Security/Availability</template>
                       <b-row no-gutters>
                         <b-col cols="12"></b-col>
                       </b-row>
@@ -240,6 +234,57 @@ export default class EditPub extends Vue {
     { value: 'Joint', text: 'Joint' },
     { value: 'Other', text: 'Other' },
     { value: 'Multinational', text: 'Multinational' }
+  ]
+
+  media = [
+    { value: 'uNDLS', text: 'uNDLS' },
+    { value: 'cNDLS', text: 'cNDLS' },
+    { value: 'CAS', text: 'CAS' },
+    { value: 'NWEL', text: 'NWEL' },
+    { value: 'APEL', text: 'APEL' },
+    { value: 'MPEL', text: 'MPEL' },
+    { value: 'POD', text: 'POD' },
+    { value: 'Print', text: 'Print' },
+    { value: 'Other', text: 'Other' }
+  ]
+
+  classifications = [
+    { value: 'Unclassified,U', text: 'Unclassified' },
+    { value: 'Controlled Unclassified Information,CUI', text: 'Controlled Unclassified Information' },
+    { value: 'Secret,S', text: 'Secret' },
+    { value: 'Confidential,C', text: 'Confidential' },
+    { value: 'NATO Standard,NN', text: 'NATO Standard' },
+    { value: 'NATO Unclassified,NU', text: 'NATO Unclassified' },
+    { value: 'NATO Confidential,NC', text: 'NATO Confidential' },
+    { value: 'NATO Restricted,NR', text: 'NATO Restricted' }
+  ]
+
+  disseminations = [
+    { value: 'Authorized For Release To,REL TO', text: 'Authorized For Release To' },
+    { value: 'Controlled Unclassified Information,CUI', text: 'Controlled Unclassified Information' },
+    { value: 'For Official Use Only,FOUO', text: 'For Official Use Only' },
+    { value: 'Limited Distribution,LIMDIS', text: 'Limited Distribution' },
+    { value: 'Not Applicable,N/A', text: 'Not Applicable' },
+    { value: 'Not Releasable to Foreign Nationals,NOFORN', text: 'Not Releasable to Foreign Nationals' },
+    { value: 'Originator Controlled Information,ORCON', text: 'Originator Controlled Information' }
+  ]
+
+  dtic = [
+    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'A - Approved for public release', text: 'A - Approved for public release' },
+    { value: 'B - U.S. Government only', text: 'B - U.S. Government only' },
+    { value: 'C - U.S. Government and contractors', text: 'C - U.S. Government and contractors' },
+    { value: 'D - DOD and DOD contractors', text: 'D - DOD and DOD contractors' },
+    { value: 'E - DOD only', text: 'E - DOD only' },
+    { value: 'F - Only as directed by originator', text: 'F - Only as directed by originator' }
+  ]
+
+  availability = [
+    { value: 'N/A', text: 'N/A' },
+    { value: 'Posted on SIPRNET only', text: 'Posted on SIPRNET only' },
+    { value: 'Posted to URL below', text: 'Posted to URL below' },
+    { value: 'Contact originator to obtain', text: 'Contact originator to obtain' },
+    { value: 'Available in print or CD-ROM only', text: 'Available in print or CD-ROM only' }
   ]
 
   mounted() {

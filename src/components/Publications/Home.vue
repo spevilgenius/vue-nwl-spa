@@ -17,7 +17,7 @@ export default class Publications extends Vue {
       this.$router.push({ name: 'Whats New' })
     }
     if (this.mode == 'refreshnavy') {
-      this.$router.push({ name: 'Navy' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Navy' } })
     }
     if (this.mode == 'refreshallied') {
       this.$router.push({ name: 'Allied' })

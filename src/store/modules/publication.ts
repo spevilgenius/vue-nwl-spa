@@ -473,8 +473,8 @@ class Publication extends VuexModule {
         // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
-            value: j[i]['Title'],
-            text: j[i]['Title']
+            value: j[i]['funcField'],
+            text: j[i]['funcField']
           })
         }
         that.context.commit('createFunctionalField', p)
