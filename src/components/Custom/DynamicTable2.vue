@@ -59,7 +59,7 @@
                       <b-th><b-form-input class="form-control" size="sm" v-model="Title" @input="onTitleSelected"></b-form-input></b-th>
                       <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
                       <b-th></b-th>
-                      <b-th><b-form-input class="form-control .p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
+                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">

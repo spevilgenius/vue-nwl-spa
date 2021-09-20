@@ -3,7 +3,7 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
-          v-if="allpubsloaded"
+          v-if="viewReady"
           :user="currentUser"
           :table="{
             id: tblId,
@@ -49,6 +49,8 @@ export default class All extends Vue {
   pageSize = 20
   filterField: any
   filterValue: any
+  interval!: any
+  viewReady?: boolean = false
 
   @users.State
   public currentUser!: UserInt
@@ -90,8 +92,20 @@ export default class All extends Vue {
   /** @method - lifecycle hook */
   mounted() {
     if (this.$route) {
+      console.log('filterField=' + this.filterField)
+      console.log('filterValue=' + this.filterValue)
       this.filterField = this.$route.query.Field
       this.filterValue = this.$route.query.Value
+      this.interval = setInterval(this.waitForIt, 500)
+    }
+  }
+
+  public waitForIt() {
+    if (this.filterField !== '' || (null && this.filterValue !== '') || null) {
+      clearInterval(this.interval)
+      this.viewReady = true
+      console.log('filterField2=' + this.filterField)
+      console.log('filterValue2=' + this.filterValue)
     }
   }
 

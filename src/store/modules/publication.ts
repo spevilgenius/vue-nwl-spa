@@ -180,7 +180,7 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllPubs(url)
       } else {
-        console.log('getAllPublications Response: ' + j)
+        //console.log('getAllPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
@@ -246,7 +246,7 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllNatoPubs(url)
       } else {
-        console.log('getAllNatoPublications Response: ' + j)
+        //console.log('getAllNatoPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             Id: j[i]['Id'],
