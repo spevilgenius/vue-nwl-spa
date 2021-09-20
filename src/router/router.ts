@@ -48,6 +48,12 @@ const pubsMenu = {
       props: true
     },
     {
+      path: 'page/other',
+      name: 'Other Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Other.vue'),
+      props: true
+    },
+    {
       path: 'page/all',
       name: 'All Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),

@@ -57,20 +57,21 @@ export default class All extends Vue {
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], tdClass: 'px60 text-nowrap', id: 0 },
-    { key: 'Branch', label: 'Branch', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 20 },
-    { key: 'Prfx', label: 'Prefix', type: 'default', format: 'text', tdClass: 'px70 text-nowrap', id: 1 },
-    { key: 'PubID', label: 'PubID', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 2 },
+    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 20 },
+    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', tdClass: 'px70 text-nowrap', id: 1 },
+    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 2 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', tdClass: 'px200', id: 3 }, */
-    { key: 'Title', label: 'Title', type: 'default', format: 'text', tdClass: 'px500 text-nowrap', id: 3 },
+    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', tdClass: 'px500 text-nowrap', id: 3 },
     /* { key: 'Name', label: 'Name', type: 'default', format: 'text', id: 3 }, */
     /* { key: 'AdditionalData.Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 4 },
     { key: 'Modified', label: 'Modified', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 5 }, */
-    { key: 'Bookshelf', label: 'Bookshelf', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 11 },
-    { key: 'Resourced', label: 'Resourced', type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 6 },
-    { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 7 },
+    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 11 },
+    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', tdClass: 'px80 text-nowrap', id: 6 },
+    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 12 },
+    /* { key: 'DTIC', label: 'DTIC', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 7 }, */
     /* { key: 'Status', label: 'Status', type: 'default', format: 'text', tdClass: 'px100 text-nowrap', id: 8 }, */
     /* { key: 'NWDCAO.Title', label: 'NWDCAO', type: 'default', format: 'text', tdClass: 'px200 text-nowrap', id: 9 }, */
-    { key: 'Class', label: 'Classification', type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 10 }
+    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', tdClass: 'px150 text-nowrap', id: 10 }
   ]
 
   created() {
