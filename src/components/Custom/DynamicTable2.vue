@@ -27,7 +27,23 @@
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
+                <b-table
+                  striped
+                  hover
+                  :items="filtereditems"
+                  :fields="table.fields"
+                  primary-key="table.primarykey"
+                  :filter="filter"
+                  :filter-included-fields="filterOn"
+                  :sort-by.sync="sortBy"
+                  :sort-desc.sync="sortDesc"
+                  :per-page="perPage"
+                  :current-page="currentPage"
+                  table-class="table-full"
+                  :style="getStyle('maintable', null)"
+                  table-variant="light"
+                  @filtered="onFiltered"
+                >
                   <template #thead-top="">
                     <b-tr>
                       <b-th>Filters</b-th>
@@ -43,7 +59,7 @@
                       <b-th><b-form-input class="form-control" size="sm" v-model="Title" @input="onTitleSelected"></b-form-input></b-th>
                       <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
                       <b-th></b-th>
-                      <b-th>Placeholder</b-th>
+                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">
@@ -148,6 +164,7 @@ export default class DynamicTable extends Vue {
   Prfx!: any
   PubID!: any
   Title!: any
+  PRAAbbrev!: any
   Bookshelf!: any
 
   @users.State
@@ -239,6 +256,13 @@ export default class DynamicTable extends Vue {
     }
   }
 
+  public onPRAAbbrevSelected() {
+    if (this.PRAAbbrev !== null && this.PRAAbbrev !== '') {
+      this.filter = this.PRAAbbrev
+      this.filterOn = ['AdditionalData.PRAAbbrev']
+    }
+  }
+
   public onTitleSelected() {
     if (this.Title !== null && this.Title !== '') {
       this.filter = this.Title
@@ -276,6 +300,10 @@ export default class DynamicTable extends Vue {
         style.height = '50px'
         style.width = that.contentwidth + 'px'
         break
+
+      /* case 'maintable':
+        style.width = that.contentwidth - 5 + 'px'
+        break */
 
       case 'tablerow':
         style.height = that.contentheight - 100 + 'px'

@@ -28,6 +28,9 @@ export default class Publications extends Vue {
     if (this.mode == 'refreshmulti') {
       this.$router.push({ name: 'MultiNational' })
     }
+    if (this.mode == 'refreshother') {
+      this.$router.push({ name: 'Other' })
+    }
     if (this.mode == 'refreshall') {
       this.$router.push({ name: 'All Publications' })
     }
