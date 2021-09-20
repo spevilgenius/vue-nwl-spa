@@ -107,6 +107,7 @@ class Publication extends VuexModule {
   public statuses: Array<ObjectItem> = []
   public functionalseries: Array<ObjectItem> = []
   public functionalfields: Array<ObjectItem> = []
+  public relto: Array<ObjectItem> = []
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -114,6 +115,7 @@ class Publication extends VuexModule {
   statusUrl = "/_api/lists/getbytitle('lu_status')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalfieldsUrl = "/_api/lists/getbytitle('lu_librarytree')/items?$select=*,funcSeries/Title&$expand=funcSeries&$filter=(funcSeries/Title eq '"
+  reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -161,6 +163,11 @@ class Publication extends VuexModule {
   @Mutation
   public createFunctionalField(items: Array<ObjectItem>): void {
     this.functionalfields = items
+  }
+
+  @Mutation
+  public createRelto(items: Array<ObjectItem>): void {
+    this.relto = items
   }
 
   @Action
@@ -485,6 +492,40 @@ class Publication extends VuexModule {
     turl += "')"
     console.log('getFunctionalFieldByFunctionalSeries URL: ' + turl)
     getAllStatuses(turl)
+    return true
+  }
+
+  @Action
+  public async getRelto(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllRelto(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllRelto(url)
+      } else {
+        console.log('getAllPublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            value: j[i]['Title'],
+            text: j[i]['Title']
+          })
+        }
+        that.context.commit('createRelto', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.reltoUrl
+    // console.log('getAllPublications URL: ' + turl)
+    getAllRelto(turl)
     return true
   }
 
