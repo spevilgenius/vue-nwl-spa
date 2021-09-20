@@ -9,7 +9,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
 import { NotificationItem } from '../interfaces/NotificationItem'
-import { PublicationItem } from '../interfaces/PublicationItem'
 
 const notify = namespace('notify')
 const users = namespace('users')
