@@ -71,23 +71,25 @@ let additionalData: any = {
 
 function isJson(item) {
   item = typeof item !== 'string' ? JSON.stringify(item) : item
-
   try {
     item = JSON.parse(item)
   } catch (e) {
     return false
   }
-
   if (typeof item === 'object' && item !== null) {
     return true
   }
-
   return false
 }
 
 function FormatAD(ad: any, id: any, nato: any): any {
   if (isJson(ad)) {
-    return JSON.parse(ad)
+    ad = JSON.parse(ad)
+    // fixup some elements that are stored as strings
+    if (ad.RELTO && ad.RELTO.length > 0) {
+      console.log(id + ' has RELTO: ' + ad.RELTO)
+    }
+    return ad
   } else {
     console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
     return JSON.parse(additionalData)
@@ -506,14 +508,14 @@ class Publication extends VuexModule {
           accept: 'application/json;odata=verbose'
         }
       })
-      console.log('getAllRelto Initial Response: ' + response)
+      // console.log('getAllRelto Initial Response: ' + response)
       j = j.concat(response.data.d.results)
       // recursively load items if there is a next result
       if (response.data.d.__next) {
         url = response.data.d.__next
         return getAllRelto(url)
       } else {
-        console.log('getAllRelto Response: ' + j)
+        // console.log('getAllRelto Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],

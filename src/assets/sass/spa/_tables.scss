@@ -3,7 +3,7 @@
 //
 
 .table {
-  width: 100%;
+  /* width: 100%; */
   margin-bottom: $spacer;
   color: $table-color;
   background-color: $table-bg; // Reset for nesting within parents with `background-color`.
@@ -25,7 +25,6 @@
   }
 }
 
-
 //
 // Condensed table w/ half padding
 //
@@ -36,7 +35,6 @@
     padding: $table-cell-padding-sm;
   }
 }
-
 
 // Border versions
 //
@@ -76,7 +74,6 @@
     background-color: $table-accent-bg;
   }
 }
-
 
 // Hover effect
 //

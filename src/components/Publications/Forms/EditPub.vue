@@ -2,6 +2,37 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
+        <b-modal :id="modal_relto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light">
+          <template v-slot:modal-title>Select Rel To}}</template>
+          <b-container class="p-0">
+            <b-row>
+              <b-col cols="12">
+                <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
+                  <b-input-group size="sm">
+                    <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
+                    <b-input-group-append>
+                      <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
+                    </b-input-group-append>
+                  </b-input-group>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12">
+                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+                  <template #cell(actions)="row">
+                    <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12">
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
+              </b-col>
+            </b-row>
+          </b-container>
+        </b-modal>
         <b-overlay :show="!formReady" :variant="success" class="contentHeight">
           <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
             <b-row no-gutters>
@@ -148,29 +179,18 @@
                             </b-row>
                             <b-row no-gutters>
                               <b-col cols="3">
-                                <b-form-select class="form-control" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
+                                <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
                               </b-col>
                               <b-col cols="3">
-                                <b-form-select class="form-control" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
+                                <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
                               </b-col>
                               <b-col cols="3">
                                 <b-input-group>
-                                  <b-form-input placeholder="Search"></b-form-input>
+                                  <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                   <template #append>
-                                    <b-dropdown text="" variant="success" right ref="dropRelto">
-                                      <b-dropdown-form>
-                                        <!-- <b-table-simple table-variant="light" table-class="table-full" :bordered="bordered" :hover="hover">
-                                          <b-tbody>
-                                            <b-tr v-for="item in relto" :key="item" class="text-black">
-                                              <b-td>
-                                                <b-form-checkbox :value="item.value" @input.native="toggleRelto(item, $event)">{{ item.text }}</b-form-checkbox>
-                                              </b-td>
-                                            </b-tr>
-                                          </b-tbody>
-                                        </b-table-simple> -->
-                                        <b-form-checkbox-group id="cbgRelto" v-model="reltos" :options="relto" name="relto"></b-form-checkbox-group>
-                                      </b-dropdown-form>
-                                    </b-dropdown>
+                                    <b-button variant="blue-700" @click="onReltoSearch()" v-b-tooltip.hover.v-dark title="Select Rel Tos">
+                                      <font-awesome-icon :icon="['far', 'search']" class="icon"></font-awesome-icon>
+                                    </b-button>
                                   </template>
                                 </b-input-group>
                               </b-col>
@@ -223,7 +243,16 @@ export default class EditPub extends Vue {
   interval!: any
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
+  reltofilter = ''
+  reltodata!: any
+  currentPage = 0
+  perPage = 50
   formReady = false
+
+  reltofields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'value', label: 'RELTO', sortable: true }
+  ]
 
   @users.State
   public currentUser!: UserInt
@@ -379,6 +408,22 @@ export default class EditPub extends Vue {
       }
       this.formReady = true
     }
+  }
+
+  public onReltoSearch() {
+    this.$bvModal.show('modal_relto')
+  }
+
+  public getStyle(element) {
+    let style: any = {}
+    switch (element) {
+      case 'bdd':
+        style.background = '#ffffff'
+        style.height = '300px'
+        style.overflow = 'auto'
+        break
+    }
+    return style
   }
 
   public ValidateMe(control: string) {
