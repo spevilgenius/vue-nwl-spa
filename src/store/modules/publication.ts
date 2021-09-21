@@ -87,10 +87,10 @@ function isJson(item) {
 
 function FormatAD(ad: any, id: any, nato: any): any {
   if (isJson(ad)) {
-    return ad
+    return JSON.parse(ad)
   } else {
     console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
-    return additionalData
+    return JSON.parse(additionalData)
   }
 }
 @Module({ namespaced: true })
@@ -506,15 +506,15 @@ class Publication extends VuexModule {
           accept: 'application/json;odata=verbose'
         }
       })
+      console.log('getAllRelto Initial Response: ' + response)
       j = j.concat(response.data.d.results)
       // recursively load items if there is a next result
       if (response.data.d.__next) {
         url = response.data.d.__next
         return getAllRelto(url)
       } else {
-        console.log('getAllPublications Response: ' + j)
+        console.log('getAllRelto Response: ' + j)
         for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
             value: j[i]['Title'],
             text: j[i]['Title']
@@ -524,7 +524,7 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.reltoUrl
-    // console.log('getAllPublications URL: ' + turl)
+    console.log('getAllPublications URL: ' + turl)
     getAllRelto(turl)
     return true
   }

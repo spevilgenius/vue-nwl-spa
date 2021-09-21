@@ -151,18 +151,24 @@
                                 <b-form-select class="form-control" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
                               </b-col>
                               <b-col cols="3">
+                                <b-form-select class="form-control" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
+                              </b-col>
+                              <b-col cols="3">
                                 <b-input-group>
                                   <b-form-input placeholder="Search"></b-form-input>
                                   <template #append>
-                                    <b-dropdown text="" variant="success" right ref="dropDissemination">
+                                    <b-dropdown text="" variant="success" right ref="dropRelto">
                                       <b-dropdown-form>
-                                        <b-table-simple table-variant="light" table-class="table-full" :bordered="bordered" :hover="hover">
+                                        <!-- <b-table-simple table-variant="light" table-class="table-full" :bordered="bordered" :hover="hover">
                                           <b-tbody>
-                                            <b-td v-for="item in relto" :key="item" class="text-black">
-                                              <b-form-checkbox :value="item.value" @input.native="toggleDiss(item, $event)">{{ item.text }}</b-form-checkbox>
-                                            </b-td>
+                                            <b-tr v-for="item in relto" :key="item" class="text-black">
+                                              <b-td>
+                                                <b-form-checkbox :value="item.value" @input.native="toggleRelto(item, $event)">{{ item.text }}</b-form-checkbox>
+                                              </b-td>
+                                            </b-tr>
                                           </b-tbody>
-                                        </b-table-simple>
+                                        </b-table-simple> -->
+                                        <b-form-checkbox-group id="cbgRelto" v-model="reltos" :options="relto" name="relto"></b-form-checkbox-group>
                                       </b-dropdown-form>
                                     </b-dropdown>
                                   </template>
@@ -249,7 +255,7 @@ export default class EditPub extends Vue {
   @support.Action
   public getBS!: () => Promise<boolean>
 
-  @support.Action
+  @publication.Action
   public getRelto!: () => Promise<boolean>
 
   @publication.Action
@@ -327,6 +333,8 @@ export default class EditPub extends Vue {
     { value: 'Available in print or CD-ROM only', text: 'Available in print or CD-ROM only' }
   ]
 
+  reltos = []
+
   mounted() {
     if (this.$route) {
       let id = this.$route.query.Id
@@ -348,7 +356,6 @@ export default class EditPub extends Vue {
     if (this.publoaded) {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
-      this.getRelto()
       let ad = this.publication.AdditionalData
       // is the branch available to get the prefixes
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
@@ -358,7 +365,11 @@ export default class EditPub extends Vue {
               if (response) {
                 this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(response => {
                   if (response) {
-                    this.getBS()
+                    this.getRelto().then(response => {
+                      if (response) {
+                        this.getBS()
+                      }
+                    })
                   }
                 })
               }
