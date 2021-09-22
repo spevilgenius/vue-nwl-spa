@@ -15,10 +15,10 @@
                   <b-card no-body class="p-1">
                     <b-row no-gutters>
                       <b-row align="center">
-                        <!--<b-col md="2">
-                        <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                      </b-col>-->
-                        <b-col md="10" class="p-1">
+                        <b-col md="2">
+                          <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                        </b-col>
+                        <b-col md="10" class="p-1" align="center">
                           <b-card-sub-title>The DOD Dictionary of Military and Associated Terms</b-card-sub-title>
                           <b-card-title>
                             <a href="https://jdeis.js.mil/jdeis/new_pubs/dictionary.pdf">DOD Dictionary</a>
@@ -41,9 +41,9 @@
                   <b-card no-body class="p-1">
                     <b-row no-gutters>
                       <b-row align="center">
-                        <!--<b-col md="2">
-                        <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                      </b-col>-->
+                        <b-col md="2">
+                          <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                        </b-col>
                         <b-col md="10" class="p-1">
                           <b-card-sub-title>Navy Supplement to the DOD Dictionary of Military and Associated Terms</b-card-sub-title>
                           <b-card-title>
@@ -67,9 +67,9 @@
                   <b-card no-body class="p-1">
                     <b-row no-gutters>
                       <b-row align="center">
-                        <!--<b-col md="2">
-                        <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                      </b-col>-->
+                        <b-col md="2">
+                          <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                        </b-col>
                         <b-col md="10" class="p-1">
                           <b-card-sub-title>Marine Corps Supplement to the DOD Dictionary of Military and Associated Terms</b-card-sub-title>
                           <b-card-title>
@@ -93,9 +93,9 @@
                   <b-card no-body class="p-1">
                     <b-row no-gutters>
                       <b-row align="center">
-                        <!--<b-col md="2">
-                        <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                      </b-col>-->
+                        <b-col md="2">
+                          <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                        </b-col>
                         <b-col md="10" class="p-1">
                           <b-card-sub-title>Joint Doctrine, Education & Training Electronic Information System (JDEIS) Terminology Program</b-card-sub-title>
                           <b-card-title>
