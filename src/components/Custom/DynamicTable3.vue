@@ -6,72 +6,23 @@
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="8" class="mt-1 p-0">
-                <b-container fluid class="m-0 p-0">
-                  <b-row no-gutters>
-                    <b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select>
-                    <b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"></b-form-select>
-                  </b-row>
-                </b-container>
+              <b-col cols="8" class="float-left">
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
               </b-col>
               <b-col cols="4" class="mt-1 pr-3">
-                <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
                 <b-input-group class="float-right">
                   <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
                   <b-input-group-append>
                     <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
                   </b-input-group-append>
                 </b-input-group>
-                <!-- </b-form> -->
               </b-col>
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
                 <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
-                  <template #thead-top="">
-                    <b-tr>
-                      <b-th>Filters</b-th>
-                      <b-th>
-                        <b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select>
-                      </b-th>
-                      <b-th>
-                        <b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix">
-                          <template #first>
-                            <b-form-select-option value="" disabled>Select Branch</b-form-select-option>
-                          </template>
-                        </b-form-select>
-                      </b-th>
-                      <b-th><b-form-input class="form-control" size="sm" v-model="PubID" @input="onPubIDSelected"></b-form-input></b-th>
-                      <b-th><b-form-input class="form-control" size="sm" v-model="Title" @input="onTitleSelected"></b-form-input></b-th>
-                      <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
-                      <b-th></b-th>
-                      <b-th>Placeholder</b-th>
-                    </b-tr>
-                  </template>
-                  <template #cell(actions)="data">
-                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id, data.item.IsNato)">
-                      <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
-                      <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
-                    </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id, data.item.IsNato)">
-                      <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
-                    </b-button>
-                  </template>
-                  <template #cell()="data">
-                    <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
-                    <!-- <div v-if="data.field.key === 'actions'">
-                      <component v-for="comp in data.item.ActionButtons" :key="comp.id" :is="comp.component" v-bind="comp.props"></component>
-                    </div> -->
-                  </template>
+                  <template #thead-top=""> </template>
                 </b-table>
-              </b-col>
-            </b-row>
-            <b-row no-gutters :style="getStyle('pagingrow', null)">
-              <b-col cols="12">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
               </b-col>
             </b-row>
           </b-container>
@@ -87,9 +38,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-inferrable-types */
-/* eslint-disable vue/no-unused-vars */
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'

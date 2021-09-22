@@ -71,9 +71,6 @@ const pubsMenu = {
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
       props: true
     }
-    
-
-
   ]
 }
 
