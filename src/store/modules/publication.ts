@@ -69,6 +69,8 @@ let additionalData: any = {
   Update: ''
 }
 
+let filetype: any
+
 function isJson(item) {
   item = typeof item !== 'string' ? JSON.stringify(item) : item
   try {
@@ -110,6 +112,11 @@ class Publication extends VuexModule {
   public functionalseries: Array<ObjectItem> = []
   public functionalfields: Array<ObjectItem> = []
   public relto: Array<ObjectItem> = []
+  public pubBlob?: Blob
+  public blobloaded?: boolean = false
+  public pubBuffer?: ArrayBuffer
+  public bufferloaded?: boolean = false
+  public filetype?: any
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -118,6 +125,7 @@ class Publication extends VuexModule {
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalfieldsUrl = "/_api/lists/getbytitle('lu_librarytree')/items?$select=*,funcSeries/Title&$expand=funcSeries&$filter=(funcSeries/Title eq '"
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
+  getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -170,6 +178,28 @@ class Publication extends VuexModule {
   @Mutation
   public createRelto(items: Array<ObjectItem>): void {
     this.relto = items
+  }
+
+  @Mutation
+  public createBlob(b: Blob): void {
+    this.pubBlob = b
+    this.blobloaded = true
+  }
+
+  @Mutation
+  public setblobloaded(loaded: boolean) {
+    this.blobloaded = loaded
+  }
+
+  @Mutation
+  public createBuffer(b: ArrayBuffer): void {
+    this.pubBuffer = b
+    this.bufferloaded = true
+  }
+
+  @Mutation
+  public setbufferloaded(loaded: boolean) {
+    this.bufferloaded = loaded
   }
 
   @Action
@@ -528,6 +558,37 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.reltoUrl
     console.log('getAllPublications URL: ' + turl)
     getAllRelto(turl)
+    return true
+  }
+
+  @Action
+  public async getBinaryFile(url: string): Promise<boolean> {
+    this.context.commit('setbufferloaded', false)
+    /* let blob = new Blob()
+    if (String(url).indexOf('.pdf') > 0) {
+      filetype = 'PDF'
+    }
+    if (String(url).indexOf('.doc') > 0) {
+      filetype = 'WORD'
+    }
+    console.log('FILETYPE: ' + filetype) */
+    let turl = tp1 + slash + slash + tp2 + this.getfileUrl
+    turl += url
+    turl += "')/OpenBinaryStream"
+    console.log('getBinaryFile URL: ' + turl)
+    const response = await axios.get(turl, {
+      headers: {
+        responseType: 'arraybuffer'
+      }
+    })
+    let buff = new ArrayBuffer(response.data)
+    /* if (this.filetype === 'PDF') {
+      blob = new Blob([buff], { type: 'application/pdf' })
+    }
+    if (this.filetype === 'WORD') {
+      blob = new Blob([buff], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+    } */
+    this.context.commit('createBuffer', buff)
     return true
   }
 
