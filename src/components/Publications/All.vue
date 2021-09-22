@@ -82,7 +82,8 @@ export default class All extends Vue {
     { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', id: 11 },
     { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', id: 6 },
     { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', id: 10 }
+    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', id: 10 },
+    { key: 'AdditionalData.FunctionalSeries', label: 'Functional Series', sortable: true, type: 'default', format: 'text', id: 10 }
   ]
 
   created() {
@@ -95,6 +96,7 @@ export default class All extends Vue {
   }
 
   /** @method - lifecycle hook */
+
   mounted() {
     if (this.$route) {
       console.log('filterField=' + this.filterField)

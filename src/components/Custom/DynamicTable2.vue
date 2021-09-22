@@ -54,6 +54,7 @@
                       <b-th></b-th>
                       <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
                       <b-th></b-th>
+                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="FunctionalSeries" @input="onFunctionalSeriesSelected"></b-form-input></b-th>
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">
@@ -163,6 +164,7 @@ export default class DynamicTable extends Vue {
   Title!: any
   PRAAbbrev!: any
   Bookshelf!: any
+  FunctionalSeries!: any
 
   @users.State
   public currentUser!: UserInt
@@ -257,6 +259,13 @@ export default class DynamicTable extends Vue {
     if (this.PRAAbbrev !== null && this.PRAAbbrev !== '') {
       this.filter = this.PRAAbbrev
       this.filterOn = ['AdditionalData.PRAAbbrev']
+    }
+  }
+
+  public onFunctionalSeriesSelected() {
+    if (this.FunctionalSeries !== null && this.FunctionalSeries !== '') {
+      this.filter = this.FunctionalSeries
+      this.filterOn = ['AdditionalData.FunctionalSeries']
     }
   }
 
