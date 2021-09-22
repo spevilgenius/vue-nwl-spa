@@ -70,8 +70,17 @@ export default class ViewPub extends Vue {
   @publication.State
   public publication!: PublicationItem
 
+  @publication.State
+  public blobloaded!: boolean
+
+  @publication.State
+  public pubBlob!: Blob
+
   @publication.Action
   public getPublicationById!: (id: string, nato: string) => Promise<boolean>
+
+  @publication.Action
+  public getBinaryFile!: (url: string) => Promise<boolean>
 
   mounted() {
     if (this.$route) {
@@ -104,14 +113,42 @@ export default class ViewPub extends Vue {
       img.src = src
       document.getElementById('PRAIcon')?.appendChild(img)
       // TODO: set frame to document url
+      const that = this
+      this.getBinaryFile(String(this.publication.RelativeURL)).then(response => {
+        if (response) {
+          this.interval = setInterval(this.waitForFile, 500)
+        }
+      })
+    }
+  }
+
+  public waitForFile() {
+    if (this.blobloaded) {
+      clearInterval(this.interval)
+      console.log('waitForFile blobloaded')
+      let link = window.URL.createObjectURL(this.pubBlob)
       let iframe = document.createElement('iframe')
       iframe.style.width = '100%'
       iframe.style.height = '100%'
-      iframe.id = 'PublicationFrame'
-      iframe.src = this.publication.RelativeURL + '?isDlg=1'
+      iframe.id = 'TripReportFrame'
+      iframe.src = link
       document.getElementById('FrameColumn')?.appendChild(iframe)
     }
   }
+
+  /* public getFileBuffer(file) {
+    let p = new Promise(function(resolve, reject) {
+      var reader = new FileReader()
+      reader.onloadend = function(e) {
+        resolve(e?.target?.result)
+      }
+      reader.onerror = function(e) {
+        reject(e?.target?.error)
+      }
+      reader.readAsArrayBuffer(file)
+    })
+    return p
+  } */
 }
 </script>
 

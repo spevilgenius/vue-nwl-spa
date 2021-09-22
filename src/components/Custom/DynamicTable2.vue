@@ -6,14 +6,7 @@
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="8" class="mt-1 p-0">
-                <!-- <b-container fluid class="m-0 p-0">
-                  <b-row no-gutters>
-                    <b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select>
-                    <b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"></b-form-select>
-                  </b-row>
-                </b-container> -->
-              </b-col>
+              <b-col cols="8" class="mt-1 p-0"></b-col>
               <b-col cols="4" class="mt-1 pr-3">
                 <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
                 <b-input-group class="float-right">
@@ -60,6 +53,8 @@
                       <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
                       <b-th></b-th>
                       <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
+                      <b-th></b-th>
+                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="FunctionalSeries" @input="onFunctionalSeriesSelected"></b-form-input></b-th>
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">
@@ -73,6 +68,9 @@
                     <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
+                  </template>
+                  <template #cell(Title)="data">
+                    <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
@@ -166,6 +164,7 @@ export default class DynamicTable extends Vue {
   Title!: any
   PRAAbbrev!: any
   Bookshelf!: any
+  FunctionalSeries!: any
 
   @users.State
   public currentUser!: UserInt
@@ -263,6 +262,13 @@ export default class DynamicTable extends Vue {
     }
   }
 
+  public onFunctionalSeriesSelected() {
+    if (this.FunctionalSeries !== null && this.FunctionalSeries !== '') {
+      this.filter = this.FunctionalSeries
+      this.filterOn = ['AdditionalData.FunctionalSeries']
+    }
+  }
+
   public onTitleSelected() {
     if (this.Title !== null && this.Title !== '') {
       this.filter = this.Title
@@ -301,9 +307,9 @@ export default class DynamicTable extends Vue {
         style.width = that.contentwidth + 'px'
         break
 
-      /* case 'maintable':
+      case 'maintable':
         style.width = that.contentwidth - 5 + 'px'
-        break */
+        break
 
       case 'tablerow':
         style.height = that.contentheight - 100 + 'px'
@@ -335,11 +341,19 @@ export default class DynamicTable extends Vue {
 </script>
 
 <style lang="scss">
-.table-full,
+.table-full {
+  border: 1px solid #000000 !important;
+}
 .table-full td,
 .table-full th {
   border: 1px solid #000000 !important;
-  height: 20px;
+  height: 20px !important;
   padding: 2px 5px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pubtitle {
+  max-width: 500px;
 }
 </style>

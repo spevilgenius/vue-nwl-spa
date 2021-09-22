@@ -20,16 +20,16 @@ export default class Publications extends Vue {
       this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Navy' } })
     }
     if (this.mode == 'refreshallied') {
-      this.$router.push({ name: 'Allied' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Allied' } })
     }
     if (this.mode == 'refreshjoint') {
-      this.$router.push({ name: 'Joint' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Joint' } })
     }
     if (this.mode == 'refreshmulti') {
-      this.$router.push({ name: 'MultiNational' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'MultiNational' } })
     }
     if (this.mode == 'refreshother') {
-      this.$router.push({ name: 'Other' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Other' } })
     }
     if (this.mode == 'refreshall') {
       this.$router.push({ name: 'All Publications' })
