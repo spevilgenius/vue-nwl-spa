@@ -111,6 +111,13 @@ class Sidebar extends VuexModule {
         },
         {
           id: 106,
+          name: 'Other Publications',
+          path: '/pubs/home/refreshother',
+          library: 'fas',
+          icon: 'user-tie'
+        },
+        {
+          id: 107,
           name: 'All Publications',
           path: '/pubs/home/refreshall',
           library: 'fas',

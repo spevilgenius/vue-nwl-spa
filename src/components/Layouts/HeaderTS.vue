@@ -37,25 +37,25 @@
                 <span>Edit page</span>
               </div>
             </b-dropdown-item>
-            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/sites/f3I2/_layouts/addanapp.aspx');">
+            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/_layouts/15/addanapp.aspx');">
               <div class="row">
                 <font-awesome-icon far icon="plus-square" class="icon"></font-awesome-icon>
                 <span>Add an app</span>
               </div>
             </b-dropdown-item>
-            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/sites/f3i2/_layouts/15/DesignSite.aspx');">
+            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/_layouts/15/DesignSite.aspx');">
               <div class="row">
                 <font-awesome-icon fas icon="pencil-alt" class="icon"></font-awesome-icon>
                 <span>Design Manager</span>
               </div>
             </b-dropdown-item>
-            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/sites/f3I2/_layouts/viewlsts.aspx');">
+            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/_layouts/15/viewlsts.aspx');">
               <div class="row">
                 <font-awesome-icon fas icon="box-open" class="icon"></font-awesome-icon>
                 <span>Site contents</span>
               </div>
             </b-dropdown-item>
-            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/sites/f3I2/_layouts/settings.aspx');">
+            <b-dropdown-item v-if="isDeveloper" href="#" onclick="STSNavigate2(event,'/_layouts/15/settings.aspx');">
               <div class="row">
                 <font-awesome-icon fas icon="cogs" class="icon"></font-awesome-icon>
                 <span>Site settings</span>
@@ -67,7 +67,7 @@
                 <span>Show Activity Log</span>
               </div>
             </b-dropdown-item> -->
-            <b-dropdown-item href="#" onclick="STSNavigate2(event,'/sites/f3i2/_layouts/15/SignOut.aspx');">
+            <b-dropdown-item href="#" onclick="STSNavigate2(event,'/_layouts/15/SignOut.aspx');">
               <div class="row">
                 <font-awesome-icon fas icon="sign-out-alt" class="icon"></font-awesome-icon>
                 <span>Logout</span>

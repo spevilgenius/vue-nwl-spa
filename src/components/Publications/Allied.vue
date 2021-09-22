@@ -11,8 +11,8 @@
             buttons: buttons,
             fields: fields,
             items: allpublications,
-            filterField: 'Branch',
-            filterValue: 'Allied',
+            filterOn: 'Branch',
+            filter: 'Allied',
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"

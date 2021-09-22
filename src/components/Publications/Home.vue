@@ -17,7 +17,7 @@ export default class Publications extends Vue {
       this.$router.push({ name: 'Whats New' })
     }
     if (this.mode == 'refreshnavy') {
-      this.$router.push({ name: 'Navy' })
+      this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Navy' } })
     }
     if (this.mode == 'refreshallied') {
       this.$router.push({ name: 'Allied' })
@@ -27,6 +27,9 @@ export default class Publications extends Vue {
     }
     if (this.mode == 'refreshmulti') {
       this.$router.push({ name: 'MultiNational' })
+    }
+    if (this.mode == 'refreshother') {
+      this.$router.push({ name: 'Other' })
     }
     if (this.mode == 'refreshall') {
       this.$router.push({ name: 'All Publications' })
