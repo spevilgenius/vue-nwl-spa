@@ -20,8 +20,10 @@
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" @filtered="onFiltered">
-                  <template #thead-top=""> </template>
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('maintable', null)" @filtered="onFiltered">
+                  <template #cell(definition)="data">
+                    <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
+                  </template>
                 </b-table>
               </b-col>
             </b-row>
@@ -236,6 +238,10 @@ export default class DynamicTable extends Vue {
         style.height = '50px'
         style.width = that.contentwidth + 'px'
         break
+
+      case 'maintable':
+        style.width = that.contentwidth - 5 + 'px'
+        break
     }
     return style
   }
@@ -257,11 +263,20 @@ export default class DynamicTable extends Vue {
 </script>
 
 <style lang="scss">
-.table-full,
+.table-full {
+  border: 1px solid #000000 !important;
+  text-align: left;
+}
 .table-full td,
 .table-full th {
   border: 1px solid #000000 !important;
-  height: 20px;
+  height: 20px !important;
   padding: 2px 5px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: wrap;
+}
+.definition {
+  max-width: 10000px;
 }
 </style>
