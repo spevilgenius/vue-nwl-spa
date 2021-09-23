@@ -13,6 +13,7 @@
             items: allpublications,
             filterField: filterField,
             filterValue: filterValue,
+            filterType: filterType,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -49,6 +50,7 @@ export default class All extends Vue {
   pageSize = 20
   filterField: any
   filterValue: any
+  filterType: any
   interval!: any
   viewReady?: boolean = false
 
@@ -102,6 +104,7 @@ export default class All extends Vue {
       console.log('filterValue=' + this.filterValue)
       this.filterField = this.$route.query.Field
       this.filterValue = this.$route.query.Value
+      this.filterType = this.$route.query.Type
       this.interval = setInterval(this.waitForIt, 500)
     }
   }

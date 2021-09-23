@@ -44,7 +44,7 @@
                       <b-th
                         ><b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"
                           ><template #first>
-                            <b-form-select-option value="" disabled>Select Branch</b-form-select-option>
+                            <b-form-select-option value="">Select Branch</b-form-select-option>
                           </template></b-form-select
                         ></b-th
                       >
@@ -142,6 +142,7 @@ let that: any
             default: ''
           },
           filterValue: '',
+          filterType: '',
           overlayText: 'Loading. Please Wait...',
           overlayVariant: 'success'
         }
@@ -217,6 +218,12 @@ export default class DynamicTable extends Vue {
       this.getBS()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
+      if (this.$props.table.filterType === 'NTP') {
+        this.Branch = 'Other'
+        let b = this.$refs['Branch']
+        console.log('BRANCH FILTER ' + b)
+        this.Prfx = 'NTP'
+      }
       if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
@@ -229,6 +236,7 @@ export default class DynamicTable extends Vue {
   }
 
   public onBranchSelect() {
+    console.log('BRANCH SELECTED')
     if (this.Branch !== null && this.Branch !== 'Please Select...') {
       // call getPrefixesByBranch
       this.getPrefixesByBranch(String(this.Branch)).then(response => {

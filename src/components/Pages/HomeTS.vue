@@ -160,7 +160,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Field: 'Prfx', Value: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Field: 'Prfx', Value: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
                     </li>
                     <li>
                       <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
@@ -185,7 +185,7 @@
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
                     </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link>></li>
+                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link></li>
                     <li title="Coming soon!">
                       <a href="#">Selected Instructions</a>
                     </li>
