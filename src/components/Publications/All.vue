@@ -13,6 +13,7 @@
             items: allpublications,
             filterField: filterField,
             filterValue: filterValue,
+            filterType: filterType,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -49,6 +50,7 @@ export default class All extends Vue {
   pageSize = 20
   filterField: any
   filterValue: any
+  filterType: any
   interval!: any
   viewReady?: boolean = false
 
@@ -82,8 +84,7 @@ export default class All extends Vue {
     { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', id: 11 },
     { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', id: 6 },
     { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', id: 10 },
-    { key: 'AdditionalData.FunctionalSeries', label: 'Functional Series', sortable: true, type: 'default', format: 'text', id: 10 }
+    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', id: 10 }
   ]
 
   created() {
@@ -103,6 +104,7 @@ export default class All extends Vue {
       console.log('filterValue=' + this.filterValue)
       this.filterField = this.$route.query.Field
       this.filterValue = this.$route.query.Value
+      this.filterType = this.$route.query.Type
       this.interval = setInterval(this.waitForIt, 500)
     }
   }

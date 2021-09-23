@@ -12,7 +12,20 @@
                 <b-input-group class="float-right">
                   <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
                   <b-input-group-append>
-                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                    <b-button
+                      :disabled="!filter"
+                      @click="
+                        filter = ''
+                        filterOn = []
+                        Branch = []
+                        Prfx = ''
+                        PubID = ''
+                        Title = ''
+                        Bookshelf = ''
+                        PRAAbbrev = ''
+                      "
+                      >Clear</b-button
+                    >
                   </b-input-group-append>
                 </b-input-group>
                 <!-- </b-form> -->
@@ -44,7 +57,7 @@
                       <b-th
                         ><b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"
                           ><template #first>
-                            <b-form-select-option value="" disabled>Select Branch</b-form-select-option>
+                            <b-form-select-option value="">Select Branch</b-form-select-option>
                           </template></b-form-select
                         ></b-th
                       >
@@ -54,7 +67,6 @@
                       <b-th></b-th>
                       <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
                       <b-th></b-th>
-                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="FunctionalSeries" @input="onFunctionalSeriesSelected"></b-form-input></b-th>
                     </b-tr>
                   </template>
                   <template #cell(actions)="data">
@@ -143,6 +155,7 @@ let that: any
             default: ''
           },
           filterValue: '',
+          filterType: '',
           overlayText: 'Loading. Please Wait...',
           overlayVariant: 'success'
         }
@@ -213,11 +226,99 @@ export default class DynamicTable extends Vue {
 
   public waitForIt() {
     if (this.$props.table.items.length > 0) {
+      const that = this
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
+      if (this.$props.table.filterType === 'NTP') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'NTP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'FXP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'FXP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'NTRP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'NTRP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'NTTP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'NTTP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'CONOPS') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'CONOPS'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'OPTASK') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'OPTASK'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Allied') {
+        this.Branch = 'Allied'
+        that.getPrefixesByBranch('Allied').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Joint') {
+        this.Branch = 'Joint'
+        that.getPrefixesByBranch('Joint').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Multinational') {
+        this.Branch = 'Multinational'
+        that.getPrefixesByBranch('Multinational').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
       if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
@@ -229,7 +330,16 @@ export default class DynamicTable extends Vue {
     }
   }
 
+  public waitForBranch() {
+    console.log('WAITING FOR BRANCH, ')
+    if (this.Branch.length > 0) {
+      console.log('Branch Loaded')
+      clearInterval(that.interval)
+    }
+  }
+
   public onBranchSelect() {
+    console.log('BRANCH SELECTED')
     if (this.Branch !== null && this.Branch !== 'Please Select...') {
       // call getPrefixesByBranch
       this.getPrefixesByBranch(String(this.Branch)).then(response => {

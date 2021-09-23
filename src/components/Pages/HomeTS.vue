@@ -73,30 +73,34 @@
                       </b-card>
                     </b-list-group-item>
                     <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="project-diagram" class="pubicon text-info"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
-                            <b-card-title>NTTP, MTTP</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTTP' } }">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="project-diagram" class="pubicon text-info"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
+                              <b-card-title>NTTP, MTTP</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-link>
                     </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="book" class="pubicon text-danger"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
-                            <b-card-title>NTRP</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
+                    <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTRP' } }">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="book" class="pubicon text-danger"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
+                              <b-card-title>NTRP</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-link>
                     </b-list-group-item>
                     <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
                       <b-card no-body class="p-1">
@@ -135,32 +139,32 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <a href="/pubs/Forms/nttp.aspx?FilterField1=funcSeries&amp;FilterValue1=7 Series - Air NTTP">Air NTTP</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
                     </li>
                     <li>
-                      <a href="/Pages/alliedHome.aspx">Allied Publications</a>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/joint.aspx">Joint Publications</a>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/multinational.aspx">Multinational Publications</a>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/concepts.aspx">Navy Concepts</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
                     </li>
-                    <li><a href="/pubs/Forms/conops.aspx">Fleet CONOPS</a></li>
+                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">Fleet CONOPS</b-link></li>
                     <li>
-                      <a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a>
-                    </li>
-                    <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">Navy-wide OPTASKS</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
+                    </li>
+                    <li>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
                     </li>
                     <li>
                       <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
@@ -183,11 +187,9 @@
                       <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
                     </li>
-                    <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a>
-                    </li>
+                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link></li>
                     <li title="Coming soon!">
                       <a href="#">Selected Instructions</a>
                     </li>
