@@ -242,6 +242,56 @@ export default class DynamicTable extends Vue {
           }
         })
       }
+      if (this.$props.table.filterType === 'FXP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'FXP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'NTRP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'NTRP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'NTTP') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.Prfx = 'NTTP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'CONOPS') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'CONOPS'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'OPTASK') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'OPTASK'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
       if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
