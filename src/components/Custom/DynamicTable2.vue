@@ -12,7 +12,20 @@
                 <b-input-group class="float-right">
                   <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
                   <b-input-group-append>
-                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                    <b-button
+                      :disabled="!filter"
+                      @click="
+                        filter = ''
+                        filterOn = []
+                        Branch = []
+                        Prfx = ''
+                        PubID = ''
+                        Title = ''
+                        Bookshelf = ''
+                        PRAAbbrev = ''
+                      "
+                      >Clear</b-button
+                    >
                   </b-input-group-append>
                 </b-input-group>
                 <!-- </b-form> -->
@@ -213,6 +226,7 @@ export default class DynamicTable extends Vue {
 
   public waitForIt() {
     if (this.$props.table.items.length > 0) {
+      const that = this
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
@@ -220,9 +234,13 @@ export default class DynamicTable extends Vue {
       this.filtereditems = this.$props.table.items // set initially to all items
       if (this.$props.table.filterType === 'NTP') {
         this.Branch = 'Other'
-        let b = this.$refs['Branch']
-        console.log('BRANCH FILTER ' + b)
-        this.Prfx = 'NTP'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.Prfx = 'NTP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
       }
       if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
@@ -232,6 +250,14 @@ export default class DynamicTable extends Vue {
       let available = this.contentheight - 130
       let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
+    }
+  }
+
+  public waitForBranch() {
+    console.log('WAITING FOR BRANCH, ')
+    if (this.Branch.length > 0) {
+      console.log('Branch Loaded')
+      clearInterval(that.interval)
     }
   }
 
