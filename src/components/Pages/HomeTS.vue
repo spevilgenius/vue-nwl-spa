@@ -142,13 +142,13 @@
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ path: 'All Publications', query: { Field: 'Branch', Value: 'Allied' } }">Allied Publications</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ path: 'All Publications', query: { Field: 'Branch', Value: 'Joint' } }">Joint Publications</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ path: 'All Publications', query: { Field: 'Branch', Value: 'Multinational' } }">Multinational Publications</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>

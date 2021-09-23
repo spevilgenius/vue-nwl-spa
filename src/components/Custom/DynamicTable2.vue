@@ -292,6 +292,33 @@ export default class DynamicTable extends Vue {
           }
         })
       }
+      if (this.$props.table.filterType === 'Allied') {
+        this.Branch = 'Allied'
+        that.getPrefixesByBranch('Allied').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Joint') {
+        this.Branch = 'Joint'
+        that.getPrefixesByBranch('Joint').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Multinational') {
+        this.Branch = 'Multinational'
+        that.getPrefixesByBranch('Multinational').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
       if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
