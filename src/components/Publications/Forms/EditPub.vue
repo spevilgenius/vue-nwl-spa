@@ -1,10 +1,10 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-modal id="monkey" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" title="Select REL TO"></b-modal>
-    <b-modal id="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light">
+    <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" modal-class="zModal">
       <template v-slot:modal-title>Select Rel To</template>
       <b-container class="p-0">
-        <!-- <b-row>
+        <b-row>
           <b-col cols="12">
             <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
               <b-input-group size="sm">
@@ -29,7 +29,7 @@
           <b-col cols="12">
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
           </b-col>
-        </b-row> -->
+        </b-row>
       </b-container>
     </b-modal>
     <b-row no-gutters class="contentHeight">
@@ -189,7 +189,7 @@
                                 <b-input-group>
                                   <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                   <template #append>
-                                    <b-button variant="blue-700" @click="onReltoSearch()">
+                                    <b-button variant="blue-700" @click="onReltoSearch">
                                       <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
                                     </b-button>
                                   </template>
@@ -413,7 +413,9 @@ export default class EditPub extends Vue {
 
   public onReltoSearch() {
     console.log('onReltoSearch')
-    this.$bvModal.show('monkey')
+    this.$bvModal.show('modalRelto')
+    let m = document.querySelector("[id^='modalRelto___'")
+    m?.classList.add('zModal')
   }
 
   public getStyle(element) {
@@ -491,4 +493,4 @@ export default class EditPub extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style></style>
