@@ -154,13 +154,13 @@
                       <a href="/pubs/Forms/optasks.aspx">Navy-wide OPTASKS</a>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Universal%20Naval%20Task%20List">Universal Naval Task List (UNTL)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=FXP">Fleet Exercise Publications (Archive)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Field: 'Prfx', Value: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=Prefix&amp;FilterValue1=NTP">Naval Telecommunications Procedures (NTPs)</a>
+                      <b-link :to="{ name: 'All Publications', query: { Field: 'Prfx', Value: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
                     </li>
                     <li>
                       <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
@@ -183,11 +183,9 @@
                       <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Commander%27s%20Handbooks">Commander’s Handbooks</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
                     </li>
-                    <li>
-                      <a href="/pubs/Forms/AllItems.aspx?View={099D2171-BB61-4DEC-8364-56D897AC04F1}&amp;FilterField1=funcSeries&amp;FilterValue1=Writing%20Guidance">Writing Guidance</a>
-                    </li>
+                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link>></li>
                     <li title="Coming soon!">
                       <a href="#">Selected Instructions</a>
                     </li>
