@@ -414,8 +414,8 @@ export default class EditPub extends Vue {
   public onReltoSearch() {
     console.log('onReltoSearch')
     this.$bvModal.show('modalRelto')
-    let m = document.querySelector("[id^='modalRelto___'")
-    m?.classList.add('zModal')
+    let modal = document.getElementById('modalRelto___BV_modal_outer_')
+    modal?.classList.add('zModal')
   }
 
   public getStyle(element) {
