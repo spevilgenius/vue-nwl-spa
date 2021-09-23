@@ -160,7 +160,7 @@ export default class DynamicTable extends Vue {
       }
       // Calculate perPage based on counting the number of rows that will fit in the available space
       let available = this.contentheight - 130
-      let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
+      let amount = Math.floor(available / 33) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
     }
   }
@@ -266,6 +266,7 @@ export default class DynamicTable extends Vue {
 .table-full {
   border: 1px solid #000000 !important;
   text-align: left;
+  margin-left: 5px;
 }
 .table-full td,
 .table-full th {
