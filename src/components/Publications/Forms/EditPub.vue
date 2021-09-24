@@ -189,9 +189,10 @@
                                 <b-input-group>
                                   <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                   <template #append>
-                                    <b-button variant="blue-700" @click="onReltoSearch">
+                                    <!-- <b-button variant="blue-700" @click="onReltoSearch">
                                       <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
-                                    </b-button>
+                                    </b-button> -->
+                                    <b-dropdown split-button-type=""></b-dropdown>
                                   </template>
                                 </b-input-group>
                               </b-col>
