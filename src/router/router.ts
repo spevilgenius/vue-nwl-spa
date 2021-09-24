@@ -40,6 +40,56 @@ const pubsMenu = {
       name: 'Edit Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
       props: true
+    },
+    {
+      path: 'forms/new',
+      name: 'New Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const aoMenu = {
+  path: '/ao',
+  component: Layout,
+  redirect: '/ao/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'AO Actions',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
+      props: true
+    },
+    {
+      path: 'page/all',
+      name: 'All Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
+      props: true
+    },
+    {
+      path: 'page/development',
+      name: 'Pubs In Development',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
+      props: true
+    },
+    {
+      path: 'forms/view',
+      name: 'View Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    },
+    {
+      path: 'forms/edit',
+      name: 'Edit Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
+      props: true
+    },
+    {
+      path: 'forms/new',
+      name: 'New Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
+      props: true
     }
   ]
 }
@@ -52,7 +102,7 @@ const termsMenu = {
     {
       path: 'home',
       name: 'Terminology',
-      component: () => import(/* webpackChunkName: "Terminology" */ '../components/Pages/Terminologycopy2.vue'),
+      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminologycopy2.vue'),
       props: true
     }
   ]
