@@ -48,7 +48,7 @@
                   table-class="table-full"
                   :sticky-header="getSticky('dynamictable')"
                   table-variant="light"
-                  thead-tr-class="tbl-dynamic-header"
+                  thead-class="tbl-dynamic-header"
                   @filtered="onFiltered"
                 >
                   <!-- <template #thead-top="">
@@ -71,14 +71,14 @@
                     </b-tr>
                   </template> -->
                   <template #cell(actions)="data">
-                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id, data.item.IsNato)">
+                    <b-button variant="white" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
@@ -471,9 +471,6 @@ export default class DynamicTable extends Vue {
   border: 1px solid #000000 !important;
   height: 20px !important;
   padding: 2px 5px !important;
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; */
 }
 .pubtitle {
   max-width: 500px;
