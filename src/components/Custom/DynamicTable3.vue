@@ -20,7 +20,22 @@
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('maintable', null)" @filtered="onFiltered">
+                <b-table
+                  striped
+                  hover
+                  :items="filtereditems"
+                  :fields="table.fields"
+                  primary-key="table.primarykey"
+                  :filter="filter"
+                  :filter-included-fields="filterOn"
+                  :per-page="perPage"
+                  :current-page="currentPage"
+                  table-class="table-full"
+                  table-variant="light"
+                  :style="getStyle('maintable', null)"
+                  @filtered="onFiltered"
+                  head-row-variant="blue-500"
+                >
                   <template #cell(definition)="data">
                     <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
                   </template>
@@ -266,7 +281,6 @@ export default class DynamicTable extends Vue {
 .table-full {
   border: 1px solid #000000 !important;
   text-align: left;
-  margin-left: 5px;
 }
 .table-full td,
 .table-full th {
