@@ -181,7 +181,7 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <a href="/pubs/Forms/Strategy.aspx">Strategy Documents</a>
+                      <b-link :to="{ name: 'All Publications', query: { Value: 'Strategy Documents' } }">Strategy Documents</b-link>
                     </li>
                     <li>
                       <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
