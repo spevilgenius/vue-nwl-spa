@@ -107,11 +107,6 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
-    let oldbanners = document.getElementsByClassName('classificationbanner')
-    for (let i = 0; i < oldbanners.length; i++) {
-      let elem = oldbanners[i] as Element
-      elem.classList.add('hidden')
-    }
     this.getAllNatoPublications()
     this.getAllPublications()
     this.interval = setInterval(this.waitForIt, 500)
@@ -121,6 +116,11 @@ export default class App extends Vue {
     if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
       this.createAllPubs()
+      let oldbanners = document.getElementsByClassName('classificationbanner')
+      while (oldbanners.length > 0) {
+        let b = oldbanners[0] as HTMLElement
+        b.remove()
+      }
     }
   }
 }

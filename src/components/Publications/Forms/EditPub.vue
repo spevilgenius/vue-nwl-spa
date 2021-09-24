@@ -1,8 +1,11 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" modal-class="zModal">
+    <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" header-text-variant="light" modal-class="zModal">
       <template v-slot:modal-title>Select Rel To</template>
       <b-container class="p-0">
+        <b-row>
+          <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
+        </b-row>
         <b-row>
           <b-col cols="12">
             <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
@@ -17,7 +20,7 @@
         </b-row>
         <b-row>
           <b-col cols="12">
-            <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+            <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
               <template #cell(actions)="row">
                 <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
               </template>
@@ -44,77 +47,81 @@
                       <b-row no-gutters>
                         <b-col cols="12">
                           <b-form class="mt-0">
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Title</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Branch</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Prefix</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Pub ID</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6">
-                                <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
-                                <b-form-invalid-feedback>Please input a title.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-select
-                                  class="form-control"
-                                  size="sm"
-                                  id="ddBranch"
-                                  v-model="publication.Branch"
-                                  :options="branches"
-                                  @change="onBranchSelect"
-                                  :state="ValidateMe('Branch')"
-                                  ref="Branch"
-                                  v-b-tooltip.hover.v-dark
-                                  title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."
-                                ></b-form-select>
-                                <b-form-invalid-feedback>Please select a valid branch.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-select class="form-control" size="sm" id="ddPrefix" v-model="publication.Prfx" :options="prefixes" :state="ValidateMe('Prefix')" ref="Prefix"></b-form-select>
-                                <b-form-invalid-feedback>Please select a valid prefix.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
-                                <b-form-invalid-feedback>Please input a valid Pub ID.</b-form-invalid-feedback>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Long Title</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Bookshelf</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6">
-                                <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle"></b-form-input>
-                              </b-col>
-                              <b-col cols="6">
-                                <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Series</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Field</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-select class="form-control" size="sm" id="ddFunctionalSeries" v-model="publication.AdditionalData.FunctionalSeries" :options="functionalseries" @change="onSeriesSelect"></b-form-select>
-                              </b-col>
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-select class="form-control" size="sm" id="ddFunctionalField" v-model="publication.AdditionalData.FunctionalField" :options="functionalfields"></b-form-select>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Description</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Admin Comments</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea>
-                              </b-col>
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-textarea class="form-control" rows="8" id="txtAdminComments" v-model="publication.AdditionalData.AdminComments" size="sm" placeholder="Admin Comments"></b-form-textarea>
-                              </b-col>
-                            </b-row>
+                            <b-table-simple bordered responsive class="table-form">
+                              <b-tr>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Title</b-th>
+                                <b-th class="col-2 text-center text-light py20 bg-blue-800">Branch</b-th>
+                                <b-th class="col-2 text-center text-light py20 bg-blue-800">Prefix</b-th>
+                                <b-th class="col-2 text-center text-light py20 bg-blue-800">Pub ID</b-th>
+                              </b-tr>
+                              <b-tr>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
+                                  <b-form-invalid-feedback>Please input a title.</b-form-invalid-feedback>
+                                </b-td>
+                                <b-td class="col-2 text-center text-light">
+                                  <b-form-select
+                                    class="form-control"
+                                    size="sm"
+                                    id="ddBranch"
+                                    v-model="publication.Branch"
+                                    :options="branches"
+                                    @change="onBranchSelect"
+                                    :state="ValidateMe('Branch')"
+                                    ref="Branch"
+                                    v-b-tooltip.hover.v-dark
+                                    title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."
+                                  ></b-form-select>
+                                  <b-form-invalid-feedback>Please select a valid branch.</b-form-invalid-feedback>
+                                </b-td>
+                                <b-td class="col-2 text-center text-light">
+                                  <b-form-select class="form-control" size="sm" id="ddPrefix" v-model="publication.Prfx" :options="prefixes" :state="ValidateMe('Prefix')" ref="Prefix"></b-form-select>
+                                  <b-form-invalid-feedback>Please select a valid prefix.</b-form-invalid-feedback>
+                                </b-td>
+                                <b-td class="col-2 text-center text-light">
+                                  <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
+                                  <b-form-invalid-feedback>Please input a valid Pub ID.</b-form-invalid-feedback>
+                                </b-td>
+                              </b-tr>
+                            </b-table-simple>
+                            <b-table-simple bordered responsive class="table-form">
+                              <b-tr>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Long Title</b-th>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Bookshelf</b-th>
+                              </b-tr>
+                              <b-tr>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle"></b-form-input>
+                                </b-td>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
+                                </b-td>
+                              </b-tr>
+                              <b-tr>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Functional Series</b-th>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Functional Field</b-th>
+                              </b-tr>
+                              <b-tr>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-select class="form-control" size="sm" id="ddFunctionalSeries" v-model="publication.AdditionalData.FunctionalSeries" :options="functionalseries" @change="onSeriesSelect"></b-form-select>
+                                </b-td>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-select class="form-control" size="sm" id="ddFunctionalField" v-model="publication.AdditionalData.FunctionalField" :options="functionalfields"></b-form-select>
+                                </b-td>
+                              </b-tr>
+                              <b-tr>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Description</b-th>
+                                <b-th class="col-6 text-center text-light py20 bg-blue-800">Admin Comments</b-th>
+                              </b-tr>
+                              <b-tr>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea>
+                                </b-td>
+                                <b-td class="col-6 text-center text-light">
+                                  <b-form-textarea class="form-control" rows="8" id="txtAdminComments" v-model="publication.AdditionalData.AdminComments" size="sm" placeholder="Admin Comments"></b-form-textarea>
+                                </b-td>
+                              </b-tr>
+                            </b-table-simple>
                           </b-form>
                         </b-col>
                       </b-row>
@@ -131,7 +138,7 @@
                               <b-col cols="2" class="text-center text-light py20 bg-blue-800">Resourced?</b-col>
                               <b-col cols="3" class="text-center text-light py20 bg-blue-800">Status</b-col>
                             </b-row>
-                            <b-row class="mb-1">
+                            <b-row class="my-1">
                               <b-col cols="2">
                                 <b-form-input class="form-control" size="sm" id="txtEdition" v-model="publication.AdditionalData.Edition" placeholder="Enter Edition" ref="Edition"></b-form-input>
                               </b-col>
@@ -152,7 +159,7 @@
                               <b-col cols="6" class="text-center text-light py20 bg-blue-800">Status Comments</b-col>
                               <b-col cols="6" class="text-center text-light py20 bg-blue-800">Supersedes</b-col>
                             </b-row>
-                            <b-row class="mb-1">
+                            <b-row class="my-1">
                               <b-col cols="6">
                                 <b-form-textarea class="form-control" rows="8" id="txtStatusComments" v-model="publication.StatusComments" size="sm" placeholder="Status Comments"></b-form-textarea>
                               </b-col>
@@ -186,16 +193,14 @@
                               </b-col>
                               <b-col cols="3">
                                 <b-input-group>
-                                  <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
+                                  <b-form-input id="txtRelto" ref="txtRelto" class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                   <template #append>
-                                    <!-- <b-button variant="blue-700" @click="onReltoSearch">
+                                    <b-button variant="blue-700" @click="onReltoSearch">
                                       <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
-                                    </b-button> -->
-                                    <b-dropdown split-button-type=""></b-dropdown>
+                                    </b-button>
                                   </template>
                                 </b-input-group>
                               </b-col>
-                              <b-col cols="3"></b-col>
                               <b-col cols="3"></b-col>
                             </b-row>
                           </b-form>
@@ -384,7 +389,6 @@ export default class EditPub extends Vue {
 
   public waitForIt() {
     if (this.publoaded) {
-      console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
       // is the branch available to get the prefixes
@@ -397,7 +401,10 @@ export default class EditPub extends Vue {
                   if (response) {
                     this.getRelto().then(response => {
                       if (response) {
-                        this.getBS()
+                        this.getBS().then(response => {
+                          console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+                          this.formReady = true
+                        })
                       }
                     })
                   }
@@ -407,7 +414,7 @@ export default class EditPub extends Vue {
           }
         })
       }
-      this.formReady = true
+      // this.formReady = true
     }
   }
 
@@ -493,4 +500,14 @@ export default class EditPub extends Vue {
 }
 </script>
 
-<style></style>
+<style>
+.table-form {
+  border: 1px solid #000000 !important;
+}
+.table-form td,
+.table-form th {
+  border: 1px solid #000000 !important;
+  height: 20px !important;
+  padding: 2px 5px !important;
+}
+</style>
