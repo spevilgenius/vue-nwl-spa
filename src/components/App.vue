@@ -9,6 +9,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
 import { NotificationItem } from '../interfaces/NotificationItem'
+import { forEach } from 'lodash'
 
 const notify = namespace('notify')
 const users = namespace('users')
@@ -106,6 +107,11 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
+    let oldbanners = document.getElementsByClassName('classificationbanner')
+    for (let i = oldbanners.length; i > 0; i--) {
+      let elem = oldbanners[i] as Element
+      elem.classList.add('hidden')
+    }
     this.getAllNatoPublications()
     this.getAllPublications()
     this.interval = setInterval(this.waitForIt, 500)
@@ -133,6 +139,6 @@ export default class App extends Vue {
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 10000000 !important;
+  /* z-index: 10000000 !important; */
 }
 </style>

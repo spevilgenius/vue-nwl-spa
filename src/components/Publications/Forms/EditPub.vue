@@ -1,6 +1,5 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-modal id="monkey" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" title="Select REL TO"></b-modal>
     <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" modal-class="zModal">
       <template v-slot:modal-title>Select Rel To</template>
       <b-container class="p-0">

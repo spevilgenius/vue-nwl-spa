@@ -71,14 +71,14 @@
                     </b-tr>
                   </template> -->
                   <template #cell(actions)="data">
-                    <b-button variant="white" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                    <b-button variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
