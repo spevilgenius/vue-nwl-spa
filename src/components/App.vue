@@ -108,7 +108,7 @@ export default class App extends Vue {
   /** @method - lifecycle hook */
   mounted() {
     let oldbanners = document.getElementsByClassName('classificationbanner')
-    for (let i = oldbanners.length; i > 0; i--) {
+    for (let i = 0; i < oldbanners.length; i++) {
       let elem = oldbanners[i] as Element
       elem.classList.add('hidden')
     }
@@ -139,6 +139,6 @@ export default class App extends Vue {
   left: 0;
   width: 100%;
   height: 100vh;
-  /* z-index: 10000000 !important; */
+  z-index: 100 !important;
 }
 </style>
