@@ -76,6 +76,10 @@ $modal-sm:                          300px !default;
   height: 130px;
 }
 
+.zModal {
+  z-index: 10000001;
+}
+
 .logo {
   height: 130px;
   display: flex;

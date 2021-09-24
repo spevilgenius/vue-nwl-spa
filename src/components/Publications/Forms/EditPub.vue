@@ -1,38 +1,39 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
+    <b-modal id="monkey" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" title="Select REL TO"></b-modal>
+    <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" modal-class="zModal">
+      <template v-slot:modal-title>Select Rel To</template>
+      <b-container class="p-0">
+        <b-row>
+          <b-col cols="12">
+            <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
+              <b-input-group size="sm">
+                <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
+                <b-input-group-append>
+                  <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="12">
+            <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+              <template #cell(actions)="row">
+                <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
+              </template>
+            </b-table>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="12">
+            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
+          </b-col>
+        </b-row>
+      </b-container>
+    </b-modal>
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-modal :id="modal_relto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light">
-          <template v-slot:modal-title>Select Rel To}}</template>
-          <b-container class="p-0">
-            <b-row>
-              <b-col cols="12">
-                <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
-                  <b-input-group size="sm">
-                    <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
-                    <b-input-group-append>
-                      <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                </b-form-group>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col cols="12">
-                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
-                  <template #cell(actions)="row">
-                    <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
-                  </template>
-                </b-table>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col cols="12">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
-              </b-col>
-            </b-row>
-          </b-container>
-        </b-modal>
         <b-overlay :show="!formReady" :variant="success" class="contentHeight">
           <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
             <b-row no-gutters>
@@ -142,10 +143,10 @@
                                 <b-form-input class="form-control" size="sm" id="txtDateofIssue" v-model="publication.DateofIssue" placeholder="" ref="DateofIssue" type="date"></b-form-input>
                               </b-col>
                               <b-col cols="2">
-                                <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip.hover.v-dark title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
+                                <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
                               </b-col>
                               <b-col cols="3">
-                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip.hover.v-dark title="Status of publication. Choices depend on the Branch."></b-form-select>
+                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip title="Status of publication. Choices depend on the Branch."></b-form-select>
                               </b-col>
                             </b-row>
                             <b-row>
@@ -188,9 +189,10 @@
                                 <b-input-group>
                                   <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                   <template #append>
-                                    <b-button variant="blue-700" @click="onReltoSearch()" v-b-tooltip.hover.v-dark title="Select Rel Tos">
-                                      <font-awesome-icon :icon="['far', 'search']" class="icon"></font-awesome-icon>
-                                    </b-button>
+                                    <!-- <b-button variant="blue-700" @click="onReltoSearch">
+                                      <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
+                                    </b-button> -->
+                                    <b-dropdown split-button-type=""></b-dropdown>
                                   </template>
                                 </b-input-group>
                               </b-col>
@@ -411,7 +413,10 @@ export default class EditPub extends Vue {
   }
 
   public onReltoSearch() {
-    this.$bvModal.show('modal_relto')
+    console.log('onReltoSearch')
+    this.$bvModal.show('modalRelto')
+    let modal = document.getElementById('modalRelto___BV_modal_outer_')
+    modal?.classList.add('zModal')
   }
 
   public getStyle(element) {
@@ -489,4 +494,4 @@ export default class EditPub extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style></style>
