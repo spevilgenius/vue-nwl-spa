@@ -83,7 +83,8 @@
                     </b-button>
                   </template>
                   <template #cell(Title)="data">
-                    <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div>
+                    <!-- <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div> -->
+                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato }, params: { Id: data.item.Id } }">{{ data.item.Title }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
@@ -472,7 +473,7 @@ export default class DynamicTable extends Vue {
   height: 20px !important;
   padding: 2px 5px !important;
 }
-.pubtitle {
+/* .pubtitle {
   max-width: 500px;
-}
+} */
 </style>
