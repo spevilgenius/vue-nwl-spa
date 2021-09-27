@@ -4,7 +4,9 @@
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
           <b-row no-gutters>
-            <b-col id="FrameColumn" cols="8" class="m-0 p-0"></b-col>
+            <b-col id="FrameColumn" cols="8" class="m-0 p-0">
+              <iframe id="pubFrame" height="100%" width="100%"></iframe>
+            </b-col>
             <b-col cols="4" class="m-0 p-0">
               <b-card no-body>
                 <b-tabs v-model="rightTabs" card>
@@ -45,6 +47,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
+import axios from 'axios'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -71,10 +74,10 @@ export default class ViewPub extends Vue {
   public publication!: PublicationItem
 
   @publication.State
-  public blobloaded!: boolean
+  public bufferloaded!: boolean
 
   @publication.State
-  public pubBlob!: Blob
+  public pubBuffer!: ArrayBuffer
 
   @publication.Action
   public getPublicationById!: (id: string, nato: string) => Promise<boolean>
@@ -99,7 +102,7 @@ export default class ViewPub extends Vue {
     }
   }
 
-  public waitForIt() {
+  public async waitForIt() {
     if (this.publoaded) {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
@@ -114,29 +117,88 @@ export default class ViewPub extends Vue {
       document.getElementById('PRAIcon')?.appendChild(img)
       // TODO: set frame to document url
       const that = this
-      this.getBinaryFile(String(this.publication.RelativeURL)).then(response => {
-        if (response) {
-          this.interval = setInterval(this.waitForFile, 500)
-        }
-      })
+      if (String(this.publication.RelativeURL).indexOf('.pdf') > 0) {
+        // woohoo
+        let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('" + this.publication.RelativeURL + "')/OpenBinaryStream"
+        const response = await axios.get(getfileUrl, {
+          responseType: 'blob',
+          headers: {
+            'Content-Type': 'application/json',
+            accept: 'application/pdf'
+          }
+        })
+        // let buff = new ArrayBuffer(response.data)
+        let file = new File([response.data], 'preview.pdf')
+        let buff = this.getFileBuffer(file)
+        buff.then(function(b) {
+          let blob = new Blob([b as Blob], { type: 'application/pdf' })
+          let link = window.URL.createObjectURL(blob)
+          let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
+          iframe.src = link
+        })
+      }
+      if (String(this.publication.RelativeURL).indexOf('.docx') > 0) {
+        // woohoo
+        let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('" + this.publication.RelativeURL + "')/OpenBinaryStream"
+        const response = await axios.get(getfileUrl, {
+          responseType: 'blob',
+          headers: {
+            'Content-Type': 'application/json',
+            accept: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          }
+        })
+        // let buff = new ArrayBuffer(response.data)
+        let file = new File([response.data], 'preview.docx')
+        let buff = this.getFileBuffer(file)
+        buff.then(function(b) {
+          let blob = new Blob([b as Blob], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+          // let link = window.URL.createObjectURL(blob)
+          let link = 'https://docs.google.com/viewer?url=%s' + window.URL.createObjectURL(blob)
+          let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
+          iframe.src = link
+        })
+      }
     }
   }
 
   public waitForFile() {
-    if (this.blobloaded) {
+    if (this.bufferloaded) {
+      console.log('waitForFile bufferloaded')
       clearInterval(this.interval)
-      console.log('waitForFile blobloaded')
-      let link = window.URL.createObjectURL(this.pubBlob)
-      let iframe = document.createElement('iframe')
-      iframe.style.width = '100%'
-      iframe.style.height = '100%'
-      iframe.id = 'TripReportFrame'
-      iframe.src = link
-      document.getElementById('FrameColumn')?.appendChild(iframe)
+      let link: any
+      if (String(this.publication.RelativeURL).indexOf('.pdf') > 0) {
+        // create blob and display it
+        let blob = new Blob([this.pubBuffer], { type: 'application/pdf' })
+        let link = window.URL.createObjectURL(blob)
+        console.log(link)
+        let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
+        iframe.src = link
+        /* iframe.style.width = '100%'
+        iframe.style.height = '100%'
+        iframe.id = 'PubFrame'
+        iframe.src = link
+        document.getElementById('FrameColumn')?.appendChild(iframe) */
+      }
+      if (String(this.publication.RelativeURL).indexOf('.doc') > 0) {
+        // create blob and display it
+        let blob = new Blob([this.pubBuffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+        let link = window.URL.createObjectURL(blob)
+        console.log(link)
+        let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
+        iframe.src = link
+        /* let iframe = document.createElement('iframe')
+        iframe.style.width = '100%'
+        iframe.style.height = '100%'
+        iframe.id = 'PubFrame'
+        iframe.src = link
+        document.getElementById('FrameColumn')?.appendChild(iframe) */
+      }
+    } else {
+      console.log('Waiting for file...')
     }
   }
 
-  /* public getFileBuffer(file) {
+  public getFileBuffer(file) {
     let p = new Promise(function(resolve, reject) {
       var reader = new FileReader()
       reader.onloadend = function(e) {
@@ -148,7 +210,7 @@ export default class ViewPub extends Vue {
       reader.readAsArrayBuffer(file)
     })
     return p
-  } */
+  }
 }
 </script>
 

@@ -4,52 +4,6 @@
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
           <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-0">
-              <b-carousel>
-                <b-carousel-slide v-for="announcement in announcements" :key="announcement">
-                  <template #img>
-                    <b-container fluid class="py100">
-                      <b-row>
-                        <b-col md="4" class="centerFlex py100">
-                          <h5 class="text-black">{{ announcement.Title }}</h5>
-                          <h6 class="text-black">
-                            {{ announcement.Modified }}
-                          </h6>
-                          <h6 class="text-black">
-                            {{ announcement.ModifiedBy.Title }}
-                          </h6>
-                        </b-col>
-                        <b-col md="8" class="centerFlex py100">
-                          <span class="text-black" v-html="limitText(announcement.Info)"></span>
-                          <!-- <h5 class="text-black">
-                            <a :href="announcement.link">{{ announcement.title }}</a>
-                          </h5> -->
-                        </b-col>
-                      </b-row>
-                    </b-container>
-                  </template>
-                </b-carousel-slide>
-              </b-carousel>
-            </b-col>
-          </b-row>
-          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/banner.jpg)' }">
-            <b-col cols="12">
-              <b-container fluid class="m-0 p-0">
-                <b-row no-gutters class="titleRow">
-                  <div class="mx-auto text-center text-light">
-                    <div class="upper" id="NWLTitle">
-                      Welcome to The Navy Warfare Library
-                    </div>
-                    <div class="pubType" align="center">
-                      The Navy Warfare Library (NWL) is the authoritative repository for Navy Doctrine and terminology.
-                    </div>
-                  </div>
-                </b-row>
-              </b-container>
-            </b-col>
-            <!-- <b-col cols="6"></b-col> -->
-          </b-row>
-          <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"

@@ -299,6 +299,66 @@ class Sidebar extends VuexModule {
       icon: 'question'
     },
     {
+      id: 900,
+      isMenu: true,
+      name: 'AO Actions',
+      path: '/ao/home',
+      permission: 'isActionOfficer',
+      permissionvalue: true,
+      children: [
+        {
+          id: 901,
+          name: 'AO Administration',
+          path: '/ao/home/admin',
+          library: 'fas',
+          icon: 'tools'
+        },
+        {
+          id: 902,
+          name: 'Pubs in Development(By PRA)',
+          path: '/pubs/development/pra',
+          library: 'fas',
+          icon: 'file-signature',
+          props: {
+            groupBy: 'PRA'
+          }
+        },
+        {
+          id: 903,
+          name: 'Pubs in Development(By Project Status)',
+          path: '/pubs/development/status',
+          library: 'fas',
+          icon: 'file-signature',
+          props: {
+            groupBy: 'Status'
+          }
+        },
+        {
+          id: 904,
+          name: 'Pubs in Development(Archived)',
+          path: '/pubs/development/archive',
+          library: 'fas',
+          icon: 'file-signature'
+        },
+        {
+          id: 905,
+          name: 'Create New Draft Publication',
+          path: '/pubs/forms/new',
+          library: 'fas',
+          icon: 'edit'
+        },
+        {
+          id: 906,
+          name: 'Combined APP & PID Pubs View',
+          path: '/ao/home/requestit',
+          library: 'fas',
+          icon: 'archive'
+        }
+      ],
+      library: 'fas',
+      icon: 'question'
+    },
+    {
       id: 1000,
       isMenu: false,
       children: [],
