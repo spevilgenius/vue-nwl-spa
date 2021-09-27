@@ -135,6 +135,7 @@ import { ObjectItem } from '@/interfaces/ObjectItem'
 import { TerminologyItem } from '@/interfaces/TerminologyItem'
 import { namespace } from 'vuex-class'
 import DynamicTable from '../Custom/DynamicTable3.vue'
+import { faAlignCenter } from '@fortawesome/free-solid-svg-icons'
 
 const terminology = namespace('terminology')
 
@@ -167,10 +168,10 @@ export default class Terminology extends Vue {
   pageSize = 20
 
   fields: any = [
-    { key: 'type', label: 'Type', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 20 },
-    { key: 'title', label: 'Title', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px90', id: 1 },
-    { key: 'definition', label: 'Definition', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px500', id: 2 },
-    { key: 'service', label: 'Service', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px50', id: 3 }
+    { key: 'type', label: 'Type', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 20 },
+    { key: 'title', label: 'Title', type: 'default', format: 'text', tdClass: 'px250', thClass: 'tbl-dynamic-header', id: 1 },
+    { key: 'definition', label: 'Definition', type: 'default', format: 'text', tdClass: 'px600', thClass: 'tbl-dynamic-header', id: 2 },
+    { key: 'service', label: 'Service', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 3 }
   ]
 
   mounted() {
