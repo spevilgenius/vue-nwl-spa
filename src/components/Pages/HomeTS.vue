@@ -142,7 +142,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
+                      <b-link :to="{ name: 'Allied Publications' }">Allied Publications</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
