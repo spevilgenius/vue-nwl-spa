@@ -64,15 +64,15 @@ export default class All extends Vue {
   public allpubsloaded!: boolean
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], id: 0 },
-    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', tdClass: 'px100', id: 20 },
-    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', tdClass: 'px100', id: 1 },
-    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', tdClass: 'px100', id: 2 },
-    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', id: 3 },
-    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', id: 11 },
-    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', tdClass: 'px120', id: 6 },
-    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', tdClass: 'px150', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', tdClass: 'px200', id: 10 }
+    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', id: 0 },
+    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
+    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
+    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 2 },
+    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', id: 3 },
+    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px300', id: 11 },
+    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 6 },
+    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12 },
+    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 10 }
   ]
 
   created() {

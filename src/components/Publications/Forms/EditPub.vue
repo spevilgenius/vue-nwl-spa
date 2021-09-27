@@ -1,233 +1,232 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-modal id="monkey" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" title="Select REL TO"></b-modal>
-    <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" size="sm" header-text-variant="light" modal-class="zModal">
-      <template v-slot:modal-title>Select Rel To</template>
-      <b-container class="p-0">
-        <b-row>
-          <b-col cols="12">
-            <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
-              <b-input-group size="sm">
-                <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
-                <b-input-group-append>
-                  <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
-                </b-input-group-append>
-              </b-input-group>
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="12">
-            <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
-              <template #cell(actions)="row">
-                <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
-              </template>
-            </b-table>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="12">
-            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
-          </b-col>
-        </b-row>
-      </b-container>
-    </b-modal>
-    <b-row no-gutters class="contentHeight">
-      <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="!formReady" :variant="success" class="contentHeight">
-          <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
-            <b-row no-gutters>
-              <b-col cols="12" class="m-0 p-0">
-                <b-card no-body>
-                  <b-tabs v-model="rightTabs" card>
-                    <b-tab class="mtab" active>
-                      <template slot="title">Document/Library Data</template>
-                      <b-row no-gutters>
-                        <b-col cols="12">
-                          <b-form class="mt-0">
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Title</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Branch</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Prefix</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Pub ID</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6">
-                                <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
-                                <b-form-invalid-feedback>Please input a title.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-select
-                                  class="form-control"
-                                  size="sm"
-                                  id="ddBranch"
-                                  v-model="publication.Branch"
-                                  :options="branches"
-                                  @change="onBranchSelect"
-                                  :state="ValidateMe('Branch')"
-                                  ref="Branch"
-                                  v-b-tooltip.hover.v-dark
-                                  title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."
-                                ></b-form-select>
-                                <b-form-invalid-feedback>Please select a valid branch.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-select class="form-control" size="sm" id="ddPrefix" v-model="publication.Prfx" :options="prefixes" :state="ValidateMe('Prefix')" ref="Prefix"></b-form-select>
-                                <b-form-invalid-feedback>Please select a valid prefix.</b-form-invalid-feedback>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
-                                <b-form-invalid-feedback>Please input a valid Pub ID.</b-form-invalid-feedback>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Long Title</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Bookshelf</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6">
-                                <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle"></b-form-input>
-                              </b-col>
-                              <b-col cols="6">
-                                <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Series</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Functional Field</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-select class="form-control" size="sm" id="ddFunctionalSeries" v-model="publication.AdditionalData.FunctionalSeries" :options="functionalseries" @change="onSeriesSelect"></b-form-select>
-                              </b-col>
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-select class="form-control" size="sm" id="ddFunctionalField" v-model="publication.AdditionalData.FunctionalField" :options="functionalfields"></b-form-select>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Description</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Admin Comments</b-col>
-                            </b-row>
-                            <b-row class="m-1">
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea>
-                              </b-col>
-                              <b-col cols="6" class="text-center text-dark">
-                                <b-form-textarea class="form-control" rows="8" id="txtAdminComments" v-model="publication.AdditionalData.AdminComments" size="sm" placeholder="Admin Comments"></b-form-textarea>
-                              </b-col>
-                            </b-row>
-                          </b-form>
-                        </b-col>
-                      </b-row>
-                    </b-tab>
-                    <b-tab class="mtab">
-                      <template slot="title">Status</template>
-                      <b-row no-gutters>
-                        <b-col cols="12">
-                          <b-form class="mt-0">
-                            <b-row>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Edition</b-col>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Change</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Date of Issue</b-col>
-                              <b-col cols="2" class="text-center text-light py20 bg-blue-800">Resourced?</b-col>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Status</b-col>
-                            </b-row>
-                            <b-row class="mb-1">
-                              <b-col cols="2">
-                                <b-form-input class="form-control" size="sm" id="txtEdition" v-model="publication.AdditionalData.Edition" placeholder="Enter Edition" ref="Edition"></b-form-input>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-form-input class="form-control" size="sm" id="txtChange" v-model="publication.AdditionalData.Change" placeholder="Enter Change" ref="Change"></b-form-input>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-input class="form-control" size="sm" id="txtDateofIssue" v-model="publication.DateofIssue" placeholder="" ref="DateofIssue" type="date"></b-form-input>
-                              </b-col>
-                              <b-col cols="2">
-                                <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip title="Status of publication. Choices depend on the Branch."></b-form-select>
-                              </b-col>
-                            </b-row>
-                            <b-row>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Status Comments</b-col>
-                              <b-col cols="6" class="text-center text-light py20 bg-blue-800">Supersedes</b-col>
-                            </b-row>
-                            <b-row class="mb-1">
-                              <b-col cols="6">
-                                <b-form-textarea class="form-control" rows="8" id="txtStatusComments" v-model="publication.StatusComments" size="sm" placeholder="Status Comments"></b-form-textarea>
-                              </b-col>
-                              <b-col cols="6">
-                                <b-row no-gutters>
-                                  <b-form-input class="form-control" size="sm" id="txtReplacesLink" v-model="publication.Replaces" placeholder="Link to Document" ref="ReplacesLink"></b-form-input>
-                                </b-row>
-                              </b-col>
-                            </b-row>
-                          </b-form>
-                        </b-col>
-                      </b-row>
-                    </b-tab>
-                    <b-tab class="mtab">
-                      <template slot="title">Security/Availability</template>
-                      <b-row no-gutters>
-                        <b-col cols="12">
-                          <b-form class="mt-0">
-                            <b-row no-gutters>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Classification</b-col>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">Dissemination</b-col>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">REL TO</b-col>
-                              <b-col cols="3" class="text-center text-light py20 bg-blue-800">DTIC</b-col>
-                            </b-row>
-                            <b-row no-gutters>
-                              <b-col cols="3">
-                                <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-input-group>
-                                  <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
-                                  <template #append>
-                                    <!-- <b-button variant="blue-700" @click="onReltoSearch">
-                                      <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
-                                    </b-button> -->
-                                    <b-dropdown split-button-type=""></b-dropdown>
-                                  </template>
-                                </b-input-group>
-                              </b-col>
-                              <b-col cols="3"></b-col>
-                              <b-col cols="3"></b-col>
-                            </b-row>
-                          </b-form>
-                        </b-col>
-                      </b-row>
-                    </b-tab>
-                    <b-tab class="mtab">
-                      <template slot="title">Action Officer</template>
-                      <b-row no-gutters>
-                        <b-col cols="12"></b-col>
-                      </b-row>
-                    </b-tab>
-                  </b-tabs>
-                </b-card>
+    <b-overlay :show="!publoaded" :variant="success" class="contentHeight m-0 p-0">
+      <b-container v-if="publoaded" fluid class="contentHeight m-0 p-0">
+        <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" header-text-variant="light" modal-class="zModal">
+          <template v-slot:modal-title>Select Rel To</template>
+          <b-container class="p-0">
+            <b-row>
+              <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
+            </b-row>
+            <b-row>
+              <b-col cols="12">
+                <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
+                  <b-input-group size="sm">
+                    <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
+                    <b-input-group-append>
+                      <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
+                    </b-input-group-append>
+                  </b-input-group>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12">
+                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+                  <template #cell(actions)="row">
+                    <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12">
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
               </b-col>
             </b-row>
           </b-container>
-          <template #overlay>
-            <div class="text-center">
-              <p id="busy-label">Loading Publication Form</p>
-            </div>
-          </template>
-        </b-overlay>
-      </b-col>
-    </b-row>
+        </b-modal>
+        <b-row no-gutters class="contentHeight">
+          <b-col cols="12" class="m-0 p-0">
+            <b-card no-body>
+              <b-tabs v-model="rightTabs" card>
+                <b-tab class="mtab" active>
+                  <template slot="title">Document/Library Data</template>
+                  <b-row>
+                    <b-col cols="12">
+                      <b-form class="mt-0">
+                        <b-form-row>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Title" label-for="txtTitle" :invalid-feedback="Invalid('Title')" :state="ValidateMe('Title')">
+                              <b-form-input class="form-control" size="sm" id="txtTitle" v-model="publication.Title" placeholder="Enter Title" ref="Title" :state="ValidateMe('Title')"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Branch" label-for="ddBranch" :invalid-feedback="Invalid('Branch')" :state="ValidateMe('Branch')">
+                              <b-form-select
+                                class="form-control"
+                                size="sm"
+                                id="ddBranch"
+                                v-model="publication.Branch"
+                                :options="branches"
+                                @change="onBranchSelect"
+                                :state="ValidateMe('Branch')"
+                                ref="Branch"
+                                v-b-tooltip.hover.v-dark
+                                title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."
+                              ></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Prefix" label-for="ddPrefix" :invalid-feedback="Invalid('Prefix')" :state="ValidateMe('Prefix')">
+                              <b-form-select class="form-control" size="sm" id="ddPrefix" v-model="publication.Prfx" :options="prefixes" :state="ValidateMe('Prefix')" ref="Prefix"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Pub ID" label-for="txtPubID" :invalid-feedback="Invalid('PubID')" :state="ValidateMe('PubID')">
+                              <b-form-input class="form-control" size="sm" id="txtPubID" v-model="publication.PubID" placeholder="Enter Pub ID" ref="PubID" :state="ValidateMe('PubID')"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Long Title" label-for="txtLongTitle">
+                              <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="publication.LongTitle" placeholder="Enter Long Title" ref="LongTitle"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Bookshelf" label-for="ddBookshelf">
+                              <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Functional Series" label-for="ddFunctionalSeries">
+                              <b-form-select class="form-control" size="sm" id="ddFunctionalSeries" v-model="publication.AdditionalData.FunctionalSeries" :options="functionalseries" @change="onSeriesSelect"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Functional Field" label-for="ddFunctionalField">
+                              <b-form-select class="form-control" size="sm" id="ddFunctionalField" v-model="publication.AdditionalData.FunctionalField" :options="functionalfields"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Description" label-for="txtDescription">
+                              <!-- <b-form-textarea class="form-control" rows="8" id="txtDescription" v-model="publication.AdditionalData.Description" size="sm" placeholder="Description"></b-form-textarea> -->
+                              <vue-editor id="txtDescription" v-model="publication.AdditionalData.Description"></vue-editor>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Admin Comments" label-for="txtAdminComments">
+                              <!-- <b-form-textarea class="form-control" rows="8" id="txtAdminComments" v-model="publication.AdditionalData.AdminComments" size="sm" placeholder="Admin Comments"></b-form-textarea> -->
+                              <vue-editor id="txtDescription" v-model="publication.AdditionalData.AdminComments"></vue-editor>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
+                  </b-row>
+                </b-tab>
+                <b-tab class="mtab">
+                  <template slot="title">Status</template>
+                  <b-row>
+                    <b-col cols="12">
+                      <b-form class="mt-0">
+                        <b-form-row>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Edition" label-for="txtEdition">
+                              <b-form-input class="form-control" size="sm" id="txtEdition" v-model="publication.AdditionalData.Edition" placeholder="Enter Edition" ref="Edition"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Change" label-for="txtChange">
+                              <b-form-input class="form-control" size="sm" id="txtChange" v-model="publication.AdditionalData.Change" placeholder="Enter Change" ref="Change"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Date of Issue" label-for="txtDateofIssue">
+                              <b-form-input class="form-control" size="sm" id="txtDateofIssue" v-model="publication.DateofIssue" placeholder="" ref="DateofIssue" type="date"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Resourced?" label-for="cbResourced">
+                              <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Status" label-for="ddStatus">
+                              <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip title="Status of publication. Choices depend on the Branch."></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Status Comments" label-for="txtStatusComments">
+                              <!-- <b-form-textarea class="form-control" rows="8" id="txtStatusComments" v-model="publication.StatusComments" size="sm" placeholder="Status Comments"></b-form-textarea> -->
+                              <vue-editor id="txtStatusComments" v-model="publication.AdditionalData.AdminComments"></vue-editor>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="6" class="text-center text-dark p-1">
+                            <b-form-group label="Supersedes" label-for="txtReplacesLink">
+                              <b-form-input class="form-control" size="sm" id="txtReplacesLink" v-model="publication.Replaces" placeholder="Link to Document" ref="ReplacesLink"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
+                  </b-row>
+                </b-tab>
+                <b-tab class="mtab">
+                  <template slot="title">Security/Availability</template>
+                  <b-row>
+                    <b-col cols="12">
+                      <b-form class="mt-0">
+                        <b-form-row>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Classification" label-for="ddClass">
+                              <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Dissemination" label-for="ddDiss">
+                              <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="REL TO" label-for="txtRelto">
+                              <b-input-group>
+                                <b-form-input id="txtRelto" ref="txtRelto" class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
+                                <template #append>
+                                  <b-button variant="blue-700" @click="onReltoSearch">
+                                    <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
+                                  </b-button>
+                                </template>
+                              </b-input-group>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1"></b-col>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
+                  </b-row>
+                </b-tab>
+                <b-tab class="mtab">
+                  <template slot="title">Action Officer</template>
+                  <b-row>
+                    <b-col cols="12"></b-col>
+                  </b-row>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+          </b-col>
+        </b-row>
+      </b-container>
+      <template #overlay>
+        <div class="text-center">
+          <p id="busy-label">Loading Publication Form</p>
+        </div>
+      </template>
+    </b-overlay>
   </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { VueEditor, Quill } from 'vue2-editor'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
@@ -240,7 +239,12 @@ var slash = '/'
 var tp1 = String(window.location.protocol)
 var tp2 = String(window.location.host)
 
-@Component
+@Component({
+  name: 'EditPub',
+  components: {
+    VueEditor
+  }
+})
 export default class EditPub extends Vue {
   interval!: any
   invalidTitle = 'Please input a valid Title.'
@@ -385,7 +389,6 @@ export default class EditPub extends Vue {
 
   public waitForIt() {
     if (this.publoaded) {
-      console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
       // is the branch available to get the prefixes
@@ -398,7 +401,10 @@ export default class EditPub extends Vue {
                   if (response) {
                     this.getRelto().then(response => {
                       if (response) {
-                        this.getBS()
+                        this.getBS().then(response => {
+                          console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+                          this.formReady = true
+                        })
                       }
                     })
                   }
@@ -408,7 +414,7 @@ export default class EditPub extends Vue {
           }
         })
       }
-      this.formReady = true
+      // this.formReady = true
     }
   }
 
@@ -461,6 +467,17 @@ export default class EditPub extends Vue {
     }
   }
 
+  public Invalid(control: string) {
+    if (this.formReady) {
+      let ret = ''
+      switch (control) {
+        case 'Title':
+          ret = 'Please enter a Title.'
+          break
+      }
+    }
+  }
+
   public onBranchSelect() {
     if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
       // call getPrefixesByBranch
@@ -494,4 +511,14 @@ export default class EditPub extends Vue {
 }
 </script>
 
-<style></style>
+<style>
+.table-form {
+  border: 1px solid #000000 !important;
+}
+.table-form td,
+.table-form th {
+  border: 1px solid #000000 !important;
+  height: 20px !important;
+  padding: 2px 5px !important;
+}
+</style>

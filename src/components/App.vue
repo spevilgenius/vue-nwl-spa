@@ -9,6 +9,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
 import { NotificationItem } from '../interfaces/NotificationItem'
+import { forEach } from 'lodash'
 
 const notify = namespace('notify')
 const users = namespace('users')
@@ -115,6 +116,11 @@ export default class App extends Vue {
     if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
       this.createAllPubs()
+      let oldbanners = document.getElementsByClassName('classificationbanner')
+      while (oldbanners.length > 0) {
+        let b = oldbanners[0] as HTMLElement
+        b.remove()
+      }
     }
   }
 }
@@ -133,6 +139,6 @@ export default class App extends Vue {
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 10000000 !important;
+  z-index: 100 !important;
 }
 </style>
