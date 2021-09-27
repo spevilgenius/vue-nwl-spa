@@ -3,5 +3,6 @@ interface ObjectItem {
   value: any
   index?: string
   selected?: boolean
+  props?: {}
 }
 export { ObjectItem }

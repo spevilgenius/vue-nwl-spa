@@ -112,11 +112,13 @@ class Publication extends VuexModule {
   public functionalseries: Array<ObjectItem> = []
   public functionalfields: Array<ObjectItem> = []
   public relto: Array<ObjectItem> = []
+  public reviewauthority: Array<ObjectItem> = [] // use for PRA and CRA
   public pubBlob?: Blob
   public blobloaded?: boolean = false
   public pubBuffer?: ArrayBuffer
   public bufferloaded?: boolean = false
   public filetype?: any
+  public actionofficers: Array<ObjectItem> = []
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -125,6 +127,7 @@ class Publication extends VuexModule {
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalfieldsUrl = "/_api/lists/getbytitle('lu_librarytree')/items?$select=*,funcSeries/Title&$expand=funcSeries&$filter=(funcSeries/Title eq '"
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
+  raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
 
   @Mutation
@@ -181,25 +184,13 @@ class Publication extends VuexModule {
   }
 
   @Mutation
-  public createBlob(b: Blob): void {
-    this.pubBlob = b
-    this.blobloaded = true
+  public createAO(items: Array<ObjectItem>): void {
+    this.actionofficers = items
   }
 
   @Mutation
-  public setblobloaded(loaded: boolean) {
-    this.blobloaded = loaded
-  }
-
-  @Mutation
-  public createBuffer(b: ArrayBuffer): void {
-    this.pubBuffer = b
-    this.bufferloaded = true
-  }
-
-  @Mutation
-  public setbufferloaded(loaded: boolean) {
-    this.bufferloaded = loaded
+  public createRA(items: Array<ObjectItem>): void {
+    this.reviewauthority = items
   }
 
   @Action
@@ -562,33 +553,62 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getBinaryFile(url: string): Promise<boolean> {
-    this.context.commit('setbufferloaded', false)
-    /* let blob = new Blob()
-    if (String(url).indexOf('.pdf') > 0) {
-      filetype = 'PDF'
+  public async getAO(): Promise<boolean> {
+    const url = tp1 + slash + slash + tp2 + "/sites/f3i2/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
+    let promise = axios.get(url, { headers: { accept: 'application/json;odata=verbose' } })
+    const response = await promise
+    let j = response.data.d.results
+    // if (console) console.log('RESPONSE: ' + JSON.stringify(j))
+    let p: Array<ObjectItem> = []
+    for (let i = 0; i < j.length; i++) {
+      p.push({
+        text: j[i]['Title'],
+        value: j[i]['Title'],
+        props: {
+          id: j[i]['Id'],
+          email: j[i]['Email']
+        }
+      })
     }
-    if (String(url).indexOf('.doc') > 0) {
-      filetype = 'WORD'
-    }
-    console.log('FILETYPE: ' + filetype) */
-    let turl = tp1 + slash + slash + tp2 + this.getfileUrl
-    turl += url
-    turl += "')/OpenBinaryStream"
-    console.log('getBinaryFile URL: ' + turl)
-    const response = await axios.get(turl, {
-      headers: {
-        responseType: 'arraybuffer'
+    this.context.commit('createAO', p)
+    return true
+  }
+
+  @Action
+  public async getRA(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllRA(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllRA(url)
+      } else {
+        // console.log('getAllRA Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
+            props: {
+              pla: j[i]['PLA'],
+              abbr: j[i]['abbr']
+            }
+          })
+        }
+        that.context.commit('createRA', p)
       }
-    })
-    let buff = new ArrayBuffer(response.data)
-    /* if (this.filetype === 'PDF') {
-      blob = new Blob([buff], { type: 'application/pdf' })
     }
-    if (this.filetype === 'WORD') {
-      blob = new Blob([buff], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-    } */
-    this.context.commit('createBuffer', buff)
+    let turl = tp1 + slash + slash + tp2 + this.raUrl
+    console.log('getAllRA URL: ' + turl)
+    getAllRA(turl)
     return true
   }
 

@@ -197,7 +197,11 @@
                               </b-input-group>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="3" class="text-center text-dark p-1"></b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="DTIC" label-for="ddDtic">
+                              <b-form-select class="form-control" v-model="publication.DTIC" size="sm" id="ddDtic" :options="dtic" ref="DTIC"></b-form-select>
+                            </b-form-group>
+                          </b-col>
                         </b-form-row>
                       </b-form>
                     </b-col>
@@ -206,7 +210,58 @@
                 <b-tab class="mtab">
                   <template slot="title">Action Officer</template>
                   <b-row>
-                    <b-col cols="12"></b-col>
+                    <b-col cols="12">
+                      <b-form>
+                        <b-form-row>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="NWDC AO" label-for="ddNWDCAO">
+                              <b-form-select class="form-control" v-model="publication.NWDCAO" size="sm" id="ddNWDCAO" :options="actionofficers" ref="NWDCAO"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="Review Date" label-for="txtReviewDate">
+                              <b-form-input class="form-control" size="sm" id="txtReviewDate" v-model="publication.ReviewDate" ref="ReviewDate" type="date"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="AO Remarks" label-for="txtRemarks">
+                              <b-form-input class="form-control" size="sm" id="txtRemarks" v-model="publication.AdditionalData.Remarks" ref="Remarks"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Primary Review Authority" label-for="ddPRA">
+                              <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="9" class="text-center text-dark p-1">
+                            <b-container fluid class="m-0 p-0">
+                              <b-row no-gutters>
+                                <b-form>
+                                  <b-form-row>
+                                    <b-col cols="6" class="text-center text-dark p-1">
+                                      <b-form-group label="Coordinating Review Authority Selection" label-for="table_cra">
+                                        <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onCRAFiltered">
+                                          <template #cell(actions)="row">
+                                            <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
+                                          </template>
+                                        </b-table>
+                                      </b-form-group>
+                                    </b-col>
+                                    <b-col cols="6" class="text-center text-dark p-1">
+                                      <b-form-group label="Selected Coordinating Review Authority" label-for="cbg_cra">
+                                        <b-checkbox-group id="cbg_cra" stacked v-model="publication.CoordinatingRA"></b-checkbox-group>
+                                      </b-form-group>
+                                    </b-col>
+                                  </b-form-row>
+                                </b-form>
+                              </b-row>
+                            </b-container>
+                          </b-col>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
                   </b-row>
                 </b-tab>
               </b-tabs>
@@ -250,14 +305,21 @@ export default class EditPub extends Vue {
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
   reltofilter = ''
+  crafilter = ''
   reltodata!: any
   currentPage = 0
+  currentPageCRA = 0
   perPage = 50
   formReady = false
 
   reltofields = [
     { key: 'actions', label: 'Select' },
     { key: 'value', label: 'RELTO', sortable: true }
+  ]
+
+  crafields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'value', label: 'Review Authority', sortable: true }
   ]
 
   @users.State
@@ -287,6 +349,12 @@ export default class EditPub extends Vue {
   @publication.State
   public functionalfields!: Array<ObjectItem>
 
+  @publication.State
+  public reviewauthority!: Array<ObjectItem>
+
+  @publication.State
+  public actionofficers!: Array<ObjectItem>
+
   @support.Action
   public getBS!: () => Promise<boolean>
 
@@ -307,6 +375,12 @@ export default class EditPub extends Vue {
 
   @publication.Action
   public getFunctionalFieldByFunctionalSeries!: (series: string) => Promise<boolean>
+
+  @support.Action
+  public getAO!: () => Promise<boolean>
+
+  @publication.Action
+  public getRA!: () => Promise<boolean>
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -391,6 +465,8 @@ export default class EditPub extends Vue {
     if (this.publoaded) {
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
+      this.getAO()
+      this.getRA()
       // is the branch available to get the prefixes
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
         this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
@@ -507,6 +583,10 @@ export default class EditPub extends Vue {
         })
       }
     }
+  }
+
+  public toggleCRA(item: any, event: any) {
+    // toggle selection of CRA
   }
 }
 </script>
