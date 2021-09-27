@@ -167,10 +167,10 @@ export default class Terminology extends Vue {
   pageSize = 20
 
   fields: any = [
-    { key: 'type', label: 'Type', type: 'default', format: 'text', tdClass: 'px80', id: 20 },
-    { key: 'title', label: 'Title', type: 'default', format: 'text', tdClass: 'px90', id: 1 },
-    { key: 'definition', label: 'Definition', type: 'default', format: 'text', tdClass: 'px500', id: 2 },
-    { key: 'service', label: 'Service', type: 'default', format: 'text', tdClass: 'px50', id: 3 }
+    { key: 'type', label: 'Type', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 20 },
+    { key: 'title', label: 'Title', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px90', id: 1 },
+    { key: 'definition', label: 'Definition', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px500', id: 2 },
+    { key: 'service', label: 'Service', type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px50', id: 3 }
   ]
 
   mounted() {

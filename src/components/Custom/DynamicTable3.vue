@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
-  <b-container fluid class="contentHeight m-0 p-0">
+  <b-container fluid class="contentHeight m-2 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
@@ -20,22 +20,7 @@
             </b-row>
             <b-row no-gutters :style="getStyle('tablerow', null)">
               <b-col cols="12">
-                <b-table
-                  striped
-                  hover
-                  :items="filtereditems"
-                  :fields="table.fields"
-                  primary-key="table.primarykey"
-                  :filter="filter"
-                  :filter-included-fields="filterOn"
-                  :per-page="perPage"
-                  :current-page="currentPage"
-                  table-class="table-full"
-                  table-variant="light"
-                  :style="getStyle('maintable', null)"
-                  @filtered="onFiltered"
-                  head-row-variant="blue-500"
-                >
+                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('maintable', null)" @filtered="onFiltered">
                   <template #cell(definition)="data">
                     <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
                   </template>
@@ -164,6 +149,7 @@ export default class DynamicTable extends Vue {
 
   public waitForIt() {
     if (this.$props.table.items.length > 0) {
+      const that = this
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
@@ -244,6 +230,10 @@ export default class DynamicTable extends Vue {
         style.width = that.contentwidth + 'px'
         break
 
+      case 'maintable':
+        style.width = that.contentwidth - 5 + 'px'
+        break
+
       case 'tablerow':
         style.height = that.contentheight - 100 + 'px'
         style.width = that.contentwidth + 'px'
@@ -252,10 +242,6 @@ export default class DynamicTable extends Vue {
       case 'pagingrow':
         style.height = '50px'
         style.width = that.contentwidth + 'px'
-        break
-
-      case 'maintable':
-        style.width = that.contentwidth - 5 + 'px'
         break
     }
     return style
