@@ -1,7 +1,7 @@
-<template>
+ib<template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters>
-      <b-col cols="12">
+      <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="m-0 p-0">
           <b-row no-gutters class="titleRow">
             <div class="mx-auto text-center">
@@ -12,95 +12,101 @@
           </b-row>
         </b-container>
       </b-col>
-      <b-row cols="12" no-gutters>
-        <b-col cols="6" class="m-0 p-1 bg-white">
-          <b-card no-body header-tag="header">
-            <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-              ><h4 class="text-white p-0 mb-0">
-                NATO Warfighting Publications
-              </h4></b-card-header
-            >
-            <b-card-body class="p-1">
-              <b-list-group>
-                <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
+    </b-row>
+    <b-row cols="12" no-gutters>
+      <b-col cols="3"></b-col>
+      <b-col cols="3" class="m-0 p-1 bg-white">
+        <b-card no-body header-tag="header">
+          <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+            ><h4 class="text-white p-0 mb-0">
+              NATO Warfighting Publications
+            </h4></b-card-header
+          >
+          <b-card-body class="p-1">
+            <b-list-group>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-card no-body class="p-1">
+                  <b-row no-gutters>
+                    <b-col class="p-1">
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'ATP' } }">
+                        <b-card-sub-title
+                          ><i><b>Allied Tactical Publications</b></i></b-card-sub-title
+                        >
+                        <b-card-title>ATP</b-card-title>
+                      </b-link>
+                    </b-col>
+                  </b-row>
+                </b-card>
+              </b-list-group-item>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-link :to="{ name: 'All Publications', query: { Type: 'AJP' } }">
                   <b-card no-body class="p-1">
                     <b-row no-gutters>
-                      <b-col md="12" class="p-1">
-                        <b-link :to="{ name: 'All Publications', query: { Type: 'ATP' } }">
-                          <b-card-sub-title
-                            ><i><b>Allied Tactical Publications</b></i></b-card-sub-title
-                          >
-                          <b-card-title>ATP</b-card-title>
-                        </b-link>
+                      <b-col class="p-1">
+                        <b-card-sub-title>Allied Joint Publications</b-card-sub-title>
+                        <b-card-title>AJP</b-card-title>
                       </b-col>
                     </b-row>
                   </b-card>
-                </b-list-group-item>
-                <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                  <b-link :to="{ name: 'All Publications', query: { Type: 'AJP' } }">
-                    <b-card no-body class="p-1">
-                      <b-row no-gutters>
-                        <b-col md="12" class="p-1">
-                          <b-card-sub-title>Allied Joint Publications</b-card-sub-title>
-                          <b-card-title>AJP</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-link>
-                </b-list-group-item>
-                <b-list-group-item variant="blue-800" class="flex-column align-items-start">
-                  <b-link :to="{ name: 'All Publications', query: { Type: 'NTRP' } }">
-                    <b-card no-body class="p-1">
-                      <b-row no-gutters>
-                        <b-col md="12" class="p-1">
-                          <b-card-sub-title>Allied Mine Warfare Publications</b-card-sub-title>
-                          <b-card-title>AMP</b-card-title>
-                        </b-col>
-                      </b-row>
-                    </b-card>
-                  </b-link>
-                </b-list-group-item>
-              </b-list-group>
-            </b-card-body>
-          </b-card>
-        </b-col>
+                </b-link>
+              </b-list-group-item>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-link :to="{ name: 'All Publications', query: { Type: 'NTRP' } }">
+                  <b-card no-body class="p-1">
+                    <b-row no-gutters>
+                      <b-col class="p-1">
+                        <b-card-sub-title>Allied Mine Warfare Publications</b-card-sub-title>
+                        <b-card-title>AMP</b-card-title>
+                      </b-col>
+                    </b-row>
+                  </b-card>
+                </b-link>
+              </b-list-group-item>
+            </b-list-group>
+          </b-card-body>
+        </b-card>
+      </b-col>
 
-        <b-col cols="6" class="m-0 p-1 bg-white">
-          <b-card no-body header-tag="header">
-            <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-              ><h4 class="text-white p-0 mb-0">
-                Warfighting Collections
-              </h4></b-card-header
-            >
-            <b-card-body body-class="card-body-left p-1">
-              <ul>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'AAP' } }">Administrative (AAPs)</b-link>
-                </li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'APP' } }">Procedural Publications (APPs)</b-link>
-                </li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'AEP' } }">Engineering Publications (AEPs)</b-link>
-                </li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'AWP' } }">Meteorology and Oceanography (AMETOCPs/AWPs)</b-link>
-                </li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'AHP' } }">Hydrographic Publications (AHPs)</b-link>
-                </li>
-                <li><b-link :to="{ name: 'All Publications', query: { Value: 'ALP' } }">Logistics Publications (ALPs)</b-link></li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'AXP' } }">Exercise Publications (AXPs)</b-link>
-                </li>
-                <li>
-                  <b-link :to="{ name: 'All Publications', query: { Value: 'NATO Specialist' } }">NATO Specialist Publications (AAEP, ACOMP etc)</b-link>
-                </li>
-              </ul>
-            </b-card-body>
-          </b-card>
-        </b-col>
-      </b-row>
+      <b-col cols="3" class="m-0 p-1 bg-white">
+        <b-card no-body header-tag="header">
+          <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+            ><h4 class="text-white p-0 mb-0">
+              Other key NATO Publications
+            </h4></b-card-header
+          >
+          <b-card-body body-class="card-body-left p-1">
+            <ul>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AAP' } }">Administrative (AAPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'APP' } }">Procedural Publications (APPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AEP' } }">Engineering Publications (AEPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AWP' } }">Meteorology and Oceanography (AMETOCPs/AWPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AHP' } }">Hydrographic Publications (AHPs)</b-link>
+              </p>
+              <p><b-link :to="{ name: 'All Publications', query: { Value: 'ALP' } }">Logistics Publications (ALPs)</b-link></p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AXP' } }">Exercise Publications (AXPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'NATO Specialist' } }">NATO Specialist Publications (AAEP, ACOMP etc)</b-link>
+              </p>
+            </ul>
+          </b-card-body>
+        </b-card>
+      </b-col>
+      <b-col cols="3">
+        <a href="https://www.nato.int">
+          <img :src="baseImageUrl + '/NatoImage233x117.jpg'" />
+        </a>
+      </b-col>
     </b-row>
   </b-container>
 </template>
@@ -111,7 +117,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({
   name: 'Home'
 })
-export default class Allied extends Vue {}
+export default class Allied extends Vue {
+  @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
+  readonly baseImageUrl!: string
+}
 </script>
 
 <style lang="scss" scoped>
@@ -157,7 +166,7 @@ h5,
 h6 {
   margin-bottom: auto;
 }
-.ul {
-  list-style-type: none;
+a {
+  color: black !important;
 }
 </style>
