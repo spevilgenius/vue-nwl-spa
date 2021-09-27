@@ -231,33 +231,41 @@
                         </b-form-row>
                         <b-form-row>
                           <b-col cols="3" class="text-center text-dark p-1">
-                            <b-form-group label="Primary Review Authority" label-for="ddPRA">
-                              <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
-                            </b-form-group>
+                            <b-row no-gutters>
+                              <!-- b-row added for spacing -->
+                              <b-form-group label="Primary Review Authority" label-for="ddPRA">
+                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
+                              </b-form-group>
+                            </b-row>
                           </b-col>
-                          <b-col cols="9" class="text-center text-dark p-1">
-                            <b-container fluid class="m-0 p-0">
-                              <b-row no-gutters>
-                                <b-form>
-                                  <b-form-row>
-                                    <b-col cols="6" class="text-center text-dark p-1">
-                                      <b-form-group label="Coordinating Review Authority Selection" label-for="table_cra">
-                                        <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onCRAFiltered">
-                                          <template #cell(actions)="row">
-                                            <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
-                                          </template>
-                                        </b-table>
-                                      </b-form-group>
-                                    </b-col>
-                                    <b-col cols="6" class="text-center text-dark p-1">
-                                      <b-form-group label="Selected Coordinating Review Authority" label-for="cbg_cra">
-                                        <b-checkbox-group id="cbg_cra" stacked v-model="publication.CoordinatingRA"></b-checkbox-group>
-                                      </b-form-group>
-                                    </b-col>
-                                  </b-form-row>
-                                </b-form>
-                              </b-row>
-                            </b-container>
+                          <b-col cols="9" class="text-center text-dark">
+                            <b-row no-gutters>
+                              <!-- b-row added for spacing -->
+                              <b-col cols="12">
+                                <b-form-row>
+                                  <b-col cols="6" class="text-center text-dark p-1">
+                                    <b-form-group label="Coordinating Review Authority Selection" label-for="table_cra">
+                                      <b-input-group class="float-right">
+                                        <b-form-input v-model="crafilter" placeholder="Filter RAs..." type="search"></b-form-input>
+                                        <b-input-group-append>
+                                          <b-button :disabled="!crafilter" @click="crafilter = ''">Clear</b-button>
+                                        </b-input-group-append>
+                                      </b-input-group>
+                                      <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small>
+                                        <template #cell(actions)="row">
+                                          <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
+                                        </template>
+                                      </b-table>
+                                    </b-form-group>
+                                  </b-col>
+                                  <b-col cols="6" class="text-center text-dark p-1">
+                                    <b-form-group label="Selected Coordinating Review Authority" label-for="cbg_cra">
+                                      <b-checkbox-group id="cbg_cra" stacked v-model="publication.CoordinatingRA"></b-checkbox-group>
+                                    </b-form-group>
+                                  </b-col>
+                                </b-form-row>
+                              </b-col>
+                            </b-row>
                           </b-col>
                         </b-form-row>
                       </b-form>
@@ -586,7 +594,8 @@ export default class EditPub extends Vue {
   }
 
   public toggleCRA(item: any, event: any) {
-    // toggle selection of CRA
+    // toggle selection of CRA by checking if it is or is not selected and selecting/deselecting it accordingly.
+    alert('SELECTED RA: ' + item.value)
   }
 }
 </script>

@@ -5,6 +5,7 @@ import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
+import { MonthWeekdayFn } from 'moment'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -95,6 +96,20 @@ function FormatAD(ad: any, id: any, nato: any): any {
   } else {
     console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
     return JSON.parse(additionalData)
+  }
+}
+
+function makeArray(data: string) {
+  if (data !== null && data !== '') {
+    let zebra: any = []
+    let snake = data.split(', ')
+    for (let v = 0; v < snake.length; v++) {
+      zebra.push(snake[v])
+    }
+    console.log('ARRAY CREATED: ' + snake.length)
+    return zebra
+  } else {
+    return []
   }
 }
 @Module({ namespaced: true })
@@ -224,8 +239,8 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: j[i]['CoordinatingRA'],
-            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
@@ -289,8 +304,8 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: j[i]['CoordinatingRA'],
-            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
@@ -350,8 +365,8 @@ class Publication extends VuexModule {
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
     p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = j[0]['CoordinatingRA']
-    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
+    p.CoordinatingRA = makeArray(j[0]['CoordinatingRA'])
+    p.CoordinatingRAAbv = makeArray(j[0]['CoordinatingRAAbv'])
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
