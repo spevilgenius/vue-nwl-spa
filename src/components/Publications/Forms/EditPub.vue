@@ -2,7 +2,7 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-overlay :show="!publoaded" :variant="success" class="contentHeight m-0 p-0">
       <b-container v-if="publoaded" fluid class="contentHeight m-0 p-0">
-        <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" header-text-variant="light" modal-class="zModal">
+        <b-modal id="modalRelto" ref="modalRelto" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal">
           <template v-slot:modal-title>Select Rel To</template>
           <b-container class="p-0">
             <b-row>
@@ -22,7 +22,7 @@
             </b-row>
             <b-row>
               <b-col cols="12">
-                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPageRelto" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
                   <template #cell(actions)="row">
                     <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
                   </template>
@@ -186,7 +186,7 @@
                             </b-form-group>
                           </b-col>
                           <b-col cols="3" class="text-center text-dark p-1">
-                            <b-form-group label="REL TO" label-for="txtRelto">
+                            <!-- <b-form-group label="REL TO" label-for="txtRelto">
                               <b-input-group>
                                 <b-form-input id="txtRelto" ref="txtRelto" class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
                                 <template #append>
@@ -195,7 +195,18 @@
                                   </b-button>
                                 </template>
                               </b-input-group>
-                            </b-form-group>
+                            </b-form-group> -->
+                            <dynamic-modal-select
+                              :id="RELTO"
+                              :table="{
+                                items: relto,
+                                fields: reltofields,
+                                control: 'Relto',
+                                value: publication.AdditionalData.RELTO,
+                                title: 'Select REL TO',
+                                label: 'REL TO'
+                              }"
+                            ></dynamic-modal-select>
                           </b-col>
                           <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="DTIC" label-for="ddDtic">
@@ -245,17 +256,21 @@
                                 <b-form-row>
                                   <b-col cols="6" class="text-center text-dark p-1">
                                     <b-form-group label="Coordinating Review Authority Selection" label-for="table_cra">
-                                      <b-input-group class="float-right">
-                                        <b-form-input v-model="crafilter" placeholder="Filter RAs..." type="search"></b-form-input>
-                                        <b-input-group-append>
-                                          <b-button :disabled="!crafilter" @click="crafilter = ''">Clear</b-button>
-                                        </b-input-group-append>
-                                      </b-input-group>
-                                      <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small>
-                                        <template #cell(actions)="row">
-                                          <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
-                                        </template>
-                                      </b-table>
+                                      <!-- <b-form-row class="m-0">
+                                        <b-input-group size="sm">
+                                          <b-form-input v-model="crafilter" placeholder="Filter RAs..." type="search"></b-form-input>
+                                          <b-input-group-append>
+                                            <b-button :disabled="!crafilter" @click="crafilter = ''">Clear</b-button>
+                                          </b-input-group-append>
+                                        </b-input-group>
+                                      </b-form-row> -->
+                                      <b-form-row class="m-0">
+                                        <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small>
+                                          <template #cell(actions)="row">
+                                            <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
+                                          </template>
+                                        </b-table>
+                                      </b-form-row>
                                     </b-form-group>
                                   </b-col>
                                   <b-col cols="6" class="text-center text-dark p-1">
@@ -293,6 +308,7 @@ import { VueEditor, Quill } from 'vue2-editor'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import DynamicModalSelect from '../../Custom/DynamicModalSelect.vue'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -305,7 +321,8 @@ var tp2 = String(window.location.host)
 @Component({
   name: 'EditPub',
   components: {
-    VueEditor
+    VueEditor,
+    DynamicModalSelect
   }
 })
 export default class EditPub extends Vue {
@@ -315,9 +332,11 @@ export default class EditPub extends Vue {
   reltofilter = ''
   crafilter = ''
   reltodata!: any
-  currentPage = 0
+  currentPageRelto = 0
   currentPageCRA = 0
   perPage = 50
+  totalcalls = 0
+  completedcalls = 0
   formReady = false
 
   reltofields = [
@@ -460,7 +479,7 @@ export default class EditPub extends Vue {
         console.log('TEST B')
         this.getPublicationById(String(id), String(nato)).then(response => {
           if (response) {
-            this.interval = setInterval(this.waitForIt, 500)
+            this.interval = setInterval(this.loadData, 500)
           }
         })
       } else {
@@ -469,20 +488,33 @@ export default class EditPub extends Vue {
     }
   }
 
-  public waitForIt() {
+  public loadData() {
     if (this.publoaded) {
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
-      this.getAO()
-      this.getRA()
+      const that = this
+      /* this.getAO().then(function() {
+        that.completedcalls += 1
+      }) */
+      this.getRA().then(function() {
+        that.completedcalls += 1
+      })
+      this.getRelto().then(function() {
+        that.completedcalls += 1
+      })
+      this.getBS().then(function() {
+        that.completedcalls += 1
+      })
+      this.totalcalls = 3
       // is the branch available to get the prefixes
-      if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
+      /* if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
         this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
           if (response) {
             this.getStatusesByBranch(String(this.publication.Branch)).then(response => {
               if (response) {
                 this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(response => {
                   if (response) {
+                    this.formReady = true
                     this.getRelto().then(response => {
                       if (response) {
                         this.getBS().then(response => {
@@ -497,8 +529,30 @@ export default class EditPub extends Vue {
             })
           }
         })
+      } */
+      if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
+        this.getPrefixesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
+        })
+        this.getStatusesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
+        })
+        this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
+        })
+        this.totalcalls += 3
       }
-      // this.formReady = true
+      this.interval = setInterval(this.waitForData, 500)
+    }
+  }
+
+  public waitForData() {
+    // gitrdone
+    if (this.completedcalls === this.totalcalls) {
+      clearInterval(this.interval)
+      this.formReady = true
+    } else {
+      console.log('WAITING FOR FORM')
     }
   }
 
