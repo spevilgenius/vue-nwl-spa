@@ -3,36 +3,7 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
-          <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-0">
-              <b-carousel>
-                <b-carousel-slide v-for="announcement in announcements" :key="announcement">
-                  <template #img>
-                    <b-container fluid class="py100">
-                      <b-row>
-                        <b-col md="4" class="centerFlex py100">
-                          <h5 class="text-black">{{ announcement.Title }}</h5>
-                          <h6 class="text-black">
-                            {{ announcement.Modified }}
-                          </h6>
-                          <h6 class="text-black">
-                            {{ announcement.ModifiedBy.Title }}
-                          </h6>
-                        </b-col>
-                        <b-col md="8" class="centerFlex py100">
-                          <span class="text-black" v-html="limitText(announcement.Info)"></span>
-                          <!-- <h5 class="text-black">
-                            <a :href="announcement.link">{{ announcement.title }}</a>
-                          </h5> -->
-                        </b-col>
-                      </b-row>
-                    </b-container>
-                  </template>
-                </b-carousel-slide>
-              </b-carousel>
-            </b-col>
-          </b-row>
-          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/banner.jpg)' }">
+          <!-- <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/banner.jpg)' }">
             <b-col cols="12">
               <b-container fluid class="m-0 p-0">
                 <b-row no-gutters class="titleRow">
@@ -47,22 +18,19 @@
                 </b-row>
               </b-container>
             </b-col>
-            <!-- <b-col cols="6"></b-col> -->
-          </b-row>
+          </b-row> -->
           <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-1 bg-white">
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Naval Warfare NDP 1
-                  </h4></b-card-header
-                >
-                <b-card-body body-class="card-body-center p-1">
-                  <ul>
-                    <b-link :to="{ name: 'View Publication', query: { Id: 158, Nato: 'No' } }">NDP 1</b-link>
-                  </ul>
-                </b-card-body>
-              </b-card>
+            <b-col cols="4"></b-col>
+            <b-col cols="4" class="m-0 p-1 bg-white">
+              <b-link :to="{ name: 'View Publication', query: { Id: 158, Nato: 'No' } }">
+                <b-card no-body header-tag="header">
+                  <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+                    ><h4 class="text-white p-0 mb-0">
+                      Naval Warfare NDP 1
+                    </h4></b-card-header
+                  >
+                </b-card>
+              </b-link>
             </b-col>
           </b-row>
           <b-row no-gutters>
@@ -75,18 +43,18 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 283, Nato: 'No' } }">1-05 Religious Ministry Support</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 0, Nato: 'No' } }">1-10 Tactical Reference</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">1-11 Platform Capabilities</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 285, Nato: 'No' } }">1-14 Law</b-link>
-                    </li>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP105' } }">1-05 Religious Ministry Support</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP110' } }">1-10 Tactical Reference</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP111' } }">1-11 Platform Capabilities</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP114' } }">1-14 Law</b-link>
+                    </p>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -101,12 +69,12 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 286, Nato: 'No' } }">2-0 Navy Intelligence</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 287, Nato: 'No' } }">2-01 Intelligence Support</b-link>
-                    </li>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP200' } }">2-0 Navy Intelligence</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP201' } }">2-01 Intelligence Support</b-link>
+                    </p>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -120,79 +88,79 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
+                    <p>
                       <b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 289, Nato: 'No' } }">3-01 Air Defense</b-link>
-                    </li>
-                    <li>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP301' } }">3-01 Air Defense</b-link>
+                    </p>
+                    <p>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NWP302' } }">3-02 Amphibious Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Field: 'FunctionalSeries', Value: 'Navy 3-05 Naval Special Warfare' } }">3-05 Naval Special Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">3-07 MOOTW</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">3-09 Strike and Fire Support</b-link></li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">3-10 Expeditionary Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">3-11 CBR-D</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">3-12 Cyberspace Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-13 Information Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-15 Mine Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-20 Surface Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-21 Undersea Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-22 Naval Aviation Warfare</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-29 Disaster Response Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-30 Naval C2 of Air Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-32 Maritime Ops at the OLW</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-56 Operational C2</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-58 Military Deception</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-59 Oceanography</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-60 Targeting</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-61 Public Affairs</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-62 Seabasing</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-63 Computer Network Ops</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-72 Nuclear Ops</b-link>
-                    </li>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP305' } }">3-05 Naval Special Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP307' } }">3-07 MOOTW</b-link>
+                    </p>
+                    <p><b-link :to="{ name: 'All Publications', query: { Type: 'NWP309' } }">3-09 Strike and Fire Support</b-link></p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP310' } }">3-10 Expeditionary Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP311' } }">3-11 CBR-D</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP312' } }">3-12 Cyberspace Ops</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP313' } }">3-13 Information Ops</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP315' } }">3-15 Mine Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP320' } }">3-20 Surface Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP321' } }">3-21 Undersea Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP322' } }">3-22 Naval Aviation Warfare</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP329' } }">3-29 Disaster Response Ops</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP330' } }">3-30 Naval C2 of Air Ops</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP332' } }">3-32 Maritime Ops at the OLW</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP356' } }">3-56 Operational C2</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP358' } }">3-58 Military Deception</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP359' } }">3-59 Oceanography</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP360' } }">3-60 Targeting</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP361' } }">3-61 Public Affairs</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP362' } }">3-62 Seabasing</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP363' } }">3-63 Computer Network Ops</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP372' } }">3-72 Nuclear Ops</b-link>
+                    </p>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -206,31 +174,31 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">4-0 Naval Logistics</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">4-01 Transportation</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">4-02 Health Protection</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">4-04 Naval Engineering</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">4-08 Supply</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">4-09 Other Logistic Services</b-link></li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">4-10 Conventional Ordnance</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">4-11 Environmental</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">4-12 Salvage</b-link>
-                    </li>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP400' } }">4-0 Naval Logistics</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP401' } }">4-01 Transportation</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP402' } }">4-02 Health Protection</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP404' } }">4-04 Naval Engineering</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP408' } }">4-08 Supply</b-link>
+                    </p>
+                    <p><b-link :to="{ name: 'All Publications', query: { Type: 'NWP409' } }">4-09 Other Logistic Services</b-link></p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP410' } }">4-10 Conventional Ordnance</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP411' } }">4-11 Environmental</b-link>
+                    </p>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP412' } }">4-12 Salvage</b-link>
+                    </p>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -244,9 +212,9 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">5-01 Operational Planning</b-link>
-                    </li>
+                    <p>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP501' } }">5-01 Operational Planning</b-link>
+                    </p>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -417,5 +385,10 @@ h4,
 h5,
 h6 {
   margin-bottom: auto;
+}
+p {
+  font-size: '12px' !important;
+  margin-top: '0px' !important;
+  margin-bottom: '0px' !important;
 }
 </style>
