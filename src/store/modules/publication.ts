@@ -275,6 +275,72 @@ class Publication extends VuexModule {
   }
 
   @Action
+  public async getAllPublicationsByQuery(query: string): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getAllPubsByQuery(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllPubsByQuery(url)
+      } else {
+        //console.log('getAllPublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: j[i]['Media'], // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+          })
+        }
+        that.context.commit('createPublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + query
+    // console.log('getAllPublications URL: ' + turl)
+    getAllPubsByQuery(turl)
+    return true
+  }
+
+  @Action
   public async getAllNatoPublications(): Promise<boolean> {
     let j: any[] = []
     let p: Array<PublicationItem> = []
@@ -555,7 +621,8 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
-            text: j[i]['Title']
+            text: j[i]['Title'],
+            selected: false
           })
         }
         that.context.commit('createRelto', p)
@@ -569,11 +636,15 @@ class Publication extends VuexModule {
 
   @Action
   public async getAO(): Promise<boolean> {
-    const url = tp1 + slash + slash + tp2 + "/sites/f3i2/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
-    let promise = axios.get(url, { headers: { accept: 'application/json;odata=verbose' } })
-    const response = await promise
+    const url = tp1 + slash + slash + tp2 + "/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(response))
     let j = response.data.d.results
-    // if (console) console.log('RESPONSE: ' + JSON.stringify(j))
+    // if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(j))
     let p: Array<ObjectItem> = []
     for (let i = 0; i < j.length; i++) {
       p.push({

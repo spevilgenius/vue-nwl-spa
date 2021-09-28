@@ -186,23 +186,13 @@
                             </b-form-group>
                           </b-col>
                           <b-col cols="3" class="text-center text-dark p-1">
-                            <!-- <b-form-group label="REL TO" label-for="txtRelto">
-                              <b-input-group>
-                                <b-form-input id="txtRelto" ref="txtRelto" class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
-                                <template #append>
-                                  <b-button variant="blue-700" @click="onReltoSearch">
-                                    <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
-                                  </b-button>
-                                </template>
-                              </b-input-group>
-                            </b-form-group> -->
                             <dynamic-modal-select
                               :id="RELTO"
+                              v-model="publication.AdditionalData.RELTO"
                               :table="{
                                 items: relto,
                                 fields: reltofields,
                                 control: 'Relto',
-                                value: publication.AdditionalData.RELTO,
                                 title: 'Select REL TO',
                                 label: 'REL TO'
                               }"
@@ -249,38 +239,18 @@
                               </b-form-group>
                             </b-row>
                           </b-col>
-                          <b-col cols="9" class="text-center text-dark">
-                            <b-row no-gutters>
-                              <!-- b-row added for spacing -->
-                              <b-col cols="12">
-                                <b-form-row>
-                                  <b-col cols="6" class="text-center text-dark p-1">
-                                    <b-form-group label="Coordinating Review Authority Selection" label-for="table_cra">
-                                      <!-- <b-form-row class="m-0">
-                                        <b-input-group size="sm">
-                                          <b-form-input v-model="crafilter" placeholder="Filter RAs..." type="search"></b-form-input>
-                                          <b-input-group-append>
-                                            <b-button :disabled="!crafilter" @click="crafilter = ''">Clear</b-button>
-                                          </b-input-group-append>
-                                        </b-input-group>
-                                      </b-form-row> -->
-                                      <b-form-row class="m-0">
-                                        <b-table id="table_cra" ref="table_cra" sticky-header :items="reviewauthority" :fields="crafields" :current-page="currentPageCRA" :filter="crafilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small>
-                                          <template #cell(actions)="row">
-                                            <b-form-checkbox v-model="row.item.selected" @input.native="toggleCRA(row.item, $event)"></b-form-checkbox>
-                                          </template>
-                                        </b-table>
-                                      </b-form-row>
-                                    </b-form-group>
-                                  </b-col>
-                                  <b-col cols="6" class="text-center text-dark p-1">
-                                    <b-form-group label="Selected Coordinating Review Authority" label-for="cbg_cra">
-                                      <b-checkbox-group id="cbg_cra" stacked v-model="publication.CoordinatingRA"></b-checkbox-group>
-                                    </b-form-group>
-                                  </b-col>
-                                </b-form-row>
-                              </b-col>
-                            </b-row>
+                          <b-col cols="9" class="text-center text-dark p-1">
+                            <dynamic-modal-select
+                              :id="CRA"
+                              v-model="publication.CoordinatingRA"
+                              :table="{
+                                items: reviewauthority,
+                                fields: rafields,
+                                control: 'CRA',
+                                title: 'Select Review Authority',
+                                label: 'Coordinating Review Authority'
+                              }"
+                            ></dynamic-modal-select>
                           </b-col>
                         </b-form-row>
                       </b-form>
@@ -344,7 +314,7 @@ export default class EditPub extends Vue {
     { key: 'value', label: 'RELTO', sortable: true }
   ]
 
-  crafields = [
+  rafields = [
     { key: 'actions', label: 'Select' },
     { key: 'value', label: 'Review Authority', sortable: true }
   ]
@@ -403,7 +373,7 @@ export default class EditPub extends Vue {
   @publication.Action
   public getFunctionalFieldByFunctionalSeries!: (series: string) => Promise<boolean>
 
-  @support.Action
+  @publication.Action
   public getAO!: () => Promise<boolean>
 
   @publication.Action
@@ -493,9 +463,10 @@ export default class EditPub extends Vue {
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
       const that = this
-      /* this.getAO().then(function() {
+      this.totalcalls = 4
+      this.getAO().then(function() {
         that.completedcalls += 1
-      }) */
+      })
       this.getRA().then(function() {
         that.completedcalls += 1
       })
@@ -505,32 +476,9 @@ export default class EditPub extends Vue {
       this.getBS().then(function() {
         that.completedcalls += 1
       })
-      this.totalcalls = 3
-      // is the branch available to get the prefixes
-      /* if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
-        this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
-          if (response) {
-            this.getStatusesByBranch(String(this.publication.Branch)).then(response => {
-              if (response) {
-                this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(response => {
-                  if (response) {
-                    this.formReady = true
-                    this.getRelto().then(response => {
-                      if (response) {
-                        this.getBS().then(response => {
-                          console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
-                          this.formReady = true
-                        })
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
-        })
-      } */
+      // is the branch available to get the prefixes and other items
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
+        this.totalcalls += 3
         this.getPrefixesByBranch(String(this.publication.Branch)).then(function() {
           that.completedcalls += 1
         })
@@ -540,7 +488,6 @@ export default class EditPub extends Vue {
         this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(function() {
           that.completedcalls += 1
         })
-        this.totalcalls += 3
       }
       this.interval = setInterval(this.waitForData, 500)
     }
