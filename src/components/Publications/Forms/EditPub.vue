@@ -2,7 +2,7 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-overlay :show="!publoaded" :variant="success" class="contentHeight m-0 p-0">
       <b-container v-if="publoaded" fluid class="contentHeight m-0 p-0">
-        <b-modal id="modalRelto" ref="modalRelto" centered header-bg-variant="blue-300" header-text-variant="light" modal-class="zModal">
+        <b-modal id="modalRelto" ref="modalRelto" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal">
           <template v-slot:modal-title>Select Rel To</template>
           <b-container class="p-0">
             <b-row>
@@ -22,7 +22,7 @@
             </b-row>
             <b-row>
               <b-col cols="12">
-                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPage" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
+                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPageRelto" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
                   <template #cell(actions)="row">
                     <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
                   </template>
@@ -186,18 +186,23 @@
                             </b-form-group>
                           </b-col>
                           <b-col cols="3" class="text-center text-dark p-1">
-                            <b-form-group label="REL TO" label-for="txtRelto">
-                              <b-input-group>
-                                <b-form-input id="txtRelto" ref="txtRelto" class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
-                                <template #append>
-                                  <b-button variant="blue-700" @click="onReltoSearch">
-                                    <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
-                                  </b-button>
-                                </template>
-                              </b-input-group>
+                            <dynamic-modal-select
+                              :id="RELTO"
+                              v-model="publication.AdditionalData.RELTO"
+                              :table="{
+                                items: relto,
+                                fields: reltofields,
+                                control: 'Relto',
+                                title: 'Select REL TO',
+                                label: 'REL TO'
+                              }"
+                            ></dynamic-modal-select>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="DTIC" label-for="ddDtic">
+                              <b-form-select class="form-control" v-model="publication.DTIC" size="sm" id="ddDtic" :options="dtic" ref="DTIC"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="3" class="text-center text-dark p-1"></b-col>
                         </b-form-row>
                       </b-form>
                     </b-col>
@@ -206,7 +211,50 @@
                 <b-tab class="mtab">
                   <template slot="title">Action Officer</template>
                   <b-row>
-                    <b-col cols="12"></b-col>
+                    <b-col cols="12">
+                      <b-form>
+                        <b-form-row>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="NWDC AO" label-for="ddNWDCAO">
+                              <b-form-select class="form-control" v-model="publication.NWDCAO" size="sm" id="ddNWDCAO" :options="actionofficers" ref="NWDCAO"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="Review Date" label-for="txtReviewDate">
+                              <b-form-input class="form-control" size="sm" id="txtReviewDate" v-model="publication.ReviewDate" ref="ReviewDate" type="date"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <b-form-group label="AO Remarks" label-for="txtRemarks">
+                              <b-form-input class="form-control" size="sm" id="txtRemarks" v-model="publication.AdditionalData.Remarks" ref="Remarks"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-row no-gutters>
+                              <!-- b-row added for spacing -->
+                              <b-form-group label="Primary Review Authority" label-for="ddPRA">
+                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
+                              </b-form-group>
+                            </b-row>
+                          </b-col>
+                          <b-col cols="9" class="text-center text-dark p-1">
+                            <dynamic-modal-select
+                              :id="CRA"
+                              v-model="publication.CoordinatingRA"
+                              :table="{
+                                items: reviewauthority,
+                                fields: rafields,
+                                control: 'CRA',
+                                title: 'Select Review Authority',
+                                label: 'Coordinating Review Authority'
+                              }"
+                            ></dynamic-modal-select>
+                          </b-col>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
                   </b-row>
                 </b-tab>
               </b-tabs>
@@ -230,6 +278,7 @@ import { VueEditor, Quill } from 'vue2-editor'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import DynamicModalSelect from '../../Custom/DynamicModalSelect.vue'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -242,7 +291,8 @@ var tp2 = String(window.location.host)
 @Component({
   name: 'EditPub',
   components: {
-    VueEditor
+    VueEditor,
+    DynamicModalSelect
   }
 })
 export default class EditPub extends Vue {
@@ -250,14 +300,23 @@ export default class EditPub extends Vue {
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
   reltofilter = ''
+  crafilter = ''
   reltodata!: any
-  currentPage = 0
+  currentPageRelto = 0
+  currentPageCRA = 0
   perPage = 50
+  totalcalls = 0
+  completedcalls = 0
   formReady = false
 
   reltofields = [
     { key: 'actions', label: 'Select' },
     { key: 'value', label: 'RELTO', sortable: true }
+  ]
+
+  rafields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'value', label: 'Review Authority', sortable: true }
   ]
 
   @users.State
@@ -287,6 +346,12 @@ export default class EditPub extends Vue {
   @publication.State
   public functionalfields!: Array<ObjectItem>
 
+  @publication.State
+  public reviewauthority!: Array<ObjectItem>
+
+  @publication.State
+  public actionofficers!: Array<ObjectItem>
+
   @support.Action
   public getBS!: () => Promise<boolean>
 
@@ -307,6 +372,12 @@ export default class EditPub extends Vue {
 
   @publication.Action
   public getFunctionalFieldByFunctionalSeries!: (series: string) => Promise<boolean>
+
+  @publication.Action
+  public getAO!: () => Promise<boolean>
+
+  @publication.Action
+  public getRA!: () => Promise<boolean>
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -378,7 +449,7 @@ export default class EditPub extends Vue {
         console.log('TEST B')
         this.getPublicationById(String(id), String(nato)).then(response => {
           if (response) {
-            this.interval = setInterval(this.waitForIt, 500)
+            this.interval = setInterval(this.loadData, 500)
           }
         })
       } else {
@@ -387,34 +458,49 @@ export default class EditPub extends Vue {
     }
   }
 
-  public waitForIt() {
+  public loadData() {
     if (this.publoaded) {
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
-      // is the branch available to get the prefixes
+      const that = this
+      this.totalcalls = 4
+      this.getAO().then(function() {
+        that.completedcalls += 1
+      })
+      this.getRA().then(function() {
+        that.completedcalls += 1
+      })
+      this.getRelto().then(function() {
+        that.completedcalls += 1
+      })
+      this.getBS().then(function() {
+        that.completedcalls += 1
+      })
+      // is the branch available to get the prefixes and other items
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
-        this.getPrefixesByBranch(String(this.publication.Branch)).then(response => {
-          if (response) {
-            this.getStatusesByBranch(String(this.publication.Branch)).then(response => {
-              if (response) {
-                this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(response => {
-                  if (response) {
-                    this.getRelto().then(response => {
-                      if (response) {
-                        this.getBS().then(response => {
-                          console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
-                          this.formReady = true
-                        })
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
+        this.totalcalls += 3
+        this.getPrefixesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
+        })
+        this.getStatusesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
+        })
+        this.getFunctionalSeriesByBranch(String(this.publication.Branch)).then(function() {
+          that.completedcalls += 1
         })
       }
-      // this.formReady = true
+      this.interval = setInterval(this.waitForData, 500)
+    }
+  }
+
+  public waitForData() {
+    // gitrdone
+    if (this.completedcalls === this.totalcalls) {
+      clearInterval(this.interval)
+      console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+      this.formReady = true
+    } else {
+      console.log('WAITING FOR FORM')
     }
   }
 
@@ -507,6 +593,11 @@ export default class EditPub extends Vue {
         })
       }
     }
+  }
+
+  public toggleCRA(item: any, event: any) {
+    // toggle selection of CRA by checking if it is or is not selected and selecting/deselecting it accordingly.
+    alert('SELECTED RA: ' + item.value)
   }
 }
 </script>
