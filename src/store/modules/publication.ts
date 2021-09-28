@@ -5,6 +5,7 @@ import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
+import { MonthWeekdayFn } from 'moment'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -97,6 +98,20 @@ function FormatAD(ad: any, id: any, nato: any): any {
     return JSON.parse(additionalData)
   }
 }
+
+function makeArray(data: string) {
+  if (data !== null && data !== '') {
+    let zebra: any = []
+    let snake = data.split(', ')
+    for (let v = 0; v < snake.length; v++) {
+      zebra.push(snake[v])
+    }
+    console.log('ARRAY CREATED: ' + snake.length)
+    return zebra
+  } else {
+    return []
+  }
+}
 @Module({ namespaced: true })
 class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
@@ -112,11 +127,13 @@ class Publication extends VuexModule {
   public functionalseries: Array<ObjectItem> = []
   public functionalfields: Array<ObjectItem> = []
   public relto: Array<ObjectItem> = []
+  public reviewauthority: Array<ObjectItem> = [] // use for PRA and CRA
   public pubBlob?: Blob
   public blobloaded?: boolean = false
   public pubBuffer?: ArrayBuffer
   public bufferloaded?: boolean = false
   public filetype?: any
+  public actionofficers: Array<ObjectItem> = []
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -125,6 +142,7 @@ class Publication extends VuexModule {
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalfieldsUrl = "/_api/lists/getbytitle('lu_librarytree')/items?$select=*,funcSeries/Title&$expand=funcSeries&$filter=(funcSeries/Title eq '"
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
+  raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
 
   @Mutation
@@ -181,25 +199,13 @@ class Publication extends VuexModule {
   }
 
   @Mutation
-  public createBlob(b: Blob): void {
-    this.pubBlob = b
-    this.blobloaded = true
+  public createAO(items: Array<ObjectItem>): void {
+    this.actionofficers = items
   }
 
   @Mutation
-  public setblobloaded(loaded: boolean) {
-    this.blobloaded = loaded
-  }
-
-  @Mutation
-  public createBuffer(b: ArrayBuffer): void {
-    this.pubBuffer = b
-    this.bufferloaded = true
-  }
-
-  @Mutation
-  public setbufferloaded(loaded: boolean) {
-    this.bufferloaded = loaded
+  public createRA(items: Array<ObjectItem>): void {
+    this.reviewauthority = items
   }
 
   @Action
@@ -233,8 +239,8 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: j[i]['CoordinatingRA'],
-            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
@@ -269,6 +275,72 @@ class Publication extends VuexModule {
   }
 
   @Action
+  public async getAllPublicationsByQuery(query: string): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getAllPubsByQuery(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllPubsByQuery(url)
+      } else {
+        //console.log('getAllPublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: j[i]['Media'], // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+          })
+        }
+        that.context.commit('createPublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + query
+    // console.log('getAllPublications URL: ' + turl)
+    getAllPubsByQuery(turl)
+    return true
+  }
+
+  @Action
   public async getAllNatoPublications(): Promise<boolean> {
     let j: any[] = []
     let p: Array<PublicationItem> = []
@@ -298,8 +370,8 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: j[i]['CoordinatingRA'],
-            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
+            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
@@ -359,8 +431,8 @@ class Publication extends VuexModule {
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
     p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = j[0]['CoordinatingRA']
-    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
+    p.CoordinatingRA = makeArray(j[0]['CoordinatingRA'])
+    p.CoordinatingRAAbv = makeArray(j[0]['CoordinatingRAAbv'])
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
@@ -549,7 +621,8 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
-            text: j[i]['Title']
+            text: j[i]['Title'],
+            selected: false
           })
         }
         that.context.commit('createRelto', p)
@@ -562,33 +635,66 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getBinaryFile(url: string): Promise<boolean> {
-    this.context.commit('setbufferloaded', false)
-    /* let blob = new Blob()
-    if (String(url).indexOf('.pdf') > 0) {
-      filetype = 'PDF'
-    }
-    if (String(url).indexOf('.doc') > 0) {
-      filetype = 'WORD'
-    }
-    console.log('FILETYPE: ' + filetype) */
-    let turl = tp1 + slash + slash + tp2 + this.getfileUrl
-    turl += url
-    turl += "')/OpenBinaryStream"
-    console.log('getBinaryFile URL: ' + turl)
-    const response = await axios.get(turl, {
+  public async getAO(): Promise<boolean> {
+    const url = tp1 + slash + slash + tp2 + "/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
+    const response = await axios.get(url, {
       headers: {
-        responseType: 'arraybuffer'
+        accept: 'application/json;odata=verbose'
       }
     })
-    let buff = new ArrayBuffer(response.data)
-    /* if (this.filetype === 'PDF') {
-      blob = new Blob([buff], { type: 'application/pdf' })
+    if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(response))
+    let j = response.data.d.results
+    // if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(j))
+    let p: Array<ObjectItem> = []
+    for (let i = 0; i < j.length; i++) {
+      p.push({
+        text: j[i]['Title'],
+        value: j[i]['Title'],
+        props: {
+          id: j[i]['Id'],
+          email: j[i]['Email']
+        }
+      })
     }
-    if (this.filetype === 'WORD') {
-      blob = new Blob([buff], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-    } */
-    this.context.commit('createBuffer', buff)
+    this.context.commit('createAO', p)
+    return true
+  }
+
+  @Action
+  public async getRA(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllRA(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllRA(url)
+      } else {
+        // console.log('getAllRA Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
+            props: {
+              pla: j[i]['PLA'],
+              abbr: j[i]['abbr']
+            }
+          })
+        }
+        that.context.commit('createRA', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.raUrl
+    console.log('getAllRA URL: ' + turl)
+    getAllRA(turl)
     return true
   }
 
