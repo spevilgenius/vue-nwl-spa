@@ -108,7 +108,7 @@ const termsMenu = {
     {
       path: 'home',
       name: 'Terminology',
-      component: () => import(/* webpackChunkName: "Terminology" */ '../components/Pages/Terminologycopy2.vue'),
+      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminologycopy2.vue'),
       props: true
     }
   ]

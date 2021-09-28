@@ -46,11 +46,12 @@
                   :per-page="perPage"
                   :current-page="currentPage"
                   table-class="table-full"
-                  :style="getStyle('maintable', null)"
+                  :sticky-header="getSticky('dynamictable')"
                   table-variant="light"
+                  thead-class="tbl-dynamic-header"
                   @filtered="onFiltered"
                 >
-                  <template #thead-top="">
+                  <!-- <template #thead-top="">
                     <b-tr>
                       <b-th>Filters</b-th>
                       <b-th><b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select></b-th>
@@ -68,21 +69,22 @@
                       <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
                       <b-th></b-th>
                     </b-tr>
-                  </template>
+                  </template> -->
                   <template #cell(actions)="data">
-                    <b-button size="sm" variant="success" class="actionbutton text-light" @click="viewItem(data.item.Id, data.item.IsNato)">
+                    <b-button variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" size="sm" variant="warning" class="actionbutton text-light" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
                   <template #cell(Title)="data">
-                    <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div>
+                    <!-- <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div> -->
+                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato }, params: { Id: data.item.Id } }">{{ data.item.Title }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
@@ -204,7 +206,7 @@ export default class DynamicTable extends Vue {
   filtereditems: Array<any> = []
   currentPage = 1
   totalRows = 0
-  perPage = 20 // default
+  perPage = 30 // default
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -354,9 +356,9 @@ export default class DynamicTable extends Vue {
         this.filterOn.push(this.$props.table.filterField)
       }
       // Calculate perPage based on counting the number of rows that will fit in the available space
-      let available = this.contentheight - 130
+      /* let available = this.contentheight - 130
       let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
-      this.perPage = amount
+      this.perPage = amount */
     }
   }
 
@@ -438,6 +440,16 @@ export default class DynamicTable extends Vue {
     return html
   }
 
+  public getSticky(element) {
+    let h: any
+    switch (element) {
+      case 'dynamictable':
+        h = that.contentheight - 100 + 'px'
+        break
+    }
+    return h
+  }
+
   public getStyle(element, field) {
     let style: any = {}
     switch (element) {
@@ -449,6 +461,7 @@ export default class DynamicTable extends Vue {
 
       case 'maintable':
         style.width = that.contentwidth - 5 + 'px'
+        style.height = that.contentheight - 150 + 'px'
         break
 
       case 'tablerow':
@@ -489,11 +502,8 @@ export default class DynamicTable extends Vue {
   border: 1px solid #000000 !important;
   height: 20px !important;
   padding: 2px 5px !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
-.pubtitle {
+/* .pubtitle {
   max-width: 500px;
-}
+} */
 </style>

@@ -12,6 +12,8 @@ import './assets/css/themify-icons.css'
 import './assets/css/animate.css'
 import './assets/sass/bootstrap.scss'
 import './assets/css/spa.css'
+import '../node_modules/quill/dist/quill.core.css'
+import '../node_modules/quill/dist/quill.bubble.css'
 
 import App from './components/App.vue'
 import router from './router/router'
