@@ -9,11 +9,11 @@
               <b-col cols="8" class="mt-1 p-0">
                 <b-row>
                   <p class="ml-3" style="font-size: 22px;">Filters</p>
-                  <p class="ml-5 mt-1" style="font-size: 16px;">Branch:</p>
+                  <p class="ml-5 mt-2" style="font-size: 16px;">Branch:</p>
                   <b-form-select class="form-control px200 ml-1" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch"></b-form-select>
                   <p class="ml-3 mt-2" style="font-size: 16px;">Prefix:</p>
                   <b-form-select class="form-control px200 ml-1" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix" v-b-tooltip.hover.v-dark title="Filter on Branch to display Prefix choices."></b-form-select>
-                  <p class="ml-3 mt-3" style="font-size: 16px;">Bookshelf:</p>
+                  <p class="ml-3 mt-2" style="font-size: 16px;">Bookshelf:</p>
                   <b-form-select class="form-control-bookshelf px250 ml-1" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select>
                 </b-row>
               </b-col>
