@@ -59,9 +59,7 @@
                 >
                 <b-card-body body-class="card-body-center p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Navy' } }">NDP 1</b-link>
-                    </li>
+                    <b-link :to="{ name: 'View Publication', query: { Id: 158, Nato: 'No' } }">NDP 1</b-link>
                   </ul>
                 </b-card-body>
               </b-card>
@@ -78,16 +76,16 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">1-05 Religious Ministry Support</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 283, Nato: 'No' } }">1-05 Religious Ministry Support</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">1-10 Tactical Reference</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: , Nato: 'No' } }">1-10 Tactical Reference</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">1-11 Platform Capabilities</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">1-14 Law</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 285, Nato: 'No' } }">1-14 Law</b-link>
                     </li>
                   </ul>
                 </b-card-body>
@@ -104,10 +102,10 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">2-0 Navy Intelligence</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 286, Nato: 'No' } }">2-0 Navy Intelligence</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">2-01 Intelligence Support</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 287, Nato: 'No' } }">2-01 Intelligence Support</b-link>
                     </li>
                   </ul>
                 </b-card-body>
@@ -123,10 +121,10 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">3 Fleet Warfare</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">3-01 Air Defence</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 289, Nato: 'No' } }">3-01 Air Defense</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">3-02 Amphibious Ops</b-link>
@@ -393,6 +391,14 @@ export default class NavyDoctrine extends Vue {
   text-align: left !important;
 }
 .card-body-left li a {
+  color: $dark !important;
+}
+.card-body-center {
+  font-family: 'Arial';
+  font-size: 16px;
+  text-align: center !important;
+}
+.card-body-center li a {
   color: $dark !important;
 }
 .centerFlex {
