@@ -54,6 +54,10 @@ import { Component, Vue } from 'vue-property-decorator'
       type: String,
       default: ''
     },
+    value: {
+      type: String,
+      default: ''
+    },
     table: {
       type: Object,
       default: () => {

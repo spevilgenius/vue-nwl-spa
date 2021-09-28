@@ -550,6 +550,7 @@ export default class EditPub extends Vue {
     // gitrdone
     if (this.completedcalls === this.totalcalls) {
       clearInterval(this.interval)
+      console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       this.formReady = true
     } else {
       console.log('WAITING FOR FORM')
