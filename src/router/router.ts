@@ -25,6 +25,12 @@ const pubsMenu = {
       props: true
     },
     {
+      path: 'page/Allied',
+      name: 'Allied Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Pages/Allied.vue'),
+      props: true
+    },
+    {
       path: 'page/development',
       name: 'Pubs In Development',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),

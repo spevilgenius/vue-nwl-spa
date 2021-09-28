@@ -10,7 +10,7 @@
             primaryKey: primaryKey,
             buttons: buttons,
             fields: fields,
-            items: allpublications,
+            items: filteredpubs,
             filterField: filterField,
             filterValue: filterValue,
             filterType: filterType,
@@ -52,6 +52,7 @@ export default class All extends Vue {
   filterValue: any
   filterType: any
   interval!: any
+  filteredpubs: Array<PublicationItem> = []
   viewReady?: boolean = false
 
   @users.State
@@ -100,6 +101,22 @@ export default class All extends Vue {
   public waitForIt() {
     if (this.filterField !== '' || (null && this.filterValue !== '') || null) {
       clearInterval(this.interval)
+      // complex filter
+      if (this.filterType === 'complex') {
+        // filter pubs and send these pubs instead
+        let fields: any = String(this.filterField)
+        fields = fields.split(',')
+        let vals: any = String(this.filterValue)
+        vals = vals.split(',')
+        let p = this.allpublications
+        for (let i = 0; i < fields.length; i++) {
+          let field = fields[i]
+          p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
+        }
+        this.filteredpubs = p
+      } else {
+        this.filteredpubs = this.allpublications
+      }
       this.viewReady = true
       console.log('filterField2=' + this.filterField)
       console.log('filterValue2=' + this.filterValue)
