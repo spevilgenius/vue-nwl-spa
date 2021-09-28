@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
+import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 
 Vue.use(VueRouter)
 
@@ -149,6 +150,11 @@ const routes = [
         path: 'Developer',
         name: 'Developer',
         component: Developer
+      },
+      {
+        path: 'NavyDoctrine',
+        name: 'Navy Doctrine',
+        component: NavyDoctrine
       }
     ]
   }
