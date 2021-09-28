@@ -79,7 +79,7 @@
                       <b-link :to="{ name: 'View Publication', query: { Id: 283, Nato: 'No' } }">1-05 Religious Ministry Support</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: , Nato: 'No' } }">1-10 Tactical Reference</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 0, Nato: 'No' } }">1-10 Tactical Reference</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">1-11 Platform Capabilities</b-link>
