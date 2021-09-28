@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal :id="getID('dm', id)" :ref="getID('dm', id)" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal">
+    <b-modal :id="getID('dm', id)" :ref="getID('dm', id)" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk(id)">
       <template v-slot:modal-title>{{ table.title }}</template>
       <b-container class="p-0">
         <b-row>
@@ -33,9 +33,9 @@
     </b-modal>
     <b-form-group :label="table.label" :label-for="getID('txt', table.control)">
       <b-input-group>
-        <b-form-input :id="getID('txt', table.control)" :ref="getID('txt', table.control)" size="sm" class="form-control" v-model="table.value"></b-form-input>
+        <b-form-input :id="getID('txt', table.control)" :ref="getID('txt', table.control)" size="sm" class="form-control" :value="value"></b-form-input>
         <template #append>
-          <b-button variant="blue-700" @click="onSearch(id)">
+          <b-button variant="blue-700" @click="onSearch(id)" size="sm">
             <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
           </b-button>
         </template>
@@ -66,7 +66,6 @@ import { Component, Vue } from 'vue-property-decorator'
           filter: '',
           fields: [],
           control: '',
-          value: '',
           label: '',
           title: 'Select'
         }
@@ -81,6 +80,22 @@ export default class DynamicModalSelect extends Vue {
   totalRows = 0
   perPage = 30 // default
   workingval = []
+  selected: any = []
+
+  mounted() {
+    // if a value is passed with v-model, we need to ensure that we pre-select the items passed in.
+    console.log('PASSED WITH V-MODEL: ' + this.$props.value)
+    let ops = String(this.$props.value)
+    let options = ops.split(', ')
+    let items = this.$props.table.items
+    for (let i = 0; i < items.length; i++) {
+      if (options.indexOf(items[i].text) >= 0) {
+        // value exists so lets select it
+        items[i].selected = true
+        this.selected.push(items[i].text)
+      }
+    }
+  }
 
   public getID(prefix: string, id: string) {
     return prefix + '_' + id
@@ -91,6 +106,46 @@ export default class DynamicModalSelect extends Vue {
     console.log('OPEN MODAL: ' + id)
     id = 'dm_' + id
     this.$bvModal.show(id)
+  }
+
+  public toggleSelection(item: any, event: any) {
+    // toggle selection by checking if it is or is not selected and selecting/deselecting it accordingly.
+    // add/remove from value based on selection by rebuilding the value
+    console.log('SELECTED: ' + item.value)
+    if (console) console.log('CHECKED: ' + event.target.checked + ', SELECTED LENGTH: ' + this.selected.length)
+    if (event.target.checked) {
+      if (this.selected.length > 0) {
+        // there are selections
+        let index = 0
+        for (let i = 0; i < this.selected.length; i++) {
+          if (this.selected[i] === item.text) {
+            index += 1
+          }
+        }
+        if (index === 0) {
+          // this item isnt yet in the selected array so add it
+          this.selected.push(item.text)
+        }
+      } else {
+        this.selected.push(item.id)
+      }
+    } else {
+      // this item is being removed
+      if (this.selected.length > 0) {
+        // loop through the array and see if the user is in there
+        for (let i = 0; i < this.selected.length; i++) {
+          if (String(this.selected[i]) === item.text) {
+            this.selected.splice(i, 1)
+          }
+        }
+      }
+    }
+  }
+
+  public onOk(id: string) {
+    id = 'dm_' + id
+    this.$bvModal.hide(id)
+    this.$emit('input', this.$props.value)
   }
 }
 </script>
