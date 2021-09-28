@@ -59,20 +59,22 @@
                 >
                 <b-card-body class="p-1">
                   <b-list-group>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Doctrine</b-card-sub-title>
-                            <b-card-title>NDP, NWP</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
-                    </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
+                    <b-link :to="{ name: 'NavyDoctrine' }">
+                      <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-sub-title>Navy Doctrine</b-card-sub-title>
+                              <b-card-title>NDP, NWP</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-list-group-item>
+                    </b-link>
+                    <b-list-group-item variant="blue-800" class="flex-column align-items-start">
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTTP' } }">
                         <b-card no-body class="p-1">
                           <b-row no-gutters>

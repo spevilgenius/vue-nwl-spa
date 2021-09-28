@@ -79,7 +79,7 @@
                       <b-link :to="{ name: 'View Publication', query: { Id: 283, Nato: 'No' } }">1-05 Religious Ministry Support</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: , Nato: 'No' } }">1-10 Tactical Reference</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 0, Nato: 'No' } }">1-10 Tactical Reference</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">1-11 Platform Capabilities</b-link>
@@ -127,10 +127,10 @@
                       <b-link :to="{ name: 'View Publication', query: { Id: 289, Nato: 'No' } }">3-01 Air Defense</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">3-02 Amphibious Ops</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'NWP302' } }">3-02 Amphibious Ops</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">3-05 Naval Special Warfare</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Field: 'FunctionalSeries', Value: 'Navy 3-05 Naval Special Warfare' } }">3-05 Naval Special Warfare</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">3-07 MOOTW</b-link>
@@ -311,7 +311,9 @@ import { namespace } from 'vuex-class'
 
 const support = namespace('support')
 
-@Component
+@Component({
+  name: 'NavyDoctrine'
+})
 export default class NavyDoctrine extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
   readonly baseImageUrl!: string
