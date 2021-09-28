@@ -114,6 +114,10 @@ export default class All extends Vue {
           p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
         }
         this.filteredpubs = p
+      }
+      if (this.filterType === 'NWP302') {
+        let a = this.allpublications
+        console.log(a)
       } else {
         this.filteredpubs = this.allpublications
       }
