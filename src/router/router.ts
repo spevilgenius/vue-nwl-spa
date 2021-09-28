@@ -153,7 +153,7 @@ const routes = [
       },
       {
         path: 'NavyDoctrine',
-        name: 'Navy Doctrine',
+        name: 'NavyDoctrine',
         component: NavyDoctrine
       }
     ]
