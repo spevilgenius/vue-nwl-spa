@@ -105,17 +105,19 @@
                       </b-link>
                     </b-list-group-item>
                     <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="lightbulb" class="pubicon text-warning"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Development TTP</b-card-sub-title>
-                            <b-card-title>TACMEMO, TACBUL, TACNOTE</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'TTP' } }">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="lightbulb" class="pubicon text-warning"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-sub-title>Navy Development TTP</b-card-sub-title>
+                              <b-card-title>TACMEMO, TACBUL, TACNOTE</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-link>
                     </b-list-group-item>
                   </b-list-group>
                 </b-card-body>

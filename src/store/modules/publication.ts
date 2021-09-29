@@ -123,9 +123,13 @@ class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
+  public natoarchivepublications: Array<PublicationItem> = []
+  public archivepublications: Array<PublicationItem> = []
   public publication?: PublicationItem
   public pubsloaded?: boolean = false
   public natopubsloaded?: boolean = false
+  public archivepubsloaded?: boolean = false
+  public natoarchivepubsloaded?: boolean = false
   public allpubsloaded?: boolean = false
   public publoaded?: boolean = false // single publication
   public prefixes: Array<ObjectItem> = []
@@ -142,7 +146,9 @@ class Publication extends VuexModule {
   public actionofficers: Array<ObjectItem> = []
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  pubsArchiveUrl = "/_api/lists/getbytitle('ArchivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  natoArchiveUrl = "/_api/lists/getbytitle('NATOArchive')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   prefixUrl = "/_api/lists/getbytitle('lu_prefix')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   statusUrl = "/_api/lists/getbytitle('lu_status')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
@@ -169,6 +175,14 @@ class Publication extends VuexModule {
   public createAllPublications(): void {
     let p: Array<PublicationItem>
     p = this.publications.concat(this.natopublications)
+    this.allpublications = p
+    this.allpubsloaded = true
+  }
+
+  @Mutation
+  public createAllArchivePublications(): void {
+    let p: Array<PublicationItem>
+    p = this.archivepublications.concat(this.natoarchivepublications)
     this.allpublications = p
     this.allpubsloaded = true
   }
@@ -212,6 +226,20 @@ class Publication extends VuexModule {
   @Mutation
   public createRA(items: Array<ObjectItem>): void {
     this.reviewauthority = items
+  }
+
+  @Mutation
+  public createArchivePublications(items: Array<PublicationItem>): void {
+    this.archivepublications = items
+    this.archivepubsloaded = true
+    console.log('publications length: ' + items.length)
+  }
+
+  @Mutation
+  public createNatoArchivePublications(items: Array<PublicationItem>): void {
+    this.natoarchivepublications = items
+    this.natoarchivepubsloaded = true
+    console.log('Nato publications length: ' + items.length)
   }
 
   @Action
@@ -407,6 +435,136 @@ class Publication extends VuexModule {
     }
     let turl = tp1 + slash + slash + tp2 + this.natoUrl
     getAllNatoPubs(turl)
+    return true
+  }
+
+  @Action
+  public async getArchivePublications(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getArchivePubs(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getArchivePubs(url)
+      } else {
+        //console.log('getArchivePublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: makeArray(j[0]['Media']),
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+          })
+        }
+        that.context.commit('createPublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.pubsUrl
+    // console.log('getAllPublications URL: ' + turl)
+    getArchivePubs(turl)
+    return true
+  }
+
+  @Action
+  public async getAllNatoArchivePublications(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getAllNatoArchivePubs(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllNatoArchivePubs(url)
+      } else {
+        //console.log('getAllNatoArchivePublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'Yes',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: makeArray(j[0]['Media']), // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
+          })
+        }
+        that.context.commit('createNatoArchivePublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.natoUrl
+    getAllNatoArchivePubs(turl)
     return true
   }
 
@@ -706,6 +864,12 @@ class Publication extends VuexModule {
   @Action
   public async createAllPubs(): Promise<boolean> {
     this.context.commit('createAllPublications')
+    return true
+  }
+
+  @Action
+  public async createAllArchivePubs(): Promise<boolean> {
+    this.context.commit('createAllArchivePublications')
     return true
   }
 }
