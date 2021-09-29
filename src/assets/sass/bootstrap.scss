@@ -80,6 +80,14 @@ $modal-sm:                          300px !default;
   background-color: $blue-500 !important;
 }
 
+.quillWrapper .ql-snow.ql-toolbar .ql-formats {
+  margin-bottom: 0;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0;
+}
+
 .logo {
   height: 130px;
   display: flex;

@@ -175,32 +175,33 @@
                     <b-col cols="12">
                       <b-form class="mt-0">
                         <b-form-row>
-                          <b-col cols="3" class="text-center text-dark p-1">
+                          <b-col cols="2" class="text-center text-dark p-1">
                             <b-form-group label="Classification" label-for="ddClass">
                               <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="3" class="text-center text-dark p-1">
+                          <b-col cols="2" class="text-center text-dark p-1">
                             <b-form-group label="Dissemination" label-for="ddDiss">
                               <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="3" class="text-center text-dark p-1">
-                            <dynamic-modal-select
-                              :id="RELTO"
-                              v-model="publication.AdditionalData.RELTO"
-                              :table="{
-                                items: relto,
-                                fields: reltofields,
-                                control: 'Relto',
-                                title: 'Select REL TO',
-                                label: 'REL TO'
-                              }"
-                            ></dynamic-modal-select>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <dynamic-modal-select id="RELTO" v-model="publication.AdditionalData.RELTO" :items="relto" :fields="reltofields" control="Relto" title="Select REL TO" label="REL TO"></dynamic-modal-select>
                           </b-col>
-                          <b-col cols="3" class="text-center text-dark p-1">
+                          <b-col cols="2" class="text-center text-dark p-1">
                             <b-form-group label="DTIC" label-for="ddDtic">
                               <b-form-select class="form-control" v-model="publication.DTIC" size="sm" id="ddDtic" :options="dtic" ref="DTIC"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Availability" label-for="ddAvailability">
+                              <b-form-select class="form-control" v-model="publication.Availability" size="sm" id="ddAvailability" :options="availability" ref="Availability"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Media">
+                              <b-form-select multiple class="form-control" v-model="publication.Media" size="sm" id="ddMedia" :options="media" ref="Media"></b-form-select>
+                              <!-- <b-form-checkbox-group class="media" id="cbgMedia" v-model="publication.Media" :options="media" name="cbgMedia" stacked></b-form-checkbox-group> -->
                             </b-form-group>
                           </b-col>
                         </b-form-row>
@@ -214,23 +215,6 @@
                     <b-col cols="12">
                       <b-form>
                         <b-form-row>
-                          <b-col cols="4" class="text-center text-dark p-1">
-                            <b-form-group label="NWDC AO" label-for="ddNWDCAO">
-                              <b-form-select class="form-control" v-model="publication.NWDCAO" size="sm" id="ddNWDCAO" :options="actionofficers" ref="NWDCAO"></b-form-select>
-                            </b-form-group>
-                          </b-col>
-                          <b-col cols="4" class="text-center text-dark p-1">
-                            <b-form-group label="Review Date" label-for="txtReviewDate">
-                              <b-form-input class="form-control" size="sm" id="txtReviewDate" v-model="publication.ReviewDate" ref="ReviewDate" type="date"></b-form-input>
-                            </b-form-group>
-                          </b-col>
-                          <b-col cols="4" class="text-center text-dark p-1">
-                            <b-form-group label="AO Remarks" label-for="txtRemarks">
-                              <b-form-input class="form-control" size="sm" id="txtRemarks" v-model="publication.AdditionalData.Remarks" ref="Remarks"></b-form-input>
-                            </b-form-group>
-                          </b-col>
-                        </b-form-row>
-                        <b-form-row>
                           <b-col cols="3" class="text-center text-dark p-1">
                             <b-row no-gutters>
                               <!-- b-row added for spacing -->
@@ -240,17 +224,25 @@
                             </b-row>
                           </b-col>
                           <b-col cols="9" class="text-center text-dark p-1">
-                            <dynamic-modal-select
-                              :id="CRA"
-                              v-model="publication.CoordinatingRA"
-                              :table="{
-                                items: reviewauthority,
-                                fields: rafields,
-                                control: 'CRA',
-                                title: 'Select Review Authority',
-                                label: 'Coordinating Review Authority'
-                              }"
-                            ></dynamic-modal-select>
+                            <dynamic-modal-select id="CRA" v-model="publication.AdditionalData.RELTO" :items="reviewauthority" :fields="rafields" control="CRA" title="Select Review Authority" label="Coordinating Review Authority"></dynamic-modal-select>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="NWDC AO" label-for="ddNWDCAO">
+                              <b-form-select class="form-control" v-model="publication.NWDCAO.Title" size="sm" id="ddNWDCAO" :options="actionofficers" ref="NWDCAO" @change="onAOSelected"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="Review Date" label-for="txtReviewDate">
+                              <b-form-input class="form-control" size="sm" id="txtReviewDate" v-model="publication.ReviewDate" ref="ReviewDate" type="date"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="8" class="text-center text-dark p-1">
+                            <b-form-group label="AO Remarks" label-for="txtRemarks">
+                              <vue-editor id="txtRemarks" v-model="publication.AdditionalData.Remarks"></vue-editor>
+                              <!-- <b-form-input class="form-control" size="sm" id="txtRemarks" v-model="publication.AdditionalData.Remarks" ref="Remarks"></b-form-input> -->
+                            </b-form-group>
                           </b-col>
                         </b-form-row>
                       </b-form>
@@ -595,9 +587,16 @@ export default class EditPub extends Vue {
     }
   }
 
-  public toggleCRA(item: any, event: any) {
-    // toggle selection of CRA by checking if it is or is not selected and selecting/deselecting it accordingly.
-    alert('SELECTED RA: ' + item.value)
+  public onAOSelected() {
+    // set the NWDCAO values based on the selected user title
+    for (let i = 0; i < this.actionofficers.length; i++) {
+      let ao: any = this.publication.NWDCAO
+      if (this.actionofficers[i].text === ao.Title) {
+        let props: any = this.actionofficers[i].props
+        ao.Id = props.id
+        ao.Email = props.email
+      }
+    }
   }
 }
 </script>
