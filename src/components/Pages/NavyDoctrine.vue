@@ -135,15 +135,16 @@
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">3-07 MOOTW</b-link>
                     </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">3-09 Strike and Fire Support</b-link></li>
+                    <b-link :to="{ name: 'View Publication', query: { Id: 297, Nato: 'No' } }">3-09 Strike and Fire Support</b-link>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">3-10 Expeditionary Warfare</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 298, Nato: 'No' } }">3-10 Expeditionary Warfare</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">3-11 CBR-D</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 299, Nato: 'No' } }">3-11 CBR-D</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">3-12 Cyberspace Ops</b-link>
+                      <!-- Need to upload pub and change the ID for 3-12 Cyberspace Ops-->
+                      <b-link :to="{ name: 'View Publication', query: { Id: 0, Nato: 'No' } }">3-12 Cyberspace Ops</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-13 Information Ops</b-link>
@@ -161,22 +162,22 @@
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-22 Naval Aviation Warfare</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-29 Disaster Response Ops</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 303, Nato: 'No' } }">3-29 Disaster Response Ops</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-30 Naval C2 of Air Ops</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 304, Nato: 'No' } }">3-30 Naval C2 of Air Ops</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-32 Maritime Ops at the OLW</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 305, Nato: 'No' } }">3-32 Maritime Ops at the OLW</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-56 Operational C2</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 306, Nato: 'No' } }">3-56 Operational C2</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-58 Military Deception</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-59 Oceanography</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 574, Nato: 'No' } }">3-59 Oceanography</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-60 Targeting</b-link>
@@ -185,13 +186,13 @@
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-61 Public Affairs</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-62 Seabasing</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 307, Nato: 'No' } }">3-62 Seabasing</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-63 Computer Network Ops</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">3-72 Nuclear Ops</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 548, Nato: 'No' } }">3-72 Nuclear Ops</b-link>
                     </li>
                   </ul>
                 </b-card-body>
@@ -207,21 +208,23 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">4-0 Naval Logistics</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 308, Nato: 'No' } }">4-0 Naval Logistics</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">4-01 Transportation</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">4-02 Health Protection</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 311, Nato: 'No' } }">4-02 Health Protection</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">4-04 Naval Engineering</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 312, Nato: 'No' } }">4-04 Naval Engineering</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">4-08 Supply</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 313, Nato: 'No' } }">4-08 Supply</b-link>
                     </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">4-09 Other Logistic Services</b-link></li>
+                    <li>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 314, Nato: 'No' } }">4-09 Other Logistic Services</b-link>
+                    </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">4-10 Conventional Ordnance</b-link>
                     </li>
@@ -229,7 +232,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">4-11 Environmental</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">4-12 Salvage</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 315, Nato: 'No' } }">4-12 Salvage</b-link>
                     </li>
                   </ul>
                 </b-card-body>
@@ -245,7 +248,7 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">5-01 Operational Planning</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 316, Nato: 'No' } }">5-01 Operational Planning</b-link>
                     </li>
                   </ul>
                 </b-card-body>
@@ -259,41 +262,6 @@
                     Communications
                   </h4></b-card-header
                 >
-                <!-- <b-card-body body-class="card-body-left p-1">
-                  <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">Fleet CONOPS</b-link></li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">Navy-wide OPTASKS</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
-                    </li>
-                    <li>
-                      <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
-                    </li>
-                  </ul>
-                </b-card-body> -->
               </b-card>
             </b-col>
           </b-row>
