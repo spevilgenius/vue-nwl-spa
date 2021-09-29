@@ -100,13 +100,19 @@ function FormatAD(ad: any, id: any, nato: any): any {
 }
 
 function makeArray(data: string) {
-  if (data !== null && data !== '') {
+  if (data !== null && data.length > 1) {
     let zebra: any = []
-    let snake = data.split(', ')
-    for (let v = 0; v < snake.length; v++) {
-      zebra.push(snake[v])
+    // there may only be one so test that
+    if (data.indexOf(',') > 0) {
+      // there are more that one
+      let snake = data.split(',')
+      for (let v = 0; v < snake.length; v++) {
+        zebra.push(snake[v])
+      }
+    } else {
+      zebra.push(data)
     }
-    console.log('ARRAY CREATED: ' + snake.length)
+    // console.log('ARRAY CREATED: ' + snake.length)
     return zebra
   } else {
     return []
@@ -239,12 +245,12 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
-            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: j[i]['Media'], // returns array of multiple choices
+            Media: makeArray(j[0]['Media']),
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -305,12 +311,12 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
-            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: j[i]['Media'], // returns array of multiple choices
+            Media: makeArray(j[0]['Media']), // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -370,12 +376,12 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
-            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: j[i]['Media'], // returns array of multiple choices
+            Media: makeArray(j[0]['Media']), // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -431,12 +437,12 @@ class Publication extends VuexModule {
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
     p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = makeArray(j[0]['CoordinatingRA'])
-    p.CoordinatingRAAbv = makeArray(j[0]['CoordinatingRAAbv'])
+    p.CoordinatingRA = j[0]['CoordinatingRA']
+    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
-    p.Media = j[0]['Media']
+    p.Media = makeArray(j[0]['Media'])
     p.MA = j[0]['MA']
     p.NSN = j[0]['NSN']
     p.NWDCAO = {
@@ -642,7 +648,6 @@ class Publication extends VuexModule {
         accept: 'application/json;odata=verbose'
       }
     })
-    if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(response))
     let j = response.data.d.results
     // if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(j))
     let p: Array<ObjectItem> = []

@@ -15,7 +15,7 @@ interface PublicationItem {
   DTIC?: string
   LibrarianRemarks?: string
   LongTitle?: string
-  Media?: string
+  Media?: []
   Modified?: string
   MA?: string
   NSN?: string
