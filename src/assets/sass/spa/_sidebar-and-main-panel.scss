@@ -126,8 +126,25 @@ a[aria-controls~="menu"] .caret {
 
     .nav .nav-header {
       height: 150px !important;
+      .nav-header-link-sub {
+        height: 50px;
+        background-color: transparent;
+        color: $light;
+        width: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        .nav-header-title {
+          height: 50px;
+          width: 300px;
+          line-height: 1.25rem;
+          margin-top: 18px;
+          font-size: 1.25rem;
+        }
+      }
       .nav-header-link {
-        height: 150px;
+        height: 100px;
         background-color: transparent;
         color: $light;
         width: 300px;
@@ -143,13 +160,6 @@ a[aria-controls~="menu"] .caret {
             width: 100px;
             margin: 0 auto;
           }
-        }
-        .nav-header-title {
-          height: 50px;
-          width: 300px;
-          line-height: 1.25rem;
-          margin-top: 18px;
-          font-size: 1.25rem;
         }
       }
       .sidebar-logo {
