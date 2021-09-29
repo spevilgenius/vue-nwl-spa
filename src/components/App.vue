@@ -56,11 +56,11 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   public created(): void {
-    let oldbanners = document.getElementsByClassName('classificationbanner')
+    /* let oldbanners = document.getElementsByClassName('classificationbanner')
     while (oldbanners.length > 0) {
       let b = oldbanners[0] as HTMLElement
       b.remove()
-    }
+    } */
     let loc = String(window.location)
     if (loc.indexOf('WSSWebPartPage') >= 0) {
       this.isVisible = false
@@ -121,6 +121,11 @@ export default class App extends Vue {
     if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
       this.createAllPubs()
+      let oldbanners = document.getElementsByClassName('classificationbanner')
+      while (oldbanners.length > 0) {
+        let b = oldbanners[0] as HTMLElement
+        b.remove()
+      }
     }
   }
 }
