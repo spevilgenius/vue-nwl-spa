@@ -178,7 +178,11 @@ textarea.form-control {
   // DRW: 9/25/2021
   label {
     background-color: $label-background-color;
-    color: $label-color
+    color: $label-color;
+    .media {
+      background-color: $white !important;
+      color: $black !important;
+    }
   }
 }
 
