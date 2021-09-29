@@ -62,7 +62,22 @@ export default class All extends Vue {
   public allpublications!: Array<PublicationItem>
 
   @publication.State
+  public natopubsloaded!: boolean
+
+  @publication.State
+  public pubsloaded!: boolean
+
+  @publication.State
   public allpubsloaded!: boolean
+
+  @publication.Action
+  public getAllPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllNatoPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public createAllPubs!: () => Promise<boolean>
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', id: 0 },
@@ -88,38 +103,50 @@ export default class All extends Vue {
   /** @method - lifecycle hook */
 
   mounted() {
-    if (this.$route) {
-      console.log('filterField=' + this.filterField)
-      console.log('filterValue=' + this.filterValue)
-      this.filterField = this.$route.query.Field
-      this.filterValue = this.$route.query.Value
-      this.filterType = this.$route.query.Type
-      this.interval = setInterval(this.waitForIt, 500)
-    }
+    this.getAllNatoPublications()
+    this.getAllPublications()
+    this.interval = setInterval(this.waitForIt, 500)
   }
 
   public waitForIt() {
-    if (this.filterField !== '' || (null && this.filterValue !== '') || null) {
+    if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
-      // complex filter
-      if (this.filterType === 'complex') {
-        // filter pubs and send these pubs instead
-        let fields: any = String(this.filterField)
-        fields = fields.split(',')
-        let vals: any = String(this.filterValue)
-        vals = vals.split(',')
-        let p = this.allpublications
-        for (let i = 0; i < fields.length; i++) {
-          let field = fields[i]
-          p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
+      this.createAllPubs()
+      this.interval = setInterval(this.waitForPubs, 500)
+    }
+  }
+
+  public waitForPubs() {
+    if (this.allpubsloaded) {
+      clearInterval(this.interval)
+      if (this.$route) {
+        console.log('filterField=' + this.filterField)
+        console.log('filterValue=' + this.filterValue)
+        this.filterField = this.$route.query.Field
+        this.filterValue = this.$route.query.Value
+        this.filterType = this.$route.query.Type
+        if (this.filterField !== '' || (null && this.filterValue !== '') || null) {
+          // complex filter
+          if (this.filterType === 'complex') {
+            // filter pubs and send these pubs instead
+            let fields: any = String(this.filterField)
+            fields = fields.split(',')
+            let vals: any = String(this.filterValue)
+            vals = vals.split(',')
+            let p = this.allpublications
+            for (let i = 0; i < fields.length; i++) {
+              let field = fields[i]
+              p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
+            }
+            this.filteredpubs = p
+          } else {
+            this.filteredpubs = this.allpublications
+          }
+          this.viewReady = true
+          console.log('filterField2=' + this.filterField)
+          console.log('filterValue2=' + this.filterValue)
         }
-        this.filteredpubs = p
-      } else {
-        this.filteredpubs = this.allpublications
       }
-      this.viewReady = true
-      console.log('filterField2=' + this.filterField)
-      console.log('filterValue2=' + this.filterValue)
     }
   }
 
