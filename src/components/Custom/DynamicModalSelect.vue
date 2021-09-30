@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal :id="getID('dm', id)" :ref="getID('dm', id)" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk(id)">
+    <b-modal :id="getID('dms', id)" :ref="getID('dms', id)" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk(id)" @show="onShow()">
       <template v-slot:modal-title>{{ title }}</template>
       <b-container class="p-0">
         <b-row>
@@ -31,9 +31,9 @@
         </b-row>
       </b-container>
     </b-modal>
-    <b-form-group :label="label" :label-for="getID('txt', control)">
+    <b-form-group :label="label" :label-for="getID('bfi', id)">
       <b-input-group>
-        <b-form-input :id="getID('txt', control)" :ref="getID('txt', control)" size="sm" class="form-control" :value="value"></b-form-input>
+        <b-form-input :id="getID('bfi', id)" :ref="getID('bfi', id)" size="sm" class="form-control" :value="value"></b-form-input>
         <template #append>
           <b-button variant="blue-700" @click="onSearch(id)" size="sm">
             <font-awesome-icon fas icon="search" class="icon txt-light"></font-awesome-icon>
@@ -45,67 +45,31 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
-  name: 'dynamic-modal-select',
-  props: {
-    id: {
-      type: String,
-      default: ''
-    },
-    value: {
-      type: String,
-      default: ''
-    },
-    items: {
-      type: Array,
-      default: []
-    },
-    fields: {
-      type: Array,
-      default: []
-    },
-    filter: {
-      type: String,
-      default: ''
-    },
-    control: {
-      type: String,
-      default: ''
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    title: {
-      type: String,
-      default: 'Select'
-    }
-  }
+  name: 'dynamic-modal-select'
 })
 export default class DynamicModalSelect extends Vue {
   // used to select options with multiple checkboxes
   // uses bootstrap-vue components
+  @Prop(String) readonly id: string | undefined
+  @Prop(String) value!: string
+  @Prop(Array) fields!: []
+  @Prop(Array) items!: []
+  @Prop(String) filter!: string
+  @Prop(String) label!: string
+  @Prop({ default: 'Select' }) title!: string
+
   currentPage = 1
   totalRows = 0
   perPage = 30 // default
-  workingval = []
   selected: any = []
 
   mounted() {
     // if a value is passed with v-model, we need to ensure that we pre-select the items passed in.
-    console.log('PASSED WITH V-MODEL: ' + this.$props.value)
-    let ops = String(this.$props.value)
-    let options = ops.split(', ')
-    let items = this.$props.items
-    for (let i = 0; i < items.length; i++) {
-      if (options.indexOf(items[i].text) >= 0) {
-        // value exists so lets select it
-        items[i].selected = true
-        this.selected.push(items[i].text)
-      }
-    }
+    // console.log('PASSED WITH V-MODEL: ' + this.$props.value)
+    console.log('PASSED WITH V-MODEL: ' + this.value)
   }
 
   public getID(prefix: string, id: string) {
@@ -115,13 +79,27 @@ export default class DynamicModalSelect extends Vue {
   public onSearch(id: string) {
     // open the modal
     console.log('OPEN MODAL: ' + id)
-    id = 'dm_' + id
+    id = 'dms_' + id
     this.$bvModal.show(id)
+  }
+
+  public onShow() {
+    let ops = String(this.value)
+    let options = ops.split(',')
+    let items: any = this.items // this.$props.items
+    this.totalRows = items.length
+    for (let i = 0; i < items.length; i++) {
+      if (options.indexOf(items[i].text) >= 0) {
+        // value exists so lets select it
+        console.log('SELECTED: ' + items[i].text)
+        items[i].selected = true
+        this.selected.push(items[i].text)
+      }
+    }
   }
 
   public toggleSelection(item: any, event: any) {
     // toggle selection by checking if it is or is not selected and selecting/deselecting it accordingly.
-    // add/remove from value based on selection by rebuilding the value
     console.log('SELECTED: ' + item.value)
     if (console) console.log('CHECKED: ' + event.target.checked + ', SELECTED LENGTH: ' + this.selected.length)
     if (event.target.checked) {
@@ -138,7 +116,7 @@ export default class DynamicModalSelect extends Vue {
           this.selected.push(item.text)
         }
       } else {
-        this.selected.push(item.id)
+        this.selected.push(item.text)
       }
     } else {
       // this item is being removed
@@ -151,12 +129,32 @@ export default class DynamicModalSelect extends Vue {
         }
       }
     }
+    // emit the value back out for the v-model
+    let result = ''
+    for (let i = 0; i < this.selected.length; i++) {
+      if (i === 0) {
+        result += this.selected[i]
+      } else {
+        result += ',' + this.selected[i]
+      }
+    }
+    this.value = result
+    this.$emit('input', this.value)
   }
 
   public onOk(id: string) {
+    let result = ''
+    for (let i = 0; i < this.selected.length; i++) {
+      if (i === 0) {
+        result += this.selected[i]
+      } else {
+        result += ',' + this.selected[i]
+      }
+    }
+    console.log('RESULT: ' + result)
+    this.$emit('input', result)
     id = 'dm_' + id
     this.$bvModal.hide(id)
-    this.$emit('input', this.$props.value)
   }
 }
 </script>
