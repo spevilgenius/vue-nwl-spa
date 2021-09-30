@@ -102,8 +102,9 @@ function FormatAD(ad: any, id: any, nato: any): any {
 function formatMedia(media: any) {
   console.log('MEDIA: ' + media + ', TYPE: ' + typeof media)
   if (media !== null && media !== '') {
+    let ops = String(media)
+    let lion = ops.split(',')
     let zebra: any = ''
-    let lion = media.split(',')
     for (let i = 0; i < lion.length; i++) {
       if (i === 0) {
         zebra = lion[i]
@@ -141,6 +142,7 @@ function makeArray(data: string, delimiter: string) {
 }
 @Module({ namespaced: true })
 class Publication extends VuexModule {
+  public digest?: string = ''
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
@@ -161,6 +163,7 @@ class Publication extends VuexModule {
   public bufferloaded?: boolean = false
   public filetype?: any
   public actionofficers: Array<ObjectItem> = []
+  public rapocs: Array<ObjectItem> = []
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -171,6 +174,13 @@ class Publication extends VuexModule {
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
   raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
+  rapocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Command/Title&$expand=Command&$filter=(Command/Title eq '"
+  updatePubUrl = "/_api/lists/getbytitle('ActivePublications')/items("
+
+  //#region MUTATIONS
+  @Mutation updateDigest(digest: string): void {
+    this.digest = digest
+  }
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -233,6 +243,23 @@ class Publication extends VuexModule {
   @Mutation
   public createRA(items: Array<ObjectItem>): void {
     this.reviewauthority = items
+  }
+
+  @Mutation
+  public createRAPocs(items: Array<ObjectItem>): void {
+    this.rapocs = items
+  }
+  //#endregion
+
+  @Action
+  public async getDigest(): Promise<boolean> {
+    const response = await axios.request({
+      url: tp1 + slash + slash + tp2 + '/_api/contextinfo',
+      method: 'POST',
+      headers: { Accept: 'application/json; odata=verbose' }
+    })
+    this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
+    return true
   }
 
   @Action
@@ -398,7 +425,7 @@ class Publication extends VuexModule {
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
-    p.Media = j[0]['Media'] !== null ? j[0]['Media']['results'] : ''
+    p.Media = j[0]['Media'] !== null ? formatMedia(j[0]['Media']['results']) : ''
     p.MA = j[0]['MA']
     p.NSN = j[0]['NSN']
     p.NWDCAO = {
@@ -417,7 +444,59 @@ class Publication extends VuexModule {
     p.Bookshelf = j[0]['Bookshelf']
     p.AdditionalData = ad
     p.ActionButtons = []
+    p.etag = j[0]['__metadata']['etag']
+    p.uri = j[0]['__metadata']['uri']
     this.context.commit('updatePublication', p)
+    return true
+  }
+
+  @Action
+  public async updatePublicationById(id: string, data: any): Promise<boolean> {
+    // update the publication data
+    const url = this.updatePubUrl + id + ')'
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'MERGE',
+      'If-Match': '*'
+    }
+    const config = {
+      headers: headers
+    }
+    // update the fields with the passed in data
+    let t = 'SP.Data.ActivePublicationsListItem'
+    if (data.IsNato === 'Yes') {
+      t = 'SP.Data.NATOPublicationsListItem'
+    }
+
+    let itemprops = {
+      __metadata: { type: t },
+      Title: data.Title,
+      Availability: data.Availability,
+      Branch: data.Branch,
+      Class: data.Class,
+      // ClassAbv: data.Availability,
+      CoordinatingRA: data.CoordinatingRA,
+      // CoordinatingRAAbv: data.Availability,
+      Distribution: data.DTIC,
+      LibrarianRemarks: data.LibrarianRemarks,
+      LongTitle: data.LongTitle,
+      Media: data.Media,
+      // MA: string
+      // NSN: string
+      // NWDCAO: {}
+      PRA: data.PRA,
+      // PRAPOC: string
+      Prfx: data.Prfx,
+      PubID: data.PubID,
+      Resourced: data.Resourced === 'Yes' ? 'Yes' : 'No', // TODO: checkbox so fix it
+      ReviewDate: data.ReviewDate,
+      StatusComments: data.StatusComments,
+      Replaces: data.Replaces,
+      Bookshelf: data.Bookshelf,
+      AdditionalData: JSON.stringify(data.AdditionalData)
+    }
     return true
   }
 
@@ -654,6 +733,41 @@ class Publication extends VuexModule {
     }
     let turl = tp1 + slash + slash + tp2 + this.raUrl
     getAllRA(turl)
+    return true
+  }
+
+  @Action
+  public async getRAPocByRA(ra: string): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllRAPoc(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllRAPoc(url)
+      } else {
+        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            value: j[i]['Title'],
+            text: j[i]['Title']
+          })
+        }
+        that.context.commit('createRAPocs', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.rapocUrl
+    turl += ra
+    turl += "')"
+    console.log('getRAPocByRA URL: ' + turl)
+    getAllRAPoc(turl)
     return true
   }
 

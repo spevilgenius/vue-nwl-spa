@@ -68,11 +68,9 @@ export default class DynamicCheckboxSelect extends Vue {
         if (index === 0) {
           // this item isnt yet in the selected array so add it
           this.selected.push(item.text)
-          this.value.push(item.text)
         }
       } else {
         this.selected.push(item.text)
-        this.value.push(item.text)
       }
     } else {
       // this item is being removed
@@ -81,7 +79,6 @@ export default class DynamicCheckboxSelect extends Vue {
         for (let i = 0; i < this.selected.length; i++) {
           if (String(this.selected[i]) === item.text) {
             this.selected.splice(i, 1)
-            this.value.splice(i, 1)
           }
         }
       }
@@ -95,6 +92,7 @@ export default class DynamicCheckboxSelect extends Vue {
         result += ',' + this.selected[i]
       }
     }
+    this.value = result
     this.$emit('input', this.value)
   }
 }

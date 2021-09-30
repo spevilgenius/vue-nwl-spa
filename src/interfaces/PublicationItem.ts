@@ -79,5 +79,7 @@ interface PublicationItem {
     Update: string
   }
   ActionButtons?: []
+  etag?: string
+  uri?: string
 }
 export { PublicationItem }

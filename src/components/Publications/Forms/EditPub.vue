@@ -51,9 +51,10 @@
                             </b-form-group>
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
-                            <b-form-group label="Bookshelf" label-for="ddBookshelf">
+                            <dynamic-modal-select v-if="formReady" id="dmsBookshelf" v-model="publication.Bookshelf" :items="bookshelves" :fields="bsfields" :filter="bsfilter" title="Select Bookshelf" label="Bookshelf"></dynamic-modal-select>
+                            <!-- <b-form-group label="Bookshelf" label-for="ddBookshelf">
                               <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
-                            </b-form-group>
+                            </b-form-group> -->
                           </b-col>
                         </b-form-row>
                         <b-form-row>
@@ -271,15 +272,18 @@ export default class EditPub extends Vue {
   invalidBranch = 'Please select a valid Branch.'
   reltofilter = ''
   crafilter = ''
+  bsfilter = ''
   dmsRELTO = 'RELTO'
   dmsCRA = 'CRA'
-  reltodata!: any
-  currentPageRelto = 0
-  currentPageCRA = 0
   perPage = 50
   totalcalls = 0
   completedcalls = 0
   formReady = false
+
+  bsfields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'value', label: 'Bookshelf', sortable: true }
+  ]
 
   reltofields = [
     { key: 'actions', label: 'Select' },
