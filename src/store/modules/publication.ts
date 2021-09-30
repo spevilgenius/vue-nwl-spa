@@ -100,13 +100,19 @@ function FormatAD(ad: any, id: any, nato: any): any {
 }
 
 function makeArray(data: string) {
-  if (data !== null && data !== '') {
+  if (data !== null && data.length > 1) {
     let zebra: any = []
-    let snake = data.split(', ')
-    for (let v = 0; v < snake.length; v++) {
-      zebra.push(snake[v])
+    // there may only be one so test that
+    if (data.indexOf(',') > 0) {
+      // there are more that one
+      let snake = data.split(',')
+      for (let v = 0; v < snake.length; v++) {
+        zebra.push(snake[v])
+      }
+    } else {
+      zebra.push(data)
     }
-    console.log('ARRAY CREATED: ' + snake.length)
+    // console.log('ARRAY CREATED: ' + snake.length)
     return zebra
   } else {
     return []
@@ -239,12 +245,12 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
-            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: j[i]['Media'], // returns array of multiple choices
+            Media: makeArray(j[0]['Media']),
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -271,6 +277,72 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.pubsUrl
     // console.log('getAllPublications URL: ' + turl)
     getAllPubs(turl)
+    return true
+  }
+
+  @Action
+  public async getAllPublicationsByQuery(query: string): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getAllPubsByQuery(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllPubsByQuery(url)
+      } else {
+        //console.log('getAllPublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: makeArray(j[0]['Media']), // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+          })
+        }
+        that.context.commit('createPublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + query
+    // console.log('getAllPublications URL: ' + turl)
+    getAllPubsByQuery(turl)
     return true
   }
 
@@ -304,12 +376,12 @@ class Publication extends VuexModule {
             Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
             Class: j[i]['Class'],
             ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: makeArray(j[i]['CoordinatingRA']),
-            CoordinatingRAAbv: makeArray(j[i]['CoordinatingRAAbv']),
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: j[i]['Media'], // returns array of multiple choices
+            Media: makeArray(j[0]['Media']), // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -365,12 +437,12 @@ class Publication extends VuexModule {
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
     p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = makeArray(j[0]['CoordinatingRA'])
-    p.CoordinatingRAAbv = makeArray(j[0]['CoordinatingRAAbv'])
+    p.CoordinatingRA = j[0]['CoordinatingRA']
+    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
-    p.Media = j[0]['Media']
+    p.Media = makeArray(j[0]['Media'])
     p.MA = j[0]['MA']
     p.NSN = j[0]['NSN']
     p.NWDCAO = {
@@ -555,7 +627,8 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
-            text: j[i]['Title']
+            text: j[i]['Title'],
+            selected: false
           })
         }
         that.context.commit('createRelto', p)
@@ -569,11 +642,14 @@ class Publication extends VuexModule {
 
   @Action
   public async getAO(): Promise<boolean> {
-    const url = tp1 + slash + slash + tp2 + "/sites/f3i2/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
-    let promise = axios.get(url, { headers: { accept: 'application/json;odata=verbose' } })
-    const response = await promise
+    const url = tp1 + slash + slash + tp2 + "/_api/Web/SiteGroups/GetByName('Doctrine Action Officers')/users"
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
     let j = response.data.d.results
-    // if (console) console.log('RESPONSE: ' + JSON.stringify(j))
+    // if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(j))
     let p: Array<ObjectItem> = []
     for (let i = 0; i < j.length; i++) {
       p.push({

@@ -1,165 +1,111 @@
-<template>
+ib<template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-row no-gutters class="contentHeight">
+    <b-row no-gutters>
       <b-col cols="12" class="m-0 p-0">
-        <b-container fluid class="contentHeight m-0 p-0">
-          <b-row no-gutters>
-            <b-col cols="4" class="m-0 p-1 bg-white">
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Navy Doctrinal Publications
-                  </h4></b-card-header
-                >
-                <b-card-body class="p-1">
-                  <b-list-group>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Doctrine</b-card-sub-title>
-                            <b-card-title>NDP, NWP</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
-                    </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTTP' } }">
-                        <b-card no-body class="p-1">
-                          <b-row no-gutters>
-                            <b-col md="2">
-                              <font-awesome-icon fas icon="project-diagram" class="pubicon text-info"></font-awesome-icon>
-                            </b-col>
-                            <b-col md="10" class="p-1">
-                              <b-card-sub-title>Navy Tactics, Techniques and Procedures</b-card-sub-title>
-                              <b-card-title>NTTP, MTTP</b-card-title>
-                            </b-col>
-                          </b-row>
-                        </b-card>
-                      </b-link>
-                    </b-list-group-item>
-                    <b-list-group-item variant="blue-800" class="flex-column align-items-start">
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTRP' } }">
-                        <b-card no-body class="p-1">
-                          <b-row no-gutters>
-                            <b-col md="2">
-                              <font-awesome-icon fas icon="book" class="pubicon text-danger"></font-awesome-icon>
-                            </b-col>
-                            <b-col md="10" class="p-1">
-                              <b-card-sub-title>Navy Reference Publication</b-card-sub-title>
-                              <b-card-title>NTRP</b-card-title>
-                            </b-col>
-                          </b-row>
-                        </b-card>
-                      </b-link>
-                    </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="lightbulb" class="pubicon text-warning"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Development TTP</b-card-sub-title>
-                            <b-card-title>TACMEMO, TACBUL, TACNOTE</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
-                    </b-list-group-item>
-                  </b-list-group>
-                </b-card-body>
-              </b-card>
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Bookshelves
-                  </h4></b-card-header
-                >
-                <b-card-body body-class="p-1">
-                  <b-form-select class="form-control-bookshelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
-                </b-card-body>
-              </b-card>
-            </b-col>
-            <b-col cols="4" class="m-0 p-1 bg-white">
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Warfighting Collections
-                  </h4></b-card-header
-                >
-                <b-card-body body-class="card-body-left p-1">
-                  <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">Fleet CONOPS</b-link></li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">Navy-wide OPTASKS</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
-                    </li>
-                  </ul>
-                </b-card-body>
-              </b-card>
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Warfighting Reference Materials
-                  </h4></b-card-header
-                >
-                <b-card-body body-class="card-body-left p-1">
-                  <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Strategy Documents' } }">Strategy Documents</b-link>
-                    </li>
-                    <li>
-                      <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link></li>
-                    <li title="Coming soon!">
-                      <a href="#">Selected Instructions</a>
-                    </li>
-                  </ul>
-                </b-card-body>
-              </b-card>
-            </b-col>
-            <b-col cols="4" class="m-0 p-1 bg-white">
-              <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
-                    Top Publications
-                  </h4></b-card-header
-                >
-                <b-card-body body-class="p-1"></b-card-body>
-              </b-card>
-            </b-col>
+        <b-container fluid class="m-0 p-0">
+          <b-row no-gutters class="titleRow">
+            <div class="mx-auto text-center">
+              <div class="upper" id="NWLTitle">
+                Allied Publications Library
+              </div>
+            </div>
           </b-row>
         </b-container>
+      </b-col>
+    </b-row>
+    <b-row cols="12" no-gutters>
+      <b-col cols="3"></b-col>
+      <b-col cols="3" class="m-0 p-1 bg-white">
+        <b-card no-body header-tag="header">
+          <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+            ><h4 class="text-white p-0 mb-0">
+              NATO Warfighting Publications
+            </h4></b-card-header
+          >
+          <b-card-body class="p-1">
+            <b-list-group>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-card no-body class="p-1">
+                  <b-row no-gutters>
+                    <b-col class="p-1">
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'ATP' } }">
+                        <b-card-sub-title
+                          ><i><b>Allied Tactical Publications</b></i></b-card-sub-title
+                        >
+                        <b-card-title>ATP</b-card-title>
+                      </b-link>
+                    </b-col>
+                  </b-row>
+                </b-card>
+              </b-list-group-item>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-link :to="{ name: 'All Publications', query: { Type: 'AJP' } }">
+                  <b-card no-body class="p-1">
+                    <b-row no-gutters>
+                      <b-col class="p-1">
+                        <b-card-sub-title>Allied Joint Publications</b-card-sub-title>
+                        <b-card-title>AJP</b-card-title>
+                      </b-col>
+                    </b-row>
+                  </b-card>
+                </b-link>
+              </b-list-group-item>
+              <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                <b-link :to="{ name: 'All Publications', query: { Type: 'NTRP' } }">
+                  <b-card no-body class="p-1">
+                    <b-row no-gutters>
+                      <b-col class="p-1">
+                        <b-card-sub-title>Allied Mine Warfare Publications</b-card-sub-title>
+                        <b-card-title>AMP</b-card-title>
+                      </b-col>
+                    </b-row>
+                  </b-card>
+                </b-link>
+              </b-list-group-item>
+            </b-list-group>
+          </b-card-body>
+        </b-card>
+      </b-col>
+
+      <b-col cols="3" class="m-0 p-1 bg-white">
+        <b-card no-body header-tag="header">
+          <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
+            ><h4 class="text-white p-0 mb-0">
+              Other key NATO Publications
+            </h4></b-card-header
+          >
+          <b-card-body body-class="card-body-left p-1">
+            <ul>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AAP' } }">Administrative (AAPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'APP' } }">Procedural Publications (APPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AEP' } }">Engineering Publications (AEPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AWP' } }">Meteorology and Oceanography (AMETOCPs/AWPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AHP' } }">Hydrographic Publications (AHPs)</b-link>
+              </p>
+              <p><b-link :to="{ name: 'All Publications', query: { Value: 'ALP' } }">Logistics Publications (ALPs)</b-link></p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'AXP' } }">Exercise Publications (AXPs)</b-link>
+              </p>
+              <p>
+                <b-link :to="{ name: 'All Publications', query: { Value: 'NATO Specialist' } }">NATO Specialist Publications (AAEP, ACOMP etc)</b-link>
+              </p>
+            </ul>
+          </b-card-body>
+        </b-card>
+      </b-col>
+      <b-col cols="3">
+        <a href="https://www.nato.int">
+          <img :src="baseImageUrl + '/NatoImage233x117.jpg'" />
+        </a>
       </b-col>
     </b-row>
   </b-container>
@@ -167,63 +113,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { ObjectItem } from '@/interfaces/ObjectItem'
-import { Announcement } from '@/interfaces/Announcement'
-import { namespace } from 'vuex-class'
-
-const support = namespace('support')
 
 @Component({
   name: 'Home'
 })
-export default class Home extends Vue {
+export default class Allied extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
   readonly baseImageUrl!: string
-
-  @support.State
-  public bookshelves!: Array<ObjectItem>
-
-  @support.State
-  public announcements!: Array<Announcement>
-
-  @support.Action
-  public getBS!: () => Promise<boolean>
-
-  @support.Action
-  public getAnnouncements!: () => Promise<boolean>
-
-  public interval: any
-
-  mounted() {
-    this.getBS().then(response => {
-      if (response) {
-        console.log('Bookshelves Loaded')
-        this.getAnnouncements().then(response => {
-          if (response) {
-            console.log('Announcements Loaded')
-          }
-        })
-      }
-    })
-  }
-
-  limitText(text: string) {
-    let parser = new DOMParser()
-    let doc = parser.parseFromString(text, 'text/html')
-    let p = doc.getElementsByTagName('p')
-    let elem = document.createElement('div') as Element
-    let count = 0
-    for (let i = 0; i < p.length; i++) {
-      count += 1
-      if (count === 1) {
-        elem.innerHTML += p[i].innerHTML
-      }
-      if (count === 3) {
-        elem.innerHTML += '<br/>' + p[i].innerHTML
-      }
-    }
-    return elem.innerHTML
-  }
 }
 </script>
 
@@ -234,13 +130,11 @@ export default class Home extends Vue {
   font-variant: small-caps;
   font-style: italic;
   font-size: 36px;
+  font-weight: bold;
 }
 .pubType {
   font-family: 'Arial';
   font-size: 14pt;
-}
-.pubicon {
-  font-size: 65px;
 }
 .list-group-item {
   position: relative;
@@ -271,5 +165,8 @@ h4,
 h5,
 h6 {
   margin-bottom: auto;
+}
+a {
+  color: black !important;
 }
 </style>

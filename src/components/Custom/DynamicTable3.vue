@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
-  <b-container fluid class="contentHeight m-0 p-0">
+  <b-container fluid class="contentHeight m-2 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
@@ -149,6 +149,7 @@ export default class DynamicTable extends Vue {
 
   public waitForIt() {
     if (this.$props.table.items.length > 0) {
+      const that = this
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
@@ -160,7 +161,7 @@ export default class DynamicTable extends Vue {
       }
       // Calculate perPage based on counting the number of rows that will fit in the available space
       let available = this.contentheight - 130
-      let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
+      let amount = Math.floor(available / 33) // (Jean changed to 33 from) 29 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount
     }
   }
@@ -219,7 +220,15 @@ export default class DynamicTable extends Vue {
     }
     return html
   }
-
+  /*   public getSticky(element) {
+    let h: any
+    switch (element) {
+      case 'dynamictable':
+        h = that.contentheight - 200 + 'px'
+        break
+    }
+    return h
+  } */
   public getStyle(element, field) {
     let style: any = {}
     switch (element) {
@@ -229,18 +238,18 @@ export default class DynamicTable extends Vue {
         style.width = that.contentwidth + 'px'
         break
 
+      case 'maintable':
+        style.width = that.contentwidth - 5 + 'px'
+        break
+
       case 'tablerow':
-        style.height = that.contentheight - 100 + 'px'
+        style.height = that.contentheight - 200 + 'px'
         style.width = that.contentwidth + 'px'
         break
 
       case 'pagingrow':
         style.height = '50px'
         style.width = that.contentwidth + 'px'
-        break
-
-      case 'maintable':
-        style.width = that.contentwidth - 5 + 'px'
         break
     }
     return style
@@ -266,6 +275,7 @@ export default class DynamicTable extends Vue {
 .table-full {
   border: 1px solid #000000 !important;
   text-align: left;
+  margin-left: 10px;
 }
 .table-full td,
 .table-full th {
@@ -277,6 +287,6 @@ export default class DynamicTable extends Vue {
   white-space: wrap;
 }
 .definition {
-  max-width: 10000px;
+  max-width: 1800px;
 }
 </style>

@@ -6,7 +6,17 @@
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="8" class="mt-1 p-0"></b-col>
+              <b-col cols="8" class="mt-1 p-0">
+                <b-row>
+                  <p class="ml-3" style="font-size: 22px;">Filters</p>
+                  <p class="ml-5 mt-2" style="font-size: 16px;">Branch:</p>
+                  <b-form-select class="form-control px200 ml-1" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch"></b-form-select>
+                  <p class="ml-3 mt-2" style="font-size: 16px;">Prefix:</p>
+                  <b-form-select class="form-control px200 ml-1" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix" v-b-tooltip.hover.v-dark title="Filter on Branch to display Prefix choices."></b-form-select>
+                  <p class="ml-3 mt-2" style="font-size: 16px;">Bookshelf:</p>
+                  <b-form-select class="form-control-bookshelf px250 ml-1" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select>
+                </b-row>
+              </b-col>
               <b-col cols="4" class="mt-1 pr-3">
                 <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
                 <b-input-group class="float-right">
@@ -318,6 +328,54 @@ export default class DynamicTable extends Vue {
           if (response) {
             this.filter = this.Branch
             this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Other') {
+        this.Branch = 'Other'
+        that.getPrefixesByBranch('Other').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'Navy') {
+        this.Branch = 'Navy'
+        that.getPrefixesByBranch('Navy').then(response => {
+          if (response) {
+            this.filter = this.Branch
+            this.filterOn = ['Branch']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'ATP') {
+        this.Branch = 'Allied'
+        that.getPrefixesByBranch('Allied').then(response => {
+          if (response) {
+            this.Prfx = 'ATP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'AJP') {
+        this.Branch = 'Allied'
+        that.getPrefixesByBranch('Allied').then(response => {
+          if (response) {
+            this.Prfx = 'AJP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
+          }
+        })
+      }
+      if (this.$props.table.filterType === 'AMP') {
+        this.Branch = 'Allied'
+        that.getPrefixesByBranch('Allied').then(response => {
+          if (response) {
+            this.Prfx = 'AMP'
+            this.filter = this.Prfx
+            this.filterOn = ['Prfx']
           }
         })
       }

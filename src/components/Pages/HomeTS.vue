@@ -59,20 +59,22 @@
                 >
                 <b-card-body class="p-1">
                   <b-list-group>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
-                      <b-card no-body class="p-1">
-                        <b-row no-gutters>
-                          <b-col md="2">
-                            <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col md="10" class="p-1">
-                            <b-card-sub-title>Navy Doctrine</b-card-sub-title>
-                            <b-card-title>NDP, NWP</b-card-title>
-                          </b-col>
-                        </b-row>
-                      </b-card>
-                    </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
+                    <b-link :to="{ name: 'NavyDoctrine' }">
+                      <b-list-group-item variant="blue-800" class="flex-column align-items-start">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-sub-title>Navy Doctrine</b-card-sub-title>
+                              <b-card-title>NDP, NWP</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-list-group-item>
+                    </b-link>
+                    <b-list-group-item variant="blue-800" class="flex-column align-items-start">
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NTTP' } }">
                         <b-card no-body class="p-1">
                           <b-row no-gutters>
@@ -139,7 +141,7 @@
                   </h4></b-card-header
                 >
                 <b-card-body body-class="p-1">
-                  <b-form-select class="form-control-bookshelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
+                  <b-form-select class="form-control-bookshelf" v-model="shelf" :options="bookshelves" ref="Bookshelves" @change="onShelfSelected"></b-form-select>
                 </b-card-body>
               </b-card>
             </b-col>
@@ -156,7 +158,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
+                      <b-link :to="{ name: 'Allied Publications' }">Allied Publications</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
@@ -172,7 +174,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">Navy-wide OPTASKS</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
+                      <b-link :to="{ name: 'View Publication', query: { Id: 1, Nato: 'No' } }">Universal Naval Task List (UNTL)</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
@@ -263,6 +265,7 @@ export default class Home extends Vue {
   public getAnnouncements!: () => Promise<boolean>
 
   public interval: any
+  public shelf!: any
 
   mounted() {
     this.getBS().then(response => {
@@ -293,6 +296,10 @@ export default class Home extends Vue {
       }
     }
     return elem.innerHTML
+  }
+
+  onShelfSelected() {
+    this.$router.push({ name: 'All Publications', query: { Value: this.shelf } })
   }
 }
 </script>

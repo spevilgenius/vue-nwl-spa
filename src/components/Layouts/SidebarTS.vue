@@ -3,10 +3,12 @@
     <div class="sidebar-wrapper">
       <ul class="nav">
         <li class="nav-item nav-header">
-          <b-link class="nav-header-link" :href="homepage">
+          <b-link class="nav-header-link" href="https://nwdc.navy.mil">
             <div class="nav-header-logo-container">
               <div class="nav-header-logo" :style="{ backgroundImage: 'url(' + baseImageUrl + '/NWDCLogo100x100.png)' }"></div>
             </div>
+          </b-link>
+          <b-link class="nav-header-link-sub" href="https://doctrine.navy.mil">
             <div class="nav-header-title">{{ title }}</div>
           </b-link>
         </li>
