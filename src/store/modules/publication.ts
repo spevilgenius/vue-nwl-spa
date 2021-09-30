@@ -6,6 +6,7 @@ import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
 import { MonthWeekdayFn } from 'moment'
+import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -165,6 +166,10 @@ class Publication extends VuexModule {
   public bufferloaded?: boolean = false
   public filetype?: any
   public actionofficers: Array<ObjectItem> = []
+  public supdocuments: Array<SupportingDocItem> = []
+  public supnatodocuments: Array<SupportingDocItem> = []
+  public supdocumentsloaded?: boolean = false
+  public natosupdocumentsloaded?: boolean = false
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   pubsArchiveUrl = "/_api/lists/getbytitle('ArchivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -177,6 +182,8 @@ class Publication extends VuexModule {
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
   raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
+  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items"
+  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -190,6 +197,20 @@ class Publication extends VuexModule {
     this.natopublications = items
     this.natopubsloaded = true
     console.log('Nato publications length: ' + items.length)
+  }
+
+  @Mutation
+  public createSupDocuments(supitems: Array<SupportingDocItem>): void {
+    this.supdocuments = supitems
+    this.supdocumentsloaded = true
+    console.log('publications length: ' + supitems.length)
+  }
+
+  @Mutation
+  public createNatoSupDocuments(supitems: Array<SupportingDocItem>): void {
+    this.supnatodocuments = supitems
+    this.natosupdocumentsloaded = true
+    console.log('Nato publications length: ' + supitems.length)
   }
 
   @Mutation
@@ -429,7 +450,7 @@ class Publication extends VuexModule {
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: makeArray(j[0]['Media']),
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -494,7 +515,7 @@ class Publication extends VuexModule {
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: makeArray(j[0]['Media']), // returns array of multiple choices
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -580,57 +601,28 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getSupportingDocByDocID(id: string, nato: string): Promise<boolean> {
+  public async getSupportingDocByDocID(DocID: string, nato: string): Promise<boolean> {
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
     if (nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + id + ')'
+      url += this.sdnatoUrl + '&$filter=(DocID eq ' + DocID + ')'
     } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+      url += this.sdUrl + '&$filter=(DocID eq ' + DocID + ')'
     }
-    console.log('getPublicationById url: ' + url)
+    console.log('getSupportingDocByDocId url: ' + url)
     const response = await axios.get(url, {
       headers: {
         accept: 'application/json;odata=verbose'
       }
     })
     let j = response.data.d.results
-    let p = {} as PublicationItem
-    let ad = JSON.parse(j[0]['AdditionalData'])
+    let p = {} as SupportingDocItem
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
     p.Name = j[0]['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
     p.IsNato = nato
-    p.Availability = j[0]['Availability']
-    p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
-    p.Class = j[0]['Class']
-    p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = j[0]['CoordinatingRA']
-    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
-    p.DTIC = j[0]['DTIC']
-    p.LibrarianRemarks = j[0]['LibrarianRemarks']
-    p.LongTitle = j[0]['LongTitle']
-    p.Media = makeArray(j[0]['Media'])
-    p.MA = j[0]['MA']
-    p.NSN = j[0]['NSN']
-    p.NWDCAO = {
-      Title: j[0]['NWDCAO']['Title'],
-      Id: j[0]['NWDCAO']['Id'],
-      Email: j[0]['NWDCAO']['EMail']
-    }
-    p.PRA = j[0]['PrimaryReviewAuthority']
-    p.PRAPOC = j[0]['PRAPOC']
-    p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
-    p.PubID = j[0]['PubID']
-    p.Resourced = j[0]['Resourced']
-    p.ReviewDate = j[0]['ReviewDate']
-    p.StatusComments = j[0]['StatusComments']
-    p.Replaces = j[0]['Replaces']
-    p.Bookshelf = j[0]['Bookshelf']
-    p.AdditionalData = ad
-    p.ActionButtons = []
-    this.context.commit('updatePublication', p)
+    this.context.commit('createSupDocuments', p)
     return true
   }
 

@@ -94,6 +94,9 @@
                     <template slot="title">Supporting Documents</template>
                     <b-row no-gutters>
                       <b-col cols="12"></b-col>
+                      <b-row no-gutters>
+                        <b-col cols="12">Title {{ supportingdoc.Title }}</b-col>
+                      </b-row>
                     </b-row>
                   </b-tab>
                   <b-tab class="mtab">
@@ -114,6 +117,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
+import { SupportingDocItem } from '../../../interfaces/SupportingDocItem'
 import axios from 'axios'
 
 const users = namespace('users')
@@ -141,7 +145,7 @@ export default class ViewPub extends Vue {
   public publication!: PublicationItem
 
   @publication.State
-  public supportingdocloaded!: boolean
+  public supportingdocsloaded!: boolean
 
   @publication.State
   public supportingdoc!: PublicationItem
@@ -192,6 +196,9 @@ export default class ViewPub extends Vue {
       document.getElementById('PRAIcon')?.appendChild(img)
       // TODO: set frame to document url
       const that = this
+      if (this.supportingdocsloaded) {
+        console.log('supportingdocsloaded')
+      }
       if (String(this.publication.RelativeURL).indexOf('.pdf') > 0) {
         // woohoo
         let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('" + this.publication.RelativeURL + "')/OpenBinaryStream"
