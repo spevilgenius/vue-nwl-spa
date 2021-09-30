@@ -95,7 +95,7 @@
                     <b-row no-gutters>
                       <b-col cols="12"></b-col>
                       <b-row no-gutters>
-                        <b-col cols="12">Title {{ supportingdoc.Title }}</b-col>
+                        <b-col cols="12">Title</b-col>
                       </b-row>
                     </b-row>
                   </b-tab>
