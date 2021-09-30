@@ -3,7 +3,7 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
-          v-if="viewReady"
+          v-if="allpubsloaded"
           :user="currentUser"
           :table="{
             id: tblId,
@@ -12,8 +12,8 @@
             fields: fields,
             items: allpublications,
             filterField: filterField,
-            filterValue: filterValue,
-            filterType: filterType,
+            filterOn: 'Archived Documents',
+            filter: 'Archived Documents',
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -42,17 +42,12 @@ const publication = namespace('publication')
   }
 })
 export default class Archive extends Vue {
-  tblId = 'AllPubs'
+  tblId = 'ArchivePubs'
   primaryKey = 'docid'
   overlayText = 'Getting Publications. Please wait...'
   overlayVariant = 'danger'
   rowHeight = 0
   pageSize = 20
-  filterField: any
-  filterValue: any
-  filterType: any
-  interval!: any
-  viewReady?: boolean = false
 
   @users.State
   public currentUser!: UserInt
@@ -76,41 +71,21 @@ export default class Archive extends Vue {
   ]
 
   created() {
-    EventBus.$on('viewItem', args => {
-      this.viewPub(args)
+    EventBus.$on('viewItem', id => {
+      this.viewPub(id)
     })
-    EventBus.$on('editItem', args => {
-      this.editPub(args)
+    EventBus.$on('editItem', id => {
+      this.editPub(id)
     })
   }
 
   /** @method - lifecycle hook */
 
-  mounted() {
-    if (this.$route) {
-      console.log('filterField=' + this.filterField)
-      console.log('filterValue=' + this.filterValue)
-      this.filterField = this.$route.query.Field
-      this.filterValue = this.$route.query.Value
-      this.filterType = this.$route.query.Type
-      this.interval = setInterval(this.waitForIt, 500)
-    }
+  viewPub(id: string) {
+    this.$router.push({ name: 'View Publication', query: { Id: id }, params: { Id: id } })
   }
-
-  public waitForIt() {
-    if (this.filterField !== '' || (null && this.filterValue !== '') || null) {
-      clearInterval(this.interval)
-      this.viewReady = true
-      console.log('filterField2=' + this.filterField)
-      console.log('filterValue2=' + this.filterValue)
-    }
-  }
-
-  viewPub(args: any) {
-    this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
-  }
-  editPub(args: any) {
-    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
+  editPub(id: string) {
+    this.$router.push({ name: 'Edit Publication', query: { Id: id }, params: { Id: id } })
   }
 }
 </script>

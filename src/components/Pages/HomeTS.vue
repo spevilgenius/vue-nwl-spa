@@ -115,6 +115,20 @@
                         </b-row>
                       </b-card>
                     </b-list-group-item>
+                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
+                      <b-link :to="{ name: 'ArchivePublications', query: { Type: 'Archive' } }">
+                        <b-card no-body class="p-1">
+                          <b-row no-gutters>
+                            <b-col md="2">
+                              <font-awesome-icon fas icon="project-diagram" class="pubicon text-info"></font-awesome-icon>
+                            </b-col>
+                            <b-col md="10" class="p-1">
+                              <b-card-title>Archived Documents</b-card-title>
+                            </b-col>
+                          </b-row>
+                        </b-card>
+                      </b-link>
+                    </b-list-group-item>
                   </b-list-group>
                 </b-card-body>
               </b-card>
@@ -181,8 +195,11 @@
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Strategy Documents' } }">Strategy Documents</b-link>
                     </li>
                     <li>
-                      <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
+                      <b-link :to="{ name: 'Archived Publications', query: { Value: 'ArchivePublications' } }">Archived Documents</b-link>
                     </li>
+                    <!-- <li>
+                      <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
+                    </li> -->
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
                     </li>
@@ -194,6 +211,13 @@
                 </b-card-body>
               </b-card>
             </b-col>
+            <!-- <b-card-body body-class="card-body-left p-1">
+              <ul>
+                <li>
+                  <b-link :to="{ name: 'ArchivePublications', query: { Value: 'Archived Documents' } }">Archived Documents</b-link>
+                </li>
+              </ul>
+            </b-card-body> -->
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
                 <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"

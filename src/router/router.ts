@@ -24,6 +24,12 @@ const pubsMenu = {
       props: true
     },
     {
+      path: 'page/archive',
+      name: 'Archived Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
+      props: true
+    },
+    {
       path: 'page/development',
       name: 'Pubs In Development',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
