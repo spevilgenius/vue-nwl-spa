@@ -624,6 +624,61 @@ class Publication extends VuexModule {
   }
 
   @Action
+  public async getSupportingDocByDocID(id: string, nato: string): Promise<boolean> {
+    let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+    if (nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + id + ')'
+    } else {
+      url += this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+    }
+    console.log('getPublicationById url: ' + url)
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    let j = response.data.d.results
+    let p = {} as PublicationItem
+    let ad = JSON.parse(j[0]['AdditionalData'])
+    p.Id = j[0]['Id']
+    p.DocID = j[0]['DocID']
+    p.Title = j[0]['Title']
+    p.Name = j[0]['Name']
+    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
+    p.IsNato = nato
+    p.Availability = j[0]['Availability']
+    p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
+    p.Class = j[0]['Class']
+    p.ClassAbv = j[0]['ClassAbv']
+    p.CoordinatingRA = j[0]['CoordinatingRA']
+    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
+    p.DTIC = j[0]['DTIC']
+    p.LibrarianRemarks = j[0]['LibrarianRemarks']
+    p.LongTitle = j[0]['LongTitle']
+    p.Media = makeArray(j[0]['Media'])
+    p.MA = j[0]['MA']
+    p.NSN = j[0]['NSN']
+    p.NWDCAO = {
+      Title: j[0]['NWDCAO']['Title'],
+      Id: j[0]['NWDCAO']['Id'],
+      Email: j[0]['NWDCAO']['EMail']
+    }
+    p.PRA = j[0]['PrimaryReviewAuthority']
+    p.PRAPOC = j[0]['PRAPOC']
+    p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
+    p.PubID = j[0]['PubID']
+    p.Resourced = j[0]['Resourced']
+    p.ReviewDate = j[0]['ReviewDate']
+    p.StatusComments = j[0]['StatusComments']
+    p.Replaces = j[0]['Replaces']
+    p.Bookshelf = j[0]['Bookshelf']
+    p.AdditionalData = ad
+    p.ActionButtons = []
+    this.context.commit('updatePublication', p)
+    return true
+  }
+
+  @Action
   public async getPrefixesByBranch(branch: string): Promise<boolean> {
     let j: any[] = []
     let p: Array<ObjectItem> = []
