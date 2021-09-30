@@ -88,9 +88,7 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link>
-                    </li>
+                    <li><b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link></li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NWP301' } }">3-01 Air Defense</b-link>
                     </li>
