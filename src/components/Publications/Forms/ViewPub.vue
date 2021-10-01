@@ -168,7 +168,6 @@ export default class ViewPub extends Vue {
 
   mounted() {
     if (this.$route) {
-      this.$route.params.Id
       let id = this.$route.params.Id
       let nato = this.$route.params.Nato
       if (id !== null) {

@@ -380,6 +380,8 @@ export default class EditPub extends Vue {
   @publication.Action
   public updatePublicationById!: (id: number, data: any) => Promise<boolean>
 
+  /* #region DROPDOWNS */
+
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
     { value: 'Navy', text: 'Navy' },
@@ -441,6 +443,8 @@ export default class EditPub extends Vue {
   ]
 
   reltos = []
+
+  /* #endregion */
 
   mounted() {
     if (this.$route) {

@@ -286,17 +286,8 @@ class Publication extends VuexModule {
   public createRAPocs(items: Array<ObjectItem>): void {
     this.rapocs = items
   }
-  //#endregion
 
-  @Action
-  public async getDigest(): Promise<boolean> {
-    const response = await axios.request({
-      url: tp1 + slash + slash + tp2 + '/_api/contextinfo',
-      method: 'POST',
-      headers: { Accept: 'application/json; odata=verbose' }
-    })
-    this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
-    return true
+  @Mutation
   public createArchivePublications(items: Array<PublicationItem>): void {
     this.archivepublications = items
     this.archivepubsloaded = true
@@ -308,6 +299,18 @@ class Publication extends VuexModule {
     this.natoarchivepublications = items
     this.natoarchivepubsloaded = true
     console.log('Nato publications length: ' + items.length)
+  }
+  //#endregion
+
+  @Action
+  public async getDigest(): Promise<boolean> {
+    const response = await axios.request({
+      url: tp1 + slash + slash + tp2 + '/_api/contextinfo',
+      method: 'POST',
+      headers: { Accept: 'application/json; odata=verbose' }
+    })
+    this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
+    return true
   }
 
   @Action
@@ -444,6 +447,120 @@ class Publication extends VuexModule {
   public async getPublicationById(data: any): Promise<boolean> {
     console.log('getPublicationById: ' + data.nato)
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+    if (data.nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
+    } else {
+      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
+    }
+    console.log('getPublicationById url: ' + url)
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    let j = response.data.d.results
+    let p = {} as PublicationItem
+    let ad = JSON.parse(j[0]['AdditionalData'])
+    console.log('GETPUBBYID RESPONSE: ' + response)
+    p.Id = j[0]['Id']
+    p.DocID = j[0]['DocID']
+    p.Title = j[0]['Title']
+    p.Name = j[0]['Name']
+    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
+    p.IsNato = data.nato
+    p.Availability = j[0]['Availability']
+    p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
+    p.Class = j[0]['Class']
+    p.ClassAbv = j[0]['ClassAbv']
+    p.CoordinatingRA = j[0]['CoordinatingRA']
+    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
+    p.DTIC = j[0]['DTIC']
+    p.LibrarianRemarks = j[0]['LibrarianRemarks']
+    p.LongTitle = j[0]['LongTitle']
+    p.Media = j[0]['Media'] !== null ? formatMedia(j[0]['Media']['results']) : ''
+    p.MA = j[0]['MA']
+    p.NSN = j[0]['NSN']
+    p.NWDCAO = {
+      Title: j[0]['NWDCAO']['Title'],
+      Id: j[0]['NWDCAO']['Id'],
+      Email: j[0]['NWDCAO']['EMail']
+    }
+    p.PRA = j[0]['PrimaryReviewAuthority']
+    p.PRAPOC = j[0]['PRAPOC']
+    p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
+    p.PubID = j[0]['PubID']
+    p.Resourced = j[0]['Resourced']
+    p.ReviewDate = j[0]['ReviewDate']
+    p.StatusComments = j[0]['StatusComments']
+    p.Replaces = j[0]['Replaces']
+    p.Bookshelf = j[0]['Bookshelf']
+    p.AdditionalData = ad
+    p.ActionButtons = []
+    p.etag = j[0]['__metadata']['etag']
+    p.uri = j[0]['__metadata']['uri']
+    this.context.commit('updatePublication', p)
+    return true
+  }
+
+  @Action
+  public async updatePublicationById(data: any): Promise<boolean> {
+    // update the publication data
+    console.log('ID: ' + data.Id)
+    const url = this.updatePubUrl + data.Id + ')'
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'MERGE',
+      'If-Match': '*'
+    }
+    const config = {
+      headers: headers
+    }
+    // update the fields with the passed in data
+    let t = 'SP.Data.ActivePublicationsListItem'
+    if (data.IsNato === 'Yes') {
+      t = 'SP.Data.NATOPublicationsListItem'
+    }
+
+    let itemprops = {
+      __metadata: { type: t },
+      Title: data.Title,
+      Availability: data.Availability,
+      Branch: data.Branch,
+      Class: data.Class,
+      // ClassAbv: data.Availability,
+      CoordinatingRA: data.CoordinatingRA,
+      // CoordinatingRAAbv: data.Availability,
+      Distribution: data.DTIC,
+      LibrarianRemarks: data.LibrarianRemarks,
+      LongTitle: data.LongTitle,
+      Media: data.Media,
+      // MA: string
+      NSN: data.NSN,
+      NWDCAOId: data.NWDCAO.Id,
+      PRA: data.PRA,
+      PRAPOC: data.PRAPOC,
+      Prfx: data.Prfx,
+      PubID: data.PubID,
+      Resourced: data.Resourced === 'Yes' ? 'Yes' : 'No', // TODO: checkbox so fix it
+      ReviewDate: data.ReviewDate,
+      StatusComments: data.StatusComments,
+      Replaces: data.Replaces,
+      Bookshelf: data.Bookshelf,
+      AdditionalData: JSON.stringify(data.AdditionalData)
+    }
+
+    try {
+      await axios.post(url, itemprops, config)
+    } catch (e) {
+      // don't care yet
+    }
+
+    return true
+  }
+
+  @Action
   public async getArchivePublications(): Promise<boolean> {
     let j: any[] = []
     let p: Array<PublicationItem> = []
@@ -572,119 +689,6 @@ class Publication extends VuexModule {
     getAllNatoArchivePubs(turl)
     return true
   }
-
-  @Action
-  public async getPublicationById(data: any): Promise<boolean> {
-    let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    console.log('getPublicationById ' + data.nato)
-    if (data.nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
-    } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
-    }
-    console.log('getPublicationById url: ' + url)
-    const response = await axios.get(url, {
-      headers: {
-        accept: 'application/json;odata=verbose'
-      }
-    })
-    let j = response.data.d.results
-    let p = {} as PublicationItem
-    let ad = JSON.parse(j[0]['AdditionalData'])
-    p.Id = j[0]['Id']
-    p.DocID = j[0]['DocID']
-    p.Title = j[0]['Title']
-    p.Name = j[0]['File']['Name']
-    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = data.nato
-    p.Availability = j[0]['Availability']
-    p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
-    p.Class = j[0]['Class']
-    p.ClassAbv = j[0]['ClassAbv']
-    p.CoordinatingRA = j[0]['CoordinatingRA']
-    p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
-    p.DTIC = j[0]['DTIC']
-    p.LibrarianRemarks = j[0]['LibrarianRemarks']
-    p.LongTitle = j[0]['LongTitle']
-    p.Media = j[0]['Media'] !== null ? formatMedia(j[0]['Media']['results']) : ''
-    p.MA = j[0]['MA']
-    p.NSN = j[0]['NSN']
-    p.NWDCAO = {
-      Title: j[0]['NWDCAO']['Title'],
-      Id: j[0]['NWDCAO']['Id'],
-      Email: j[0]['NWDCAO']['EMail']
-    }
-    p.PRA = j[0]['PrimaryReviewAuthority']
-    p.PRAPOC = j[0]['PRAPOC']
-    p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
-    p.PubID = j[0]['PubID']
-    p.Resourced = j[0]['Resourced']
-    p.ReviewDate = j[0]['ReviewDate']
-    p.StatusComments = j[0]['StatusComments']
-    p.Replaces = j[0]['Replaces']
-    p.Bookshelf = j[0]['Bookshelf']
-    p.AdditionalData = ad
-    p.ActionButtons = []
-    p.etag = j[0]['__metadata']['etag']
-    p.uri = j[0]['__metadata']['uri']
-    this.context.commit('updatePublication', p)
-    return true
-  }
-
-  @Action
-  public async updatePublicationById(data: any): Promise<boolean> {
-    // update the publication data
-    console.log('ID: ' + data.Id)
-    const url = this.updatePubUrl + data.Id + ')'
-    const headers = {
-      'Content-Type': 'application/json;odata=verbose',
-      Accept: 'application/json;odata=verbose',
-      'X-RequestDigest': this.digest,
-      'X-HTTP-Method': 'MERGE',
-      'If-Match': '*'
-    }
-    const config = {
-      headers: headers
-    }
-    // update the fields with the passed in data
-    let t = 'SP.Data.ActivePublicationsListItem'
-    if (data.IsNato === 'Yes') {
-      t = 'SP.Data.NATOPublicationsListItem'
-    }
-
-    let itemprops = {
-      __metadata: { type: t },
-      Title: data.Title,
-      Availability: data.Availability,
-      Branch: data.Branch,
-      Class: data.Class,
-      // ClassAbv: data.Availability,
-      CoordinatingRA: data.CoordinatingRA,
-      // CoordinatingRAAbv: data.Availability,
-      Distribution: data.DTIC,
-      LibrarianRemarks: data.LibrarianRemarks,
-      LongTitle: data.LongTitle,
-      Media: data.Media,
-      // MA: string
-      NSN: data.NSN,
-      NWDCAOId: data.NWDCAO.Id,
-      PRA: data.PRA,
-      PRAPOC: data.PRAPOC,
-      Prfx: data.Prfx,
-      PubID: data.PubID,
-      Resourced: data.Resourced === 'Yes' ? 'Yes' : 'No', // TODO: checkbox so fix it
-      ReviewDate: data.ReviewDate,
-      StatusComments: data.StatusComments,
-      Replaces: data.Replaces,
-      Bookshelf: data.Bookshelf,
-      AdditionalData: JSON.stringify(data.AdditionalData)
-    }
-
-    try {
-      await axios.post(url, itemprops, config)
-    } catch (e) {
-      // don't care yet
-    }
 
   public async getSupportingDocByDocID(data: any): Promise<boolean> {
     let j: any[] = []
