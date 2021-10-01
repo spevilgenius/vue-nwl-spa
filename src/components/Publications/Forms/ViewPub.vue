@@ -134,6 +134,7 @@ export default class ViewPub extends Vue {
   rightTabs = []
   interval!: any
   iconsource!: any
+  formReady = false
 
   @users.State
   public currentUser!: UserInt
@@ -148,7 +149,7 @@ export default class ViewPub extends Vue {
   public supportingdocsloaded!: boolean
 
   @publication.State
-  public supportingdoc!: PublicationItem
+  public supportingdoc!: SupportingDocItem
 
   @publication.State
   public bufferloaded!: boolean
@@ -157,25 +158,43 @@ export default class ViewPub extends Vue {
   public pubBuffer!: ArrayBuffer
 
   @publication.Action
-  public getPublicationById!: (id: string, nato: string) => Promise<boolean>
+  public getSupportingDocByDocID!: (data: any) => Promise<boolean>
+
+  @publication.Action
+  public getPublicationById!: (data: any) => Promise<boolean>
 
   @publication.Action
   public getBinaryFile!: (url: string) => Promise<boolean>
 
   mounted() {
     if (this.$route) {
-      let id = this.$route.query.Id
-      let nato = this.$route.query.Nato
-      if (id !== null) {
-        console.log('TEST B')
-        this.getPublicationById(String(id), String(nato)).then(response => {
+      if (this.$route.params.Id !== null && this.$route.params.Nato !== null) {
+        let id = this.$route.params.Id
+        let nato = this.$route.params.Nato
+        console.log('route params ' + nato)
+        let data: any = {}
+        data.id = id
+        data.nato = nato
+        this.getPublicationById(data).then(response => {
           if (response) {
-            this.interval = setInterval(this.waitForIt, 500)
+            this.interval = setInterval(this.loadData, 500)
           }
         })
-      } else {
-        console.log('TEST A')
       }
+    }
+  }
+
+  public loadData() {
+    if (this.publoaded) {
+      clearInterval(this.interval)
+      let ad = this.publication.AdditionalData
+      let data: any = {}
+      data.DocID = this.publication.DocID
+      data.nato = this.publication.IsNato
+      console.log('DocID= ' + this.publication.DocID)
+      console.log('IsNato= ' + this.publication.IsNato)
+      console.log('DTIC= ' + this.publication.DTIC)
+      this.getSupportingDocByDocID(data)
     }
   }
 
@@ -184,21 +203,23 @@ export default class ViewPub extends Vue {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
-      let pra = ad.PRAAbbrev
-      let src = tp1 + slash + slash + tp2 + '/PublishingImages/PRA/'
-      src += pra
-      src += '.png'
-      console.log('Set Image Source: ' + src)
-      let img = document.createElement('img')
-      img.height = 150
-      img.width = 150
-      img.src = src
-      document.getElementById('PRAIcon')?.appendChild(img)
+      try {
+        let pra = ad.PRAAbbrev
+        let src = tp1 + slash + slash + tp2 + '/PublishingImages/PRA/'
+        src += pra
+        src += '.png'
+        console.log('Set Image Source: ' + src)
+        let img = document.createElement('img')
+        img.height = 150
+        img.width = 150
+        img.src = src
+        document.getElementById('PRAIcon')?.appendChild(img)
+      } catch (e) {
+        //don't care for now
+      }
+      console.log('DocID = ' + this.publication.DocID)
       // TODO: set frame to document url
       const that = this
-      if (this.supportingdocsloaded) {
-        console.log('supportingdocsloaded')
-      }
       if (String(this.publication.RelativeURL).indexOf('.pdf') > 0) {
         // woohoo
         let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('" + this.publication.RelativeURL + "')/OpenBinaryStream"

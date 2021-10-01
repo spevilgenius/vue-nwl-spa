@@ -7,6 +7,7 @@ import { ObjectItem } from '@/interfaces/ObjectItem'
 import axios from 'axios'
 import { MonthWeekdayFn } from 'moment'
 import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
+import Support from './support'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -182,8 +183,8 @@ class Publication extends VuexModule {
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
   raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
-  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items"
-  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items"
+  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -200,17 +201,17 @@ class Publication extends VuexModule {
   }
 
   @Mutation
-  public createSupDocuments(supitems: Array<SupportingDocItem>): void {
-    this.supdocuments = supitems
+  public createSupDocuments(items: Array<SupportingDocItem>): void {
+    this.supdocuments = items
     this.supdocumentsloaded = true
-    console.log('publications length: ' + supitems.length)
+    console.log('publications length: ' + items.length)
   }
 
   @Mutation
-  public createNatoSupDocuments(supitems: Array<SupportingDocItem>): void {
-    this.supnatodocuments = supitems
+  public createNatoSupDocuments(items: Array<SupportingDocItem>): void {
+    this.supnatodocuments = items
     this.natosupdocumentsloaded = true
-    console.log('Nato publications length: ' + supitems.length)
+    console.log('Nato publications length: ' + items.length)
   }
 
   @Mutation
@@ -545,12 +546,13 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getPublicationById(id: string, nato: string): Promise<boolean> {
+  public async getPublicationById(data: any): Promise<boolean> {
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    if (nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + id + ')'
+    console.log('getPublicationById ' + data.nato)
+    if (data.nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
     } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
     }
     console.log('getPublicationById url: ' + url)
     const response = await axios.get(url, {
@@ -561,13 +563,12 @@ class Publication extends VuexModule {
     let j = response.data.d.results
     let p = {} as PublicationItem
     let ad = JSON.parse(j[0]['AdditionalData'])
-    console.log('GETPUBBYID RESPONSE: ' + response)
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
-    p.Name = j[0]['Name']
+    p.Name = j[0]['File']['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = nato
+    p.IsNato = data.nato
     p.Availability = j[0]['Availability']
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
@@ -601,28 +602,43 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getSupportingDocByDocID(DocID: string, nato: string): Promise<boolean> {
-    let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    if (nato === 'Yes') {
-      url += this.sdnatoUrl + '&$filter=(DocID eq ' + DocID + ')'
+  public async getSupportingDocByDocID(data: any): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<SupportingDocItem> = []
+    const that = this
+    async function getAllSupportingDocs(surl: string) {
+      const response = await axios.get(surl, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        surl = response.data.d.__next
+        return getAllSupportingDocs(surl)
+      } else {
+        console.log('getAllSupportingDocs Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl']
+          })
+        }
+        that.context.commit('createSupDocuments', p)
+      }
+    }
+    let url = tp1 + slash + slash + tp2
+    if (data.nato === 'Yes') {
+      url += this.sdnatoUrl + '&$filter=(DocID eq ' + data.DocID + ')'
     } else {
-      url += this.sdUrl + '&$filter=(DocID eq ' + DocID + ')'
+      url += this.sdUrl + '&$filter=(DocID eq ' + data.DocID + ')'
     }
     console.log('getSupportingDocByDocId url: ' + url)
-    const response = await axios.get(url, {
-      headers: {
-        accept: 'application/json;odata=verbose'
-      }
-    })
-    let j = response.data.d.results
-    let p = {} as SupportingDocItem
-    p.Id = j[0]['Id']
-    p.DocID = j[0]['DocID']
-    p.Title = j[0]['Title']
-    p.Name = j[0]['Name']
-    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = nato
-    this.context.commit('createSupDocuments', p)
+    getAllSupportingDocs(url)
     return true
   }
 
