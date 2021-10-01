@@ -142,18 +142,23 @@
                     <b-col cols="12">
                       <b-form class="mt-0">
                         <b-form-row>
-                          <b-col cols="4" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Classification" label-for="ddClass">
                               <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="4" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Dissemination" label-for="ddDiss">
                               <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="4" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <dynamic-modal-select v-if="formReady" :id="dmsRELTO" v-model="publication.AdditionalData.RELTO" :items="relto" :fields="reltofields" :filter="reltofilter" title="Select REL TO" label="REL TO"></dynamic-modal-select>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="NSN" label-for="txtNSN">
+                              <b-form-input class="form-control" size="sm" id="txtNSN" v-model="publication.NSN" placeholder="National Stock Number" ref="NSN"></b-form-input>
+                            </b-form-group>
                           </b-col>
                         </b-form-row>
                         <b-form-row>
@@ -185,11 +190,16 @@
                             <b-row no-gutters>
                               <!-- b-row added for spacing -->
                               <b-form-group label="Primary Review Authority" label-for="ddPRA">
-                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
+                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA" @change="onPRASelected"></b-form-select>
                               </b-form-group>
                             </b-row>
                           </b-col>
-                          <b-col cols="9" class="text-center text-dark p-1">
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="PRA POC" label-for="ddPRAPOC">
+                              <b-form-select class="form-control" v-model="publication.PRAPOC" size="sm" id="ddPRAPOC" :options="rapocs" ref="PRAPOC"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="7" class="text-center text-dark p-1">
                             <dynamic-modal-select v-if="formReady" :id="dmsCRA" v-model="publication.CoordinatingRA" :items="reviewauthority" :fields="rafields" :filter="crafilter" title="Select Review Authority" label="Coordinating Review Authority"> </dynamic-modal-select>
                           </b-col>
                         </b-form-row>
@@ -221,8 +231,8 @@
                   <b-col cols="9"></b-col>
                   <b-col cols="3">
                     <b-button-group>
-                      <b-button @click="onCancel">Cancel</b-button>
-                      <b-button @click="onSave" variant="success">Save</b-button>
+                      <b-button size="sm" @click="onCancel">Cancel</b-button>
+                      <b-button size="sm" @click="onSave" variant="success">Save</b-button>
                     </b-button-group>
                   </b-col>
                 </b-row>
@@ -302,6 +312,9 @@ export default class EditPub extends Vue {
   public bookshelves!: Array<ObjectItem>
 
   @publication.State
+  public digestloaded!: boolean
+
+  @publication.State
   public publoaded!: boolean
 
   @publication.State
@@ -327,6 +340,12 @@ export default class EditPub extends Vue {
 
   @publication.State
   public actionofficers!: Array<ObjectItem>
+
+  @publication.State
+  public rapocs!: Array<ObjectItem>
+
+  @support.Action
+  public getDigest!: () => Promise<boolean>
 
   @support.Action
   public getBS!: () => Promise<boolean>
@@ -354,6 +373,12 @@ export default class EditPub extends Vue {
 
   @publication.Action
   public getRA!: () => Promise<boolean>
+
+  @publication.Action
+  public getRAPocByRA!: (ra: string) => Promise<boolean>
+
+  @publication.Action
+  public updatePublicationById!: (id: number, data: any) => Promise<boolean>
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -486,7 +511,21 @@ export default class EditPub extends Vue {
   }
 
   public onSave() {
+    // need to get the digest first
+    this.getDigest()
+    this.interval = setInterval(this.saveForm, 500)
+  }
+
+  public saveForm() {
     // save the form
+    if (this.digestloaded) {
+      console.log('DIGEST LOADED')
+      clearInterval(this.interval)
+      // send the data to save
+      if (this.publication.Id !== undefined) {
+        this.updatePublicationById(this.publication.Id, this.publication)
+      }
+    }
   }
 
   public onReltoSearch() {
@@ -589,6 +628,14 @@ export default class EditPub extends Vue {
         ao.Id = props.id
         ao.Email = props.email
       }
+    }
+  }
+
+  public onPRASelected() {
+    // go get the POC's for the selected RA
+    let ra = this.publication.PRA
+    if (ra !== undefined) {
+      this.getRAPocByRA(ra)
     }
   }
 }

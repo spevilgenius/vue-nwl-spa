@@ -143,6 +143,7 @@ function makeArray(data: string, delimiter: string) {
 @Module({ namespaced: true })
 class Publication extends VuexModule {
   public digest?: string = ''
+  public digestloaded?: boolean = false
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
@@ -180,6 +181,11 @@ class Publication extends VuexModule {
   //#region MUTATIONS
   @Mutation updateDigest(digest: string): void {
     this.digest = digest
+    this.digestloaded = true
+  }
+
+  @Mutation updateDigestLoaded(loaded: boolean): void {
+    this.digestloaded = loaded
   }
 
   @Mutation
@@ -451,7 +457,7 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async updatePublicationById(id: string, data: any): Promise<boolean> {
+  public async updatePublicationById(id: number, data: any): Promise<boolean> {
     // update the publication data
     const url = this.updatePubUrl + id + ')'
     const headers = {
@@ -484,10 +490,10 @@ class Publication extends VuexModule {
       LongTitle: data.LongTitle,
       Media: data.Media,
       // MA: string
-      // NSN: string
-      // NWDCAO: {}
+      NSN: data.NSN,
+      NWDCAOId: data.NWDCAO.Id,
       PRA: data.PRA,
-      // PRAPOC: string
+      PRAPOC: data.PRAPOC,
       Prfx: data.Prfx,
       PubID: data.PubID,
       Resourced: data.Resourced === 'Yes' ? 'Yes' : 'No', // TODO: checkbox so fix it
@@ -756,8 +762,8 @@ class Publication extends VuexModule {
         // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
-            value: j[i]['Title'],
-            text: j[i]['Title']
+            value: j[i]['FullName'],
+            text: j[i]['FullName']
           })
         }
         that.context.commit('createRAPocs', p)
