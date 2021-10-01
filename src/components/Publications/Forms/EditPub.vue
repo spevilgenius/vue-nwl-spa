@@ -305,6 +305,7 @@ export default class EditPub extends Vue {
     { key: 'value', label: 'Review Authority', sortable: true }
   ]
 
+  // #region STATE
   @users.State
   public currentUser!: UserInt
 
@@ -343,12 +344,14 @@ export default class EditPub extends Vue {
 
   @publication.State
   public rapocs!: Array<ObjectItem>
+  // #endregion
 
-  @support.Action
-  public getDigest!: () => Promise<boolean>
-
+  // #region ACTIONS
   @support.Action
   public getBS!: () => Promise<boolean>
+
+  @publication.Action
+  public getDigest!: () => Promise<boolean>
 
   @publication.Action
   public getRelto!: () => Promise<boolean>
@@ -378,9 +381,10 @@ export default class EditPub extends Vue {
   public getRAPocByRA!: (ra: string) => Promise<boolean>
 
   @publication.Action
-  public updatePublicationById!: (id: number, data: any) => Promise<boolean>
+  public updatePublicationById!: (data: any) => Promise<boolean>
+  // #endregion
 
-  /* #region DROPDOWNS */
+  //#region DROPDOWNS
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -444,7 +448,7 @@ export default class EditPub extends Vue {
 
   reltos = []
 
-  /* #endregion */
+  // #endregion
 
   mounted() {
     if (this.$route) {
@@ -519,8 +523,11 @@ export default class EditPub extends Vue {
 
   public onSave() {
     // need to get the digest first
-    this.getDigest()
-    this.interval = setInterval(this.saveForm, 500)
+    this.getDigest().then(response => {
+      if (response) {
+        this.interval = setInterval(this.saveForm, 500)
+      }
+    })
   }
 
   public saveForm() {
@@ -531,11 +538,13 @@ export default class EditPub extends Vue {
       // send the data to save
       const that = this
       if (this.publication.Id !== undefined) {
-        this.updatePublicationById(this.publication.Id, this.publication).then(function() {
+        this.updatePublicationById(this.publication).then(function() {
           // wait for update to finish then reload
           that.$router.push({ name: 'View Publication', params: { Id: that.$router.currentRoute.params.Id, Nato: that.$router.currentRoute.params.Nato } })
         })
       }
+    } else {
+      console.log('Awaiting Digest')
     }
   }
 

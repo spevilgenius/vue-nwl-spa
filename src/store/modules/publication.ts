@@ -184,18 +184,19 @@ class Publication extends VuexModule {
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
   rapocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Command/Title&$expand=Command&$filter=(Command/Title eq '"
   updatePubUrl = "/_api/lists/getbytitle('ActivePublications')/items("
+  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
 
   //#region MUTATIONS
   @Mutation updateDigest(digest: string): void {
     this.digest = digest
     this.digestloaded = true
+    console.log('DIGEST: ' + digest)
   }
 
   @Mutation updateDigestLoaded(loaded: boolean): void {
     this.digestloaded = loaded
   }
-  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
-  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -309,6 +310,7 @@ class Publication extends VuexModule {
       method: 'POST',
       headers: { Accept: 'application/json; odata=verbose' }
     })
+    console.log('FormDigestValue = ' + response.data.d.GetContextWebInformation.FormDigestValue)
     this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
     return true
   }
