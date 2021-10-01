@@ -18,8 +18,6 @@ var slash = '/'
 var tp1 = String(window.location.protocol)
 var tp2 = String(window.location.host)
 
-const baseUrl = process.env.VUE_APP_BASE_URL
-
 let additionalData: any = {
   AdminComments: '',
   Archived: '',
@@ -69,8 +67,6 @@ let additionalData: any = {
   SupersededBy: '',
   Update: ''
 }
-
-let filetype: any
 
 function isJson(item) {
   item = typeof item !== 'string' ? JSON.stringify(item) : item
@@ -162,7 +158,6 @@ class Publication extends VuexModule {
   public blobloaded?: boolean = false
   public pubBuffer?: ArrayBuffer
   public bufferloaded?: boolean = false
-  public filetype?: any
   public actionofficers: Array<ObjectItem> = []
   public rapocs: Array<ObjectItem> = []
 
@@ -399,12 +394,13 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getPublicationById(id: string, nato: string): Promise<boolean> {
+  public async getPublicationById(data: any): Promise<boolean> {
+    console.log('getPublicationById: ' + data.nato)
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    if (nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + id + ')'
+    if (data.nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
     } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
     }
     console.log('getPublicationById url: ' + url)
     const response = await axios.get(url, {
@@ -421,7 +417,7 @@ class Publication extends VuexModule {
     p.Title = j[0]['Title']
     p.Name = j[0]['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = nato
+    p.IsNato = data.nato
     p.Availability = j[0]['Availability']
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
@@ -457,9 +453,10 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async updatePublicationById(id: number, data: any): Promise<boolean> {
+  public async updatePublicationById(data: any): Promise<boolean> {
     // update the publication data
-    const url = this.updatePubUrl + id + ')'
+    console.log('ID: ' + data.Id)
+    const url = this.updatePubUrl + data.Id + ')'
     const headers = {
       'Content-Type': 'application/json;odata=verbose',
       Accept: 'application/json;odata=verbose',
@@ -503,6 +500,13 @@ class Publication extends VuexModule {
       Bookshelf: data.Bookshelf,
       AdditionalData: JSON.stringify(data.AdditionalData)
     }
+
+    try {
+      await axios.post(url, itemprops, config)
+    } catch (e) {
+      // don't care yet
+    }
+
     return true
   }
 

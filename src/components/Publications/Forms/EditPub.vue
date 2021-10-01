@@ -354,7 +354,7 @@ export default class EditPub extends Vue {
   public getRelto!: () => Promise<boolean>
 
   @publication.Action
-  public getPublicationById!: (id: string, nato: string) => Promise<boolean>
+  public getPublicationById!: (data: any) => Promise<boolean>
 
   @publication.Action
   public getPrefixesByBranch!: (branch: string) => Promise<boolean>
@@ -444,11 +444,14 @@ export default class EditPub extends Vue {
 
   mounted() {
     if (this.$route) {
-      let id = this.$route.query.Id
-      let nato = this.$route.query.Nato
+      let id = this.$route.params.Id
+      let nato = this.$route.params.Nato
       if (id !== null) {
         console.log('TEST B')
-        this.getPublicationById(String(id), String(nato)).then(response => {
+        let data: any = {}
+        data.id = id
+        data.nato = nato
+        this.getPublicationById(data).then(response => {
           if (response) {
             this.interval = setInterval(this.loadData, 500)
           }
@@ -522,8 +525,12 @@ export default class EditPub extends Vue {
       console.log('DIGEST LOADED')
       clearInterval(this.interval)
       // send the data to save
+      const that = this
       if (this.publication.Id !== undefined) {
-        this.updatePublicationById(this.publication.Id, this.publication)
+        this.updatePublicationById(this.publication.Id, this.publication).then(function() {
+          // wait for update to finish then reload
+          that.$router.push({ name: 'View Publication', params: { Id: that.$router.currentRoute.params.Id, Nato: that.$router.currentRoute.params.Nato } })
+        })
       }
     }
   }

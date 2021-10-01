@@ -388,10 +388,10 @@ export default class All extends Vue {
   }
 
   viewPub(args: any) {
-    this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
+    this.$router.push({ name: 'View Publication', params: { Id: args.id, Nato: args.nato } })
   }
   editPub(args: any) {
-    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
+    this.$router.push({ name: 'Edit Publication', params: { Id: args.id, Nato: args.nato } })
   }
 }
 </script>
