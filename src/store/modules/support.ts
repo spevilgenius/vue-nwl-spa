@@ -6,6 +6,7 @@ import { ObjectItem } from '@/interfaces/ObjectItem'
 import { Announcement } from '@/interfaces/Announcement'
 import { EventBus } from '../../main'
 import axios from 'axios'
+import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
 // import { ThemeName } from '@/themes/theme.types'
 
 // are we on a localhost demo?
@@ -14,6 +15,10 @@ let local = false
 if (loc.indexOf('localhost') >= 0) {
   local = true
 }
+
+var slash = '/'
+var tp1 = String(window.location.protocol)
+var tp2 = String(window.location.host)
 
 const baseUrl = process.env.VUE_APP_BASE_URL
 @Module({ namespaced: true })
@@ -33,6 +38,11 @@ class Support extends VuexModule {
   today = new Date().toISOString()
   public bsUrl = "_api/lists/getbytitle('BookshelfTitles')/items?$select*&$orderby=Title"
   public aUrl = "_api/lists/getbytitle('Announcements')/items?$select=*,Editor/Id,Editor/Title,Editor/EMail&$expand=Editor&$filter=Expires ge '" + this.today + "'"
+  public supportingdocs: Array<SupportingDocItem> = []
+  public supportingdocsloaded?: boolean = false
+  public supportingdoc?: SupportingDocItem
+
+  sdUrl = "_api/lists/getbytitle('SupportingDocuments')/items"
 
   @Mutation
   public updateRect(newVal: DOMRect): void {
@@ -63,6 +73,43 @@ class Support extends VuexModule {
     const element = document.getElementById('maincontent')!
     this.rect = element.getBoundingClientRect()
     this.context.commit('updateRect', this.rect)
+  }
+
+  @Action
+  public async getAllSupportingDocsByDocID(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<SupportingDocItem> = []
+    const that = this
+    async function getSupportDocsByDocID(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getSupportDocsByDocID(url)
+      } else {
+        //console.log('getAllSupportingDocs Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No'
+          })
+        }
+        that.context.commit('createSupportingDocuments', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2
+    // console.log('getAllPublications URL: ' + turl)
+    getSupportDocsByDocID(turl)
+    return true
   }
 
   @Action

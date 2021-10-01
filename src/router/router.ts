@@ -4,6 +4,7 @@ import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
+import Archive from '@/components/Pages/Archive.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,12 @@ const pubsMenu = {
       path: 'page/all',
       name: 'All Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
+      props: true
+    },
+    {
+      path: 'page/archive',
+      name: 'Archive Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
       props: true
     },
     {

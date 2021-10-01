@@ -29,9 +29,7 @@ ib<template>
                   <b-row no-gutters>
                     <b-col class="p-1">
                       <b-link :to="{ name: 'All Publications', query: { Type: 'ATP' } }">
-                        <b-card-sub-title
-                          ><i><b>Allied Tactical Publications</b></i></b-card-sub-title
-                        >
+                        <b-card-sub-title><b>Allied Tactical Publications</b></b-card-sub-title>
                         <b-card-title>ATP</b-card-title>
                       </b-link>
                     </b-col>
