@@ -166,10 +166,8 @@ class Publication extends VuexModule {
   public bufferloaded?: boolean = false
   public actionofficers: Array<ObjectItem> = []
   public rapocs: Array<ObjectItem> = []
-  public supdocuments: Array<SupportingDocItem> = []
-  public supnatodocuments: Array<SupportingDocItem> = []
-  public supdocumentsloaded?: boolean = false
-  public natosupdocumentsloaded?: boolean = false
+  public supportingdocs: Array<SupportingDocItem> = []
+  public supportingdocsloaded?: boolean = false
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   pubsArchiveUrl = "/_api/lists/getbytitle('ArchivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
@@ -185,7 +183,7 @@ class Publication extends VuexModule {
   rapocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Command/Title&$expand=Command&$filter=(Command/Title eq '"
   updatePubUrl = "/_api/lists/getbytitle('ActivePublications')/items("
   sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
-  sdnatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+  sdNatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
 
   //#region MUTATIONS
   @Mutation updateDigest(digest: string): void {
@@ -213,17 +211,10 @@ class Publication extends VuexModule {
   }
 
   @Mutation
-  public createSupDocuments(items: Array<SupportingDocItem>): void {
-    this.supdocuments = items
-    this.supdocumentsloaded = true
-    console.log('publications length: ' + items.length)
-  }
-
-  @Mutation
-  public createNatoSupDocuments(items: Array<SupportingDocItem>): void {
-    this.supnatodocuments = items
-    this.natosupdocumentsloaded = true
-    console.log('Nato publications length: ' + items.length)
+  public createSupportingDocs(items: Array<SupportingDocItem>): void {
+    this.supportingdocs = items
+    this.supportingdocsloaded = true
+    console.log('supporticdocs length: ' + items.length)
   }
 
   @Mutation
@@ -491,7 +482,7 @@ class Publication extends VuexModule {
     p.PRAPOC = j[0]['PRAPOC']
     p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
     p.PubID = j[0]['PubID']
-    p.Resourced = j[0]['Resourced']
+    p.Resourced = j[0]['Resourced'] === true ? 'Yes' : 'No'
     p.ReviewDate = j[0]['ReviewDate']
     p.StatusComments = j[0]['StatusComments']
     p.Replaces = j[0]['Replaces']
@@ -500,6 +491,7 @@ class Publication extends VuexModule {
     p.ActionButtons = []
     p.etag = j[0]['__metadata']['etag']
     p.uri = j[0]['__metadata']['uri']
+    p.type = j[0]['__metadata']['type']
     this.context.commit('updatePublication', p)
     return true
   }
@@ -520,16 +512,12 @@ class Publication extends VuexModule {
       headers: headers
     }
     // update the fields with the passed in data
-    let t = 'SP.Data.ActivePublicationsListItem'
-    if (data.IsNato === 'Yes') {
-      t = 'SP.Data.NATOPublicationsListItem'
-    }
 
     let itemprops = {
-      __metadata: { type: t },
+      __metadata: { type: data.type },
       Title: data.Title,
       Availability: data.Availability,
-      Branch: data.Branch,
+      BranchTitle: data.Branch,
       Class: data.Class,
       // ClassAbv: data.Availability,
       CoordinatingRA: data.CoordinatingRA,
@@ -537,15 +525,18 @@ class Publication extends VuexModule {
       Distribution: data.DTIC,
       LibrarianRemarks: data.LibrarianRemarks,
       LongTitle: data.LongTitle,
-      Media: data.Media,
+      Media: {
+        __metdata: { type: 'Collection(Edm.String)' },
+        results: [data.Media]
+      },
       // MA: string
       NSN: data.NSN,
       NWDCAOId: data.NWDCAO.Id,
-      PRA: data.PRA,
+      PrimaryReviewAuthority: data.PRA,
       PRAPOC: data.PRAPOC,
       Prfx: data.Prfx,
       PubID: data.PubID,
-      Resourced: data.Resourced === 'Yes' ? 'Yes' : 'No', // TODO: checkbox so fix it
+      Resourced: data.Resourced === 'Yes' ? true : false, // TODO: checkbox so fix it
       ReviewDate: data.ReviewDate,
       StatusComments: data.StatusComments,
       Replaces: data.Replaces,
@@ -559,6 +550,37 @@ class Publication extends VuexModule {
       // don't care yet
     }
 
+    return true
+  }
+
+  @Action
+  public async getSupportingDocs(data: any): Promise<boolean> {
+    let p: Array<SupportingDocItem> = []
+    let url = tp1 + slash + slash + tp2
+    if (data.nato === 'Yes') {
+      url += this.sdNatoUrl
+      url += "&$filter=(DocID eq '" + data.DocID + "')"
+    } else {
+      url += this.sdUrl
+      url += "&$filter=(DocID eq '" + data.DocID + "')"
+    }
+    console.log('getSupportingDocs url: ' + url)
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    let j = response.data.d.results
+    for (let i = 0; i < j.length; i++) {
+      p.push({
+        Id: j[i]['Id'],
+        DocID: j[i]['DocID'],
+        Title: j[i]['Title'],
+        Name: j[i]['File']['Name'],
+        RelativeURL: j[i]['File']['ServerRelativeUrl']
+      })
+    }
+    this.context.commit('createSupportingDocs', p)
     return true
   }
 
@@ -689,46 +711,6 @@ class Publication extends VuexModule {
     }
     let turl = tp1 + slash + slash + tp2 + this.natoUrl
     getAllNatoArchivePubs(turl)
-    return true
-  }
-
-  public async getSupportingDocByDocID(data: any): Promise<boolean> {
-    let j: any[] = []
-    let p: Array<SupportingDocItem> = []
-    const that = this
-    async function getAllSupportingDocs(surl: string) {
-      const response = await axios.get(surl, {
-        headers: {
-          accept: 'application/json;odata=verbose'
-        }
-      })
-      j = j.concat(response.data.d.results)
-      // recursively load items if there is a next result
-      if (response.data.d.__next) {
-        surl = response.data.d.__next
-        return getAllSupportingDocs(surl)
-      } else {
-        console.log('getAllSupportingDocs Response: ' + j)
-        for (let i = 0; i < j.length; i++) {
-          p.push({
-            Id: j[i]['Id'],
-            DocID: j[i]['DocID'],
-            Title: j[i]['Title'],
-            Name: j[i]['File']['Name'],
-            RelativeURL: j[i]['File']['ServerRelativeUrl']
-          })
-        }
-        that.context.commit('createSupDocuments', p)
-      }
-    }
-    let url = tp1 + slash + slash + tp2
-    if (data.nato === 'Yes') {
-      url += this.sdnatoUrl + '&$filter=(DocID eq ' + data.DocID + ')'
-    } else {
-      url += this.sdUrl + '&$filter=(DocID eq ' + data.DocID + ')'
-    }
-    console.log('getSupportingDocByDocId url: ' + url)
-    getAllSupportingDocs(url)
     return true
   }
 

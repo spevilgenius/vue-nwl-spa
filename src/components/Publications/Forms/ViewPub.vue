@@ -25,7 +25,7 @@
                             </b-col>
                           </b-row>
                           <b-row id="Description" class="mt-2">
-                            <b-col cols="12" class="collapsible text-left">{{ publication.AdditionalData.Description }}</b-col>
+                            <b-col cols="12" class="vpfdescription text-left">{{ publication.AdditionalData.Description }}</b-col>
                           </b-row>
                           <b-row class="mt-3" id="Prfx">
                             <b-col cols="4" class="text-left">Prefix</b-col>
@@ -85,6 +85,15 @@
                             <b-col cols="4" class="text-left">DTIC</b-col>
                             <b-col cols="1"></b-col>
                             <b-col cols="7" class="text-left">{{ publication.DTIC }}</b-col>
+                          </b-row>
+                          <b-row class="py20"></b-row>
+                          <b-row id="DTIC">
+                            <b-col cols="4" class="text-left">
+                              <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="success" size="lg" @click="editItem(publication.Id, publication.IsNato)">
+                                Edit Properties
+                              </b-button>
+                            </b-col>
+                            <b-col cols="8"></b-col>
                           </b-row>
                         </b-container>
                       </b-col>
@@ -149,7 +158,7 @@ export default class ViewPub extends Vue {
   public supportingdocsloaded!: boolean
 
   @publication.State
-  public supportingdoc!: SupportingDocItem
+  public supportingdocs!: Array<SupportingDocItem>
 
   @publication.State
   public bufferloaded!: boolean
@@ -158,7 +167,7 @@ export default class ViewPub extends Vue {
   public pubBuffer!: ArrayBuffer
 
   @publication.Action
-  public getSupportingDocByDocID!: (data: any) => Promise<boolean>
+  public getSupportingDocs!: (data: any) => Promise<boolean>
 
   @publication.Action
   public getPublicationById!: (data: any) => Promise<boolean>
@@ -171,7 +180,6 @@ export default class ViewPub extends Vue {
       let id = this.$route.params.Id
       let nato = this.$route.params.Nato
       if (id !== null) {
-        console.log('TEST B')
         let data: any = {}
         data.id = id
         data.nato = nato
@@ -187,19 +195,16 @@ export default class ViewPub extends Vue {
   public loadData() {
     if (this.publoaded) {
       clearInterval(this.interval)
-      let ad = this.publication.AdditionalData
       let data: any = {}
       data.DocID = this.publication.DocID
       data.nato = this.publication.IsNato
-      console.log('DocID= ' + this.publication.DocID)
-      console.log('IsNato= ' + this.publication.IsNato)
-      console.log('DTIC= ' + this.publication.DTIC)
-      this.getSupportingDocByDocID(data)
+      this.getSupportingDocs(data)
+      this.interval = setInterval(this.waitForData, 500)
     }
   }
 
-  public async waitForIt() {
-    if (this.publoaded) {
+  public async waitForData() {
+    if (this.supportingdocsloaded) {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
@@ -240,7 +245,7 @@ export default class ViewPub extends Vue {
           iframe.src = link
         })
       }
-      if (String(this.publication.RelativeURL).indexOf('.docx') > 0) {
+      /* if (String(this.publication.RelativeURL).indexOf('.docx') > 0) {
         // woohoo
         let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('" + this.publication.RelativeURL + "')/OpenBinaryStream"
         const response = await axios.get(getfileUrl, {
@@ -260,45 +265,12 @@ export default class ViewPub extends Vue {
           let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
           iframe.src = link
         })
-      }
+      } */
     }
   }
 
-  public waitForFile() {
-    if (this.bufferloaded) {
-      console.log('waitForFile bufferloaded')
-      clearInterval(this.interval)
-      let link: any
-      if (String(this.publication.RelativeURL).indexOf('.pdf') > 0) {
-        // create blob and display it
-        let blob = new Blob([this.pubBuffer], { type: 'application/pdf' })
-        let link = window.URL.createObjectURL(blob)
-        console.log(link)
-        let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
-        iframe.src = link
-        /* iframe.style.width = '100%'
-        iframe.style.height = '100%'
-        iframe.id = 'PubFrame'
-        iframe.src = link
-        document.getElementById('FrameColumn')?.appendChild(iframe) */
-      }
-      if (String(this.publication.RelativeURL).indexOf('.doc') > 0) {
-        // create blob and display it
-        let blob = new Blob([this.pubBuffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-        let link = window.URL.createObjectURL(blob)
-        console.log(link)
-        let iframe = document.getElementById('pubFrame') as HTMLIFrameElement
-        iframe.src = link
-        /* let iframe = document.createElement('iframe')
-        iframe.style.width = '100%'
-        iframe.style.height = '100%'
-        iframe.id = 'PubFrame'
-        iframe.src = link
-        document.getElementById('FrameColumn')?.appendChild(iframe) */
-      }
-    } else {
-      console.log('Waiting for file...')
-    }
+  public editItem(id: string, nato: string) {
+    this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato, t: new Date().getTime().toString() } })
   }
 
   public getFileBuffer(file) {
@@ -317,8 +289,8 @@ export default class ViewPub extends Vue {
 }
 </script>
 
-<style scoped>
-.collapsible {
+<style>
+.vpfdescription {
   height: 100px !important;
   overflow-y: scroll;
   line-height: 16px;

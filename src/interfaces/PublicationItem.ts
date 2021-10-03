@@ -81,5 +81,6 @@ interface PublicationItem {
   ActionButtons?: []
   etag?: string
   uri?: string
+  type?: string
 }
 export { PublicationItem }
