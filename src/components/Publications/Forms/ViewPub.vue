@@ -101,10 +101,14 @@
                   </b-tab>
                   <b-tab class="mtab">
                     <template slot="title">Supporting Documents</template>
-                    <b-row no-gutters>
-                      <b-col cols="12"></b-col>
-                      <b-row no-gutters>
-                        <b-col cols="12">Title</b-col>
+                    <b-row no-gutters cols="12" style="height: 50px;">
+                      <b-table id="SupportingDocsTable" striped hover :items="supportingdocs" :fields="table.fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage">
+                        <template #cell(Name)="data">
+                          <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                        </template>
+                      </b-table>
+                      <b-row no-gutters cols="12">
+                        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0 p-0"></b-pagination>
                       </b-row>
                     </b-row>
                   </b-tab>
@@ -137,13 +141,39 @@ var tp1 = String(window.location.protocol)
 var tp2 = String(window.location.host)
 
 @Component({
-  name: 'ViewPub'
+  name: 'ViewPub',
+  props: {
+    hascomponents: {
+      type: Boolean,
+      default: false
+    },
+    user: {
+      type: Object
+    },
+    table: {
+      type: Object,
+      default: () => {
+        return {
+          id: 'SupportingDocsTable',
+          fields: [{ key: 'Name', label: 'Supporting Document Name', sortable: true, type: 'default', format: 'text', tdClass: 'px100', id: 1 }],
+          items: [],
+          overlayText: 'Loading. Please Wait...',
+          overlayVariant: 'success',
+          perPage: 15,
+          currentPage: 1
+        }
+      }
+    }
+  }
 })
 export default class ViewPub extends Vue {
   rightTabs = []
   interval!: any
   iconsource!: any
   formReady = false
+  totalRows = 0
+  perPage = 15
+  currentPage = 1
 
   @users.State
   public currentUser!: UserInt
@@ -208,6 +238,7 @@ export default class ViewPub extends Vue {
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
       clearInterval(this.interval)
       let ad = this.publication.AdditionalData
+      this.totalRows = this.supportingdocs.length
       try {
         let pra = ad.PRAAbbrev
         let src = tp1 + slash + slash + tp2 + '/PublishingImages/PRA/'
@@ -286,6 +317,16 @@ export default class ViewPub extends Vue {
     })
     return p
   }
+
+  public renderElement(data) {
+    let html = ''
+    switch (data.field.format) {
+      default:
+        html = data.value
+        break
+    }
+    return html
+  }
 }
 </script>
 
@@ -294,5 +335,11 @@ export default class ViewPub extends Vue {
   height: 100px !important;
   overflow-y: scroll;
   line-height: 16px;
+}
+
+.table td,
+.table th {
+  padding: 0.4rem !important;
+  line-height: 2;
 }
 </style>
