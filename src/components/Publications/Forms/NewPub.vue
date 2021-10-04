@@ -46,7 +46,7 @@
       </b-container>
       <template #overlay>
         <div class="text-center">
-          <p id="busy-label">Loading New Publication Form</p>
+          <p id="busy-label">{{ overlayText }}</p>
         </div>
       </template>
     </b-overlay>
@@ -56,10 +56,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import axios from 'axios'
 
 const publication = namespace('publication')
+const users = namespace('users')
 
 var slash = '/'
 var tp1 = String(window.location.protocol)
@@ -70,6 +73,7 @@ export default class NewPub extends Vue {
   interval!: any
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
+  overlayText = 'Loading New Publication Form.'
   totalcalls = 0
   completedcalls = 0
   formReady = false
@@ -77,14 +81,24 @@ export default class NewPub extends Vue {
   prfx = ''
   pubid = ''
   ltitle = ''
+  nato = false
   saveReady = false
   formfields = ['branch', 'prfx', 'pubid', 'ltitle']
+
+  @users.State
+  public currentUser!: UserInt
+
+  @publication.State
+  public digest!: string
 
   @publication.State
   public prefixes!: Array<ObjectItem>
 
   @publication.Action
   public getPrefixesByBranch!: (branch: string) => Promise<boolean>
+
+  @publication.Action
+  public getDigest!: () => Promise<boolean>
 
   mounted() {
     this.formReady = true
@@ -116,7 +130,7 @@ export default class NewPub extends Vue {
       let ret = false
       switch (control) {
         case 'LongTitle':
-          ret = this.ltitle === '' || this.ltitle === '' ? false : true
+          ret = this.ltitle === '' ? false : true
           break
 
         case 'Branch':
@@ -128,7 +142,7 @@ export default class NewPub extends Vue {
           break
 
         case 'PubID':
-          ret = this.pubid === '' || this.pubid === '' ? false : true
+          ret = this.pubid === '' ? false : true
           break
       }
       return ret
@@ -147,6 +161,139 @@ export default class NewPub extends Vue {
         this.saveReady = false
       }
     }
+  }
+
+  public onSave() {
+    this.overlayText = 'Uploading Document'
+    this.formReady = false
+    // need to get the digest first
+    clearInterval(this.interval)
+    this.getDigest().then(response => {
+      if (response) {
+        this.interval = setInterval(this.saveForm, 500)
+      }
+    })
+  }
+
+  public async saveForm() {
+    // use the default new publication template to create a new document and upload it to the library.
+    // the return of the call will return the id of the new document which we will use to update the data
+    // the library is determined by the current user. If they are NATO, then the document is a Nato document
+    clearInterval(this.interval)
+    let nato: any = this.currentUser.isNATOLibrarian
+    this.nato = nato
+    let url = ''
+    let turl = ''
+    let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('/Documents/NewPublicationTemplate.pdf')/OpenBinaryStream"
+    const response = await axios.get(getfileUrl, {
+      responseType: 'blob',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/pdf'
+      }
+    })
+    // let buff = new ArrayBuffer(response.data)
+    let name = this.prfx + ' ' + this.pubid + ' ' + this.ltitle + '.pdf'
+    // let file = new File([response.data], name)
+    let responsedata = response.data
+    // let buff = this.getFileBuffer(file)
+    if (this.nato) {
+      url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('NATOPublications')/RootFolder/Files/Add"
+    } else {
+      url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
+    }
+    console.log('REAL DOC URL: ' + url)
+    url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
+    url += "(url='"
+    url += name
+    url += "',overwrite=true)"
+    let headers = {
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest
+    }
+    try {
+      let response = await axios({
+        url: url,
+        method: 'POST',
+        data: responsedata,
+        headers: headers
+      })
+      // get the id and process the form data into the new document
+      console.log('UPLOAD RESPONSE: ' + response)
+      let itemlink = response.data.d.ListItemAllFields.__deferred.uri
+      response = await axios({
+        method: 'GET',
+        url: itemlink,
+        headers: {
+          Accept: 'application/json;odata=verbose'
+        }
+      })
+      let metadata = response.data.d.__metadata
+      let id = response.data.d.Id
+      console.log('RESPONSE METADATA: ' + metadata)
+      // set the fields for updating
+      let itemprops = {
+        __metadata: { type: metadata.type },
+        Title: name,
+        BranchTitle: this.branch,
+        Prfx: this.prfx,
+        PubID: this.pubid,
+        LongTitle: this.ltitle,
+        DocID: this.uuid
+      }
+      const uheaders = {
+        'Content-Type': 'application/json;odata=verbose',
+        Accept: 'application/json;odata=verbose',
+        'X-RequestDigest': this.digest,
+        'X-HTTP-Method': 'MERGE',
+        'If-Match': '*'
+      }
+      const config = {
+        headers: uheaders
+      }
+      response = await axios.post(metadata.uri, itemprops, config)
+      console.log('UPDATE RESPONSE: ' + response)
+      // navigate to the edit form for this item
+      this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato } })
+    } catch (error) {
+      console.log('Error Adding Document: ' + error)
+    }
+  }
+
+  public getFileBuffer(file) {
+    let p = new Promise(function(resolve, reject) {
+      var reader = new FileReader()
+      reader.onloadend = function(e) {
+        resolve(e?.target?.result)
+      }
+      reader.onerror = function(e) {
+        reject(e?.target?.error)
+      }
+      reader.readAsArrayBuffer(file)
+    })
+    return p
+  }
+
+  public uuid(len, radix) {
+    let CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+    let chars = CHARS
+    let uuid: any = []
+    radix = radix || chars.length
+
+    if (len) {
+      for (let i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)]
+    } else {
+      var r
+      uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-'
+      uuid[14] = '4'
+      for (let i = 0; i < 36; i++) {
+        if (!uuid[i]) {
+          r = 0 | (Math.random() * 16)
+          uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r]
+        }
+      }
+    }
+    return uuid.join('')
   }
 }
 </script>
