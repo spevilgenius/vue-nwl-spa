@@ -6,6 +6,8 @@ import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
 import { MonthWeekdayFn } from 'moment'
+import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
+import Support from './support'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -17,8 +19,6 @@ if (loc.indexOf('localhost') >= 0) {
 var slash = '/'
 var tp1 = String(window.location.protocol)
 var tp2 = String(window.location.host)
-
-const baseUrl = process.env.VUE_APP_BASE_URL
 
 let additionalData: any = {
   AdminComments: '',
@@ -70,8 +70,6 @@ let additionalData: any = {
   Update: ''
 }
 
-let filetype: any
-
 function isJson(item) {
   item = typeof item !== 'string' ? JSON.stringify(item) : item
   try {
@@ -90,7 +88,7 @@ function FormatAD(ad: any, id: any, nato: any): any {
     ad = JSON.parse(ad)
     // fixup some elements that are stored as strings
     if (ad.RELTO && ad.RELTO.length > 0) {
-      console.log(id + ' has RELTO: ' + ad.RELTO)
+      // console.log(id + ' has RELTO: ' + ad.RELTO)
     }
     return ad
   } else {
@@ -99,13 +97,35 @@ function FormatAD(ad: any, id: any, nato: any): any {
   }
 }
 
-function makeArray(data: string) {
+function formatMedia(media: any) {
+  console.log('MEDIA: ' + media + ', TYPE: ' + typeof media)
+  if (media !== null && media !== '') {
+    let ops = String(media)
+    let lion = ops.split(',')
+    let zebra: any = ''
+    for (let i = 0; i < lion.length; i++) {
+      if (i === 0) {
+        zebra = lion[i]
+      } else {
+        if (lion[i] !== '') {
+          zebra += ',' + lion[i]
+        }
+      }
+    }
+    return zebra
+  } else {
+    return ''
+  }
+}
+
+function makeArray(data: string, delimiter: string) {
   if (data !== null && data.length > 1) {
     let zebra: any = []
     // there may only be one so test that
-    if (data.indexOf(',') > 0) {
-      // there are more that one
-      let snake = data.split(',')
+    if (data.indexOf(delimiter) > 0) {
+      // there are more than one
+      console.log('MAKING ARRAY: ' + delimiter)
+      let snake = data.split(delimiter)
       for (let v = 0; v < snake.length; v++) {
         zebra.push(snake[v])
       }
@@ -120,12 +140,18 @@ function makeArray(data: string) {
 }
 @Module({ namespaced: true })
 class Publication extends VuexModule {
+  public digest?: string = ''
+  public digestloaded?: boolean = false
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
+  public natoarchivepublications: Array<PublicationItem> = []
+  public archivepublications: Array<PublicationItem> = []
   public publication?: PublicationItem
   public pubsloaded?: boolean = false
   public natopubsloaded?: boolean = false
+  public archivepubsloaded?: boolean = false
+  public natoarchivepubsloaded?: boolean = false
   public allpubsloaded?: boolean = false
   public publoaded?: boolean = false // single publication
   public prefixes: Array<ObjectItem> = []
@@ -138,11 +164,15 @@ class Publication extends VuexModule {
   public blobloaded?: boolean = false
   public pubBuffer?: ArrayBuffer
   public bufferloaded?: boolean = false
-  public filetype?: any
   public actionofficers: Array<ObjectItem> = []
+  public rapocs: Array<ObjectItem> = []
+  public supportingdocs: Array<SupportingDocItem> = []
+  public supportingdocsloaded?: boolean = false
 
   pubsUrl = "/_api/lists/getbytitle('ActivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  pubsArchiveUrl = "/_api/lists/getbytitle('ArchivePublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   natoUrl = "/_api/lists/getbytitle('NATOPublications')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
+  natoArchiveUrl = "/_api/lists/getbytitle('NATOArchive')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   prefixUrl = "/_api/lists/getbytitle('lu_prefix')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   statusUrl = "/_api/lists/getbytitle('lu_status')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
@@ -150,6 +180,21 @@ class Publication extends VuexModule {
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
   raUrl = "/_api/lists/getbytitle('lu_pra')/items?$select=*"
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
+  rapocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Command/Title&$expand=Command&$filter=(Command/Title eq '"
+  updatePubUrl = "/_api/lists/getbytitle('ActivePublications')/items("
+  sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+  sdNatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+
+  //#region MUTATIONS
+  @Mutation updateDigest(digest: string): void {
+    this.digest = digest
+    this.digestloaded = true
+    console.log('DIGEST: ' + digest)
+  }
+
+  @Mutation updateDigestLoaded(loaded: boolean): void {
+    this.digestloaded = loaded
+  }
 
   @Mutation
   public createPublications(items: Array<PublicationItem>): void {
@@ -166,9 +211,24 @@ class Publication extends VuexModule {
   }
 
   @Mutation
+  public createSupportingDocs(items: Array<SupportingDocItem>): void {
+    this.supportingdocs = items
+    this.supportingdocsloaded = true
+    console.log('supporticdocs length: ' + items.length)
+  }
+
+  @Mutation
   public createAllPublications(): void {
     let p: Array<PublicationItem>
     p = this.publications.concat(this.natopublications)
+    this.allpublications = p
+    this.allpubsloaded = true
+  }
+
+  @Mutation
+  public createAllArchivePublications(): void {
+    let p: Array<PublicationItem>
+    p = this.archivepublications.concat(this.natoarchivepublications)
     this.allpublications = p
     this.allpubsloaded = true
   }
@@ -214,6 +274,38 @@ class Publication extends VuexModule {
     this.reviewauthority = items
   }
 
+  @Mutation
+  public createRAPocs(items: Array<ObjectItem>): void {
+    this.rapocs = items
+  }
+
+  @Mutation
+  public createArchivePublications(items: Array<PublicationItem>): void {
+    this.archivepublications = items
+    this.archivepubsloaded = true
+    console.log('publications length: ' + items.length)
+  }
+
+  @Mutation
+  public createNatoArchivePublications(items: Array<PublicationItem>): void {
+    this.natoarchivepublications = items
+    this.natoarchivepubsloaded = true
+    console.log('Nato publications length: ' + items.length)
+  }
+  //#endregion
+
+  @Action
+  public async getDigest(): Promise<boolean> {
+    const response = await axios.request({
+      url: tp1 + slash + slash + tp2 + '/_api/contextinfo',
+      method: 'POST',
+      headers: { Accept: 'application/json; odata=verbose' }
+    })
+    console.log('FormDigestValue = ' + response.data.d.GetContextWebInformation.FormDigestValue)
+    this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
+    return true
+  }
+
   @Action
   public async getAllPublications(): Promise<boolean> {
     let j: any[] = []
@@ -250,7 +342,7 @@ class Publication extends VuexModule {
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: makeArray(j[0]['Media']),
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '',
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -277,72 +369,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.pubsUrl
     // console.log('getAllPublications URL: ' + turl)
     getAllPubs(turl)
-    return true
-  }
-
-  @Action
-  public async getAllPublicationsByQuery(query: string): Promise<boolean> {
-    let j: any[] = []
-    let p: Array<PublicationItem> = []
-    const that = this
-    async function getAllPubsByQuery(url: string): Promise<void> {
-      const response = await axios.get(url, {
-        headers: {
-          accept: 'application/json;odata=verbose'
-        }
-      })
-      j = j.concat(response.data.d.results)
-      // recursively load items if there is a next result
-      if (response.data.d.__next) {
-        url = response.data.d.__next
-        return getAllPubsByQuery(url)
-      } else {
-        //console.log('getAllPublications Response: ' + j)
-        for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
-          p.push({
-            Id: j[i]['Id'],
-            DocID: j[i]['DocID'],
-            Title: j[i]['Title'],
-            Name: j[i]['File']['Name'],
-            RelativeURL: j[i]['File']['ServerRelativeUrl'],
-            IsNato: 'No',
-            Availability: j[i]['Availability'],
-            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
-            Class: j[i]['Class'],
-            ClassAbv: j[i]['ClassAbv'],
-            CoordinatingRA: j[i]['CoordinatingRA'],
-            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
-            DTIC: j[i]['Distribution'],
-            LibrarianRemarks: j[i]['LibrarianRemarks'],
-            LongTitle: j[i]['LongTitle'],
-            Media: makeArray(j[0]['Media']), // returns array of multiple choices
-            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
-            MA: j[i]['MA'],
-            NSN: j[i]['NSN'],
-            NWDCAO: {
-              Title: j[i]['NWDCAO']['Title'],
-              Id: j[i]['NWDCAO']['Id'],
-              Email: j[i]['NWDCAO']['EMail']
-            },
-            PRA: j[i]['PrimaryReviewAuthority'],
-            PRAPOC: j[i]['PRAPOC'],
-            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
-            PubID: j[i]['PubID'],
-            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
-            ReviewDate: j[i]['ReviewDate'],
-            StatusComments: j[i]['statuscomments'],
-            Replaces: j[i]['Replaces'],
-            Bookshelf: j[i]['Bookshelf'],
-            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
-          })
-        }
-        that.context.commit('createPublications', p)
-      }
-    }
-    let turl = tp1 + slash + slash + tp2 + query
-    // console.log('getAllPublications URL: ' + turl)
-    getAllPubsByQuery(turl)
     return true
   }
 
@@ -381,7 +407,7 @@ class Publication extends VuexModule {
             DTIC: j[i]['Distribution'],
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
-            Media: makeArray(j[0]['Media']), // returns array of multiple choices
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -411,12 +437,13 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public async getPublicationById(id: string, nato: string): Promise<boolean> {
+  public async getPublicationById(data: any): Promise<boolean> {
+    console.log('getPublicationById: ' + data.nato)
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    if (nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + id + ')'
+    if (data.nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
     } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + id + ')'
+      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
     }
     console.log('getPublicationById url: ' + url)
     const response = await axios.get(url, {
@@ -427,12 +454,13 @@ class Publication extends VuexModule {
     let j = response.data.d.results
     let p = {} as PublicationItem
     let ad = JSON.parse(j[0]['AdditionalData'])
+    console.log('GETPUBBYID RESPONSE: ' + response)
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
     p.Name = j[0]['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = nato
+    p.IsNato = data.nato
     p.Availability = j[0]['Availability']
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
@@ -442,7 +470,7 @@ class Publication extends VuexModule {
     p.DTIC = j[0]['DTIC']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
-    p.Media = makeArray(j[0]['Media'])
+    p.Media = j[0]['Media'] !== null ? formatMedia(j[0]['Media']['results']) : ''
     p.MA = j[0]['MA']
     p.NSN = j[0]['NSN']
     p.NWDCAO = {
@@ -454,14 +482,235 @@ class Publication extends VuexModule {
     p.PRAPOC = j[0]['PRAPOC']
     p.Prfx = j[0]['Prfx'] === null || j[0]['Prfx'] === '' || j[0]['Prfx'] === undefined ? 'Please Select...' : j[0]['Prfx']
     p.PubID = j[0]['PubID']
-    p.Resourced = j[0]['Resourced']
+    p.Resourced = j[0]['Resourced'] === true ? 'Yes' : 'No'
     p.ReviewDate = j[0]['ReviewDate']
     p.StatusComments = j[0]['StatusComments']
     p.Replaces = j[0]['Replaces']
     p.Bookshelf = j[0]['Bookshelf']
     p.AdditionalData = ad
     p.ActionButtons = []
+    p.etag = j[0]['__metadata']['etag']
+    p.uri = j[0]['__metadata']['uri']
+    p.type = j[0]['__metadata']['type']
     this.context.commit('updatePublication', p)
+    return true
+  }
+
+  @Action
+  public async updatePublicationById(data: any): Promise<boolean> {
+    // update the publication data
+    console.log('ID: ' + data.Id)
+    const url = this.updatePubUrl + data.Id + ')'
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'MERGE',
+      'If-Match': '*'
+    }
+    const config = {
+      headers: headers
+    }
+    // update the fields with the passed in data
+
+    let itemprops = {
+      __metadata: { type: data.type },
+      Title: data.Title,
+      Availability: data.Availability,
+      BranchTitle: data.Branch,
+      Class: data.Class,
+      // ClassAbv: data.Availability,
+      CoordinatingRA: data.CoordinatingRA,
+      // CoordinatingRAAbv: data.Availability,
+      Distribution: data.DTIC,
+      LibrarianRemarks: data.LibrarianRemarks,
+      LongTitle: data.LongTitle,
+      Media: {
+        __metdata: { type: 'Collection(Edm.String)' },
+        results: [data.Media]
+      },
+      // MA: string
+      NSN: data.NSN,
+      NWDCAOId: data.NWDCAO.Id,
+      PrimaryReviewAuthority: data.PRA,
+      PRAPOC: data.PRAPOC,
+      Prfx: data.Prfx,
+      PubID: data.PubID,
+      Resourced: data.Resourced === 'Yes' ? true : false, // TODO: checkbox so fix it
+      ReviewDate: data.ReviewDate,
+      StatusComments: data.StatusComments,
+      Replaces: data.Replaces,
+      Bookshelf: data.Bookshelf,
+      AdditionalData: JSON.stringify(data.AdditionalData)
+    }
+
+    try {
+      await axios.post(url, itemprops, config)
+    } catch (e) {
+      // don't care yet
+    }
+
+    return true
+  }
+
+  @Action
+  public async getSupportingDocs(data: any): Promise<boolean> {
+    let p: Array<SupportingDocItem> = []
+    let url = tp1 + slash + slash + tp2
+    if (data.nato === 'Yes') {
+      url += this.sdNatoUrl
+      url += "&$filter=(DocID eq '" + data.DocID + "')"
+    } else {
+      url += this.sdUrl
+      url += "&$filter=(DocID eq '" + data.DocID + "')"
+    }
+    console.log('getSupportingDocs url: ' + url)
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    let j = response.data.d.results
+    for (let i = 0; i < j.length; i++) {
+      p.push({
+        Id: j[i]['Id'],
+        DocID: j[i]['DocID'],
+        Title: j[i]['Title'],
+        Name: j[i]['File']['Name'],
+        RelativeURL: j[i]['File']['ServerRelativeUrl']
+      })
+    }
+    this.context.commit('createSupportingDocs', p)
+    return true
+  }
+
+  @Action
+  public async getArchivePublications(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getArchivePubs(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getArchivePubs(url)
+      } else {
+        //console.log('getArchivePublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'No',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+          })
+        }
+        that.context.commit('createPublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.pubsUrl
+    // console.log('getAllPublications URL: ' + turl)
+    getArchivePubs(turl)
+    return true
+  }
+
+  @Action
+  public async getAllNatoArchivePublications(): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function getAllNatoArchivePubs(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllNatoArchivePubs(url)
+      } else {
+        //console.log('getAllNatoArchivePublications Response: ' + j)
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            Id: j[i]['Id'],
+            DocID: j[i]['DocID'],
+            Title: j[i]['Title'],
+            Name: j[i]['File']['Name'],
+            RelativeURL: j[i]['File']['ServerRelativeUrl'],
+            IsNato: 'Yes',
+            Availability: j[i]['Availability'],
+            Branch: j[i]['BranchTitle'] === null || j[i]['BranchTitle'] === '' || j[i]['BranchTitle'] === undefined ? 'Please Select...' : j[i]['BranchTitle'],
+            Class: j[i]['Class'],
+            ClassAbv: j[i]['ClassAbv'],
+            CoordinatingRA: j[i]['CoordinatingRA'],
+            CoordinatingRAAbv: j[i]['CoordinatingRAAbv'],
+            DTIC: j[i]['Distribution'],
+            LibrarianRemarks: j[i]['LibrarianRemarks'],
+            LongTitle: j[i]['LongTitle'],
+            Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
+            Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            MA: j[i]['MA'],
+            NSN: j[i]['NSN'],
+            NWDCAO: {
+              Title: j[i]['NWDCAO']['Title'],
+              Id: j[i]['NWDCAO']['Id'],
+              Email: j[i]['NWDCAO']['EMail']
+            },
+            PRA: j[i]['PrimaryReviewAuthority'],
+            PRAPOC: j[i]['PRAPOC'],
+            Prfx: j[i]['Prfx'] === null || j[i]['Prfx'] === '' || j[i]['Prfx'] === undefined ? 'Please Select...' : j[i]['Prfx'],
+            PubID: j[i]['PubID'],
+            Resourced: j[i]['Resourced'] === true ? 'Yes' : 'No',
+            ReviewDate: j[i]['ReviewDate'],
+            StatusComments: j[i]['statuscomments'],
+            Replaces: j[i]['Replaces'],
+            Bookshelf: j[i]['Bookshelf'],
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
+          })
+        }
+        that.context.commit('createNatoArchivePublications', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.natoUrl
+    getAllNatoArchivePubs(turl)
     return true
   }
 
@@ -635,7 +884,6 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.reltoUrl
-    console.log('getAllPublications URL: ' + turl)
     getAllRelto(turl)
     return true
   }
@@ -698,14 +946,54 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.raUrl
-    console.log('getAllRA URL: ' + turl)
     getAllRA(turl)
+    return true
+  }
+
+  @Action
+  public async getRAPocByRA(ra: string): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<ObjectItem> = []
+    const that = this
+    async function getAllRAPoc(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllRAPoc(url)
+      } else {
+        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            value: j[i]['FullName'],
+            text: j[i]['FullName']
+          })
+        }
+        that.context.commit('createRAPocs', p)
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.rapocUrl
+    turl += ra
+    turl += "')"
+    console.log('getRAPocByRA URL: ' + turl)
+    getAllRAPoc(turl)
     return true
   }
 
   @Action
   public async createAllPubs(): Promise<boolean> {
     this.context.commit('createAllPublications')
+    return true
+  }
+
+  @Action
+  public async createAllArchivePubs(): Promise<boolean> {
+    this.context.commit('createAllArchivePublications')
     return true
   }
 }

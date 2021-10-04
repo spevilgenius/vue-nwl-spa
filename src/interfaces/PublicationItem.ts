@@ -15,7 +15,7 @@ interface PublicationItem {
   DTIC?: string
   LibrarianRemarks?: string
   LongTitle?: string
-  Media?: []
+  Media?: any
   Modified?: string
   MA?: string
   NSN?: string
@@ -79,5 +79,8 @@ interface PublicationItem {
     Update: string
   }
   ActionButtons?: []
+  etag?: string
+  uri?: string
+  type?: string
 }
 export { PublicationItem }

@@ -179,7 +179,9 @@ textarea.form-control {
   label {
     background-color: $label-background-color;
     color: $label-color;
-    .media {
+  }
+  .dcbs {
+    label {
       background-color: $white !important;
       color: $black !important;
     }

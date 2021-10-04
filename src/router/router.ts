@@ -4,53 +4,80 @@ import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
+import Archive from '@/components/Pages/Archive.vue'
 
 Vue.use(VueRouter)
 
 const pubsMenu = {
-  path: '/pubs',
+  path: '/approved',
   component: Layout,
-  redirect: '/pubs/home',
+  redirect: '/approved/pubs',
   children: [
     {
-      path: 'home/:mode',
+      path: 'pubs/:mode',
       name: 'Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
       props: true
     },
     {
-      path: 'page/all',
+      path: 'pubs/all',
       name: 'All Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
       props: true
     },
     {
-      path: 'page/Allied',
+      path: 'pubs/archive',
+      name: 'Archive Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/Allied',
       name: 'Allied Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Pages/Allied.vue'),
       props: true
     },
     {
-      path: 'page/development',
-      name: 'Pubs In Development',
+      path: 'pubs/view',
+      name: 'View Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const pubsDevMenu = {
+  path: '/development',
+  component: Layout,
+  redirect: '/development/pubs',
+  children: [
+    {
+      path: 'pubs/:mode',
+      name: 'Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
       props: true
     },
     {
-      path: 'forms/view',
+      path: 'pubs/all',
+      name: 'All Publications In Development',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/view',
       name: 'View Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
       props: true
     },
     {
-      path: 'forms/edit',
+      path: 'pubs/forms/edit',
       name: 'Edit Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
       props: true
     },
     {
-      path: 'forms/new',
-      name: 'New Publication',
+      path: 'pubs/forms/new',
+      name: 'Add New Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
       props: true
     }
@@ -66,12 +93,6 @@ const aoMenu = {
       path: 'home/:mode',
       name: 'AO Actions',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
-      props: true
-    },
-    {
-      path: 'page/all',
-      name: 'All Publications',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
       props: true
     },
     {
@@ -121,6 +142,7 @@ const routes = [
     redirect: '/pages/Home'
   },
   pubsMenu,
+  pubsDevMenu,
   termsMenu,
   /* adminMenu,
   taskMenu,

@@ -1,41 +1,7 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-overlay :show="!publoaded" :variant="success" class="contentHeight m-0 p-0">
-      <b-container v-if="publoaded" fluid class="contentHeight m-0 p-0">
-        <b-modal id="modalRelto" ref="modalRelto" centered scrollable header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal">
-          <template v-slot:modal-title>Select Rel To</template>
-          <b-container class="p-0">
-            <b-row>
-              <b-form-input class="form-control" v-model="publication.AdditionalData.RELTO"></b-form-input>
-            </b-row>
-            <b-row>
-              <b-col cols="12">
-                <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0">
-                  <b-input-group size="sm">
-                    <b-form-input id="relto-filter-input" v-model="reltofilter" type="search" placeholder="Search Rel Tos"></b-form-input>
-                    <b-input-group-append>
-                      <b-button :disabled="!reltofilter" @click="reltofilter = ''">Clear</b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                </b-form-group>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col cols="12">
-                <b-table v-model="reltodata" :id="table_relto" :ref="table_relto" :items="relto" :fields="reltofields" :current-page="currentPageRelto" :filter="reltofilter" no-provider-paging="true" no-provider-filtering="true" no-provider-sorting="true" :per-page="perPage" show-empty small @filtered="onReltoFiltered">
-                  <template #cell(actions)="row">
-                    <b-form-checkbox v-model="row.item.selected" @input.native="toggleRelto(row.item, $event)"></b-form-checkbox>
-                  </template>
-                </b-table>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col cols="12">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill" size="sm" class="my-0"></b-pagination>
-              </b-col>
-            </b-row>
-          </b-container>
-        </b-modal>
+    <b-overlay :show="!formReady" :variant="success" class="contentHeight m-0 p-0">
+      <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
         <b-row no-gutters class="contentHeight">
           <b-col cols="12" class="m-0 p-0">
             <b-card no-body>
@@ -85,9 +51,10 @@
                             </b-form-group>
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
-                            <b-form-group label="Bookshelf" label-for="ddBookshelf">
+                            <dynamic-modal-select v-if="formReady" id="dmsBookshelf" v-model="publication.Bookshelf" :items="bookshelves" :fields="bsfields" :filter="bsfilter" title="Select Bookshelf" label="Bookshelf"></dynamic-modal-select>
+                            <!-- <b-form-group label="Bookshelf" label-for="ddBookshelf">
                               <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
-                            </b-form-group>
+                            </b-form-group> -->
                           </b-col>
                         </b-form-row>
                         <b-form-row>
@@ -175,34 +142,38 @@
                     <b-col cols="12">
                       <b-form class="mt-0">
                         <b-form-row>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Classification" label-for="ddClass">
                               <b-form-select class="form-control" v-model="publication.Class" size="sm" id="ddClass" :options="classifications" ref="Classification"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Dissemination" label-for="ddDiss">
                               <b-form-select class="form-control" v-model="publication.AdditionalData.Dissemination" size="sm" id="ddDiss" :options="disseminations" ref="Dissemination"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
-                            <dynamic-modal-select id="RELTO" v-model="publication.AdditionalData.RELTO" :items="relto" :fields="reltofields" control="Relto" title="Select REL TO" label="REL TO"></dynamic-modal-select>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <dynamic-modal-select v-if="formReady" :id="dmsRELTO" v-model="publication.AdditionalData.RELTO" :items="relto" :fields="reltofields" :filter="reltofilter" title="Select REL TO" label="REL TO"></dynamic-modal-select>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="NSN" label-for="txtNSN">
+                              <b-form-input class="form-control" size="sm" id="txtNSN" v-model="publication.NSN" placeholder="National Stock Number" ref="NSN"></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col cols="4" class="text-center text-dark p-1">
                             <b-form-group label="DTIC" label-for="ddDtic">
                               <b-form-select class="form-control" v-model="publication.DTIC" size="sm" id="ddDtic" :options="dtic" ref="DTIC"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="4" class="text-center text-dark p-1">
                             <b-form-group label="Availability" label-for="ddAvailability">
                               <b-form-select class="form-control" v-model="publication.Availability" size="sm" id="ddAvailability" :options="availability" ref="Availability"></b-form-select>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
-                            <b-form-group label="Media">
-                              <b-form-select multiple class="form-control" v-model="publication.Media" size="sm" id="ddMedia" :options="media" ref="Media"></b-form-select>
-                              <!-- <b-form-checkbox-group class="media" id="cbgMedia" v-model="publication.Media" :options="media" name="cbgMedia" stacked></b-form-checkbox-group> -->
-                            </b-form-group>
+                          <b-col cols="4" class="text-center text-dark p-1">
+                            <dynamic-checkbox-select v-if="formReady" id="dcbsMedia" v-model="publication.Media" :options="media" name="dcbsMedia" label="Media"></dynamic-checkbox-select>
                           </b-col>
                         </b-form-row>
                       </b-form>
@@ -219,12 +190,17 @@
                             <b-row no-gutters>
                               <!-- b-row added for spacing -->
                               <b-form-group label="Primary Review Authority" label-for="ddPRA">
-                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA"></b-form-select>
+                                <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA" @change="onPRASelected"></b-form-select>
                               </b-form-group>
                             </b-row>
                           </b-col>
-                          <b-col cols="9" class="text-center text-dark p-1">
-                            <dynamic-modal-select id="CRA" v-model="publication.AdditionalData.RELTO" :items="reviewauthority" :fields="rafields" control="CRA" title="Select Review Authority" label="Coordinating Review Authority"></dynamic-modal-select>
+                          <b-col cols="2" class="text-center text-dark p-1">
+                            <b-form-group label="PRA POC" label-for="ddPRAPOC">
+                              <b-form-select class="form-control" v-model="publication.PRAPOC" size="sm" id="ddPRAPOC" :options="rapocs" ref="PRAPOC"></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="7" class="text-center text-dark p-1">
+                            <dynamic-modal-select v-if="formReady" :id="dmsCRA" v-model="publication.CoordinatingRA" :items="reviewauthority" :fields="rafields" :filter="crafilter" title="Select Review Authority" label="Coordinating Review Authority"> </dynamic-modal-select>
                           </b-col>
                         </b-form-row>
                         <b-form-row>
@@ -250,6 +226,17 @@
                   </b-row>
                 </b-tab>
               </b-tabs>
+              <template #footer>
+                <b-row no-gutters>
+                  <b-col cols="9"></b-col>
+                  <b-col cols="3">
+                    <b-button-group>
+                      <b-button size="sm" @click="onCancel">Cancel</b-button>
+                      <b-button size="sm" @click="onSave" variant="success">Save</b-button>
+                    </b-button-group>
+                  </b-col>
+                </b-row>
+              </template>
             </b-card>
           </b-col>
         </b-row>
@@ -271,6 +258,7 @@ import { UserInt } from '../../../interfaces/User'
 import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import DynamicModalSelect from '../../Custom/DynamicModalSelect.vue'
+import DynamicCheckboxSelect from '../../Custom/DynamicCheckboxSelect.vue'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -284,7 +272,8 @@ var tp2 = String(window.location.host)
   name: 'EditPub',
   components: {
     VueEditor,
-    DynamicModalSelect
+    DynamicModalSelect,
+    DynamicCheckboxSelect
   }
 })
 export default class EditPub extends Vue {
@@ -293,13 +282,18 @@ export default class EditPub extends Vue {
   invalidBranch = 'Please select a valid Branch.'
   reltofilter = ''
   crafilter = ''
-  reltodata!: any
-  currentPageRelto = 0
-  currentPageCRA = 0
+  bsfilter = ''
+  dmsRELTO = 'RELTO'
+  dmsCRA = 'CRA'
   perPage = 50
   totalcalls = 0
   completedcalls = 0
   formReady = false
+
+  bsfields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'value', label: 'Bookshelf', sortable: true }
+  ]
 
   reltofields = [
     { key: 'actions', label: 'Select' },
@@ -311,11 +305,15 @@ export default class EditPub extends Vue {
     { key: 'value', label: 'Review Authority', sortable: true }
   ]
 
+  // #region STATE
   @users.State
   public currentUser!: UserInt
 
   @support.State
   public bookshelves!: Array<ObjectItem>
+
+  @publication.State
+  public digestloaded!: boolean
 
   @publication.State
   public publoaded!: boolean
@@ -344,14 +342,22 @@ export default class EditPub extends Vue {
   @publication.State
   public actionofficers!: Array<ObjectItem>
 
+  @publication.State
+  public rapocs!: Array<ObjectItem>
+  // #endregion
+
+  // #region ACTIONS
   @support.Action
   public getBS!: () => Promise<boolean>
+
+  @publication.Action
+  public getDigest!: () => Promise<boolean>
 
   @publication.Action
   public getRelto!: () => Promise<boolean>
 
   @publication.Action
-  public getPublicationById!: (id: string, nato: string) => Promise<boolean>
+  public getPublicationById!: (data: any) => Promise<boolean>
 
   @publication.Action
   public getPrefixesByBranch!: (branch: string) => Promise<boolean>
@@ -370,6 +376,15 @@ export default class EditPub extends Vue {
 
   @publication.Action
   public getRA!: () => Promise<boolean>
+
+  @publication.Action
+  public getRAPocByRA!: (ra: string) => Promise<boolean>
+
+  @publication.Action
+  public updatePublicationById!: (data: any) => Promise<boolean>
+  // #endregion
+
+  //#region DROPDOWNS
 
   branches = [
     { value: 'Please Select...', text: 'Please Select...' },
@@ -433,13 +448,18 @@ export default class EditPub extends Vue {
 
   reltos = []
 
+  // #endregion
+
   mounted() {
     if (this.$route) {
-      let id = this.$route.query.Id
-      let nato = this.$route.query.Nato
+      let id = this.$route.params.Id
+      let nato = this.$route.params.Nato
       if (id !== null) {
         console.log('TEST B')
-        this.getPublicationById(String(id), String(nato)).then(response => {
+        let data: any = {}
+        data.id = id
+        data.nato = nato
+        this.getPublicationById(data).then(response => {
           if (response) {
             this.interval = setInterval(this.loadData, 500)
           }
@@ -493,6 +513,38 @@ export default class EditPub extends Vue {
       this.formReady = true
     } else {
       console.log('WAITING FOR FORM')
+    }
+  }
+
+  public onCancel() {
+    // close the form
+    this.$router.push({ name: 'All Publications' })
+  }
+
+  public onSave() {
+    // need to get the digest first
+    this.getDigest().then(response => {
+      if (response) {
+        this.interval = setInterval(this.saveForm, 500)
+      }
+    })
+  }
+
+  public saveForm() {
+    // save the form
+    if (this.digestloaded) {
+      console.log('DIGEST LOADED')
+      clearInterval(this.interval)
+      // send the data to save
+      const that = this
+      if (this.publication.Id !== undefined) {
+        this.updatePublicationById(this.publication).then(function() {
+          // wait for update to finish then reload
+          that.$router.push({ name: 'View Publication', params: { Id: that.$router.currentRoute.params.Id, Nato: that.$router.currentRoute.params.Nato } })
+        })
+      }
+    } else {
+      console.log('Awaiting Digest')
     }
   }
 
@@ -596,6 +648,14 @@ export default class EditPub extends Vue {
         ao.Id = props.id
         ao.Email = props.email
       }
+    }
+  }
+
+  public onPRASelected() {
+    // go get the POC's for the selected RA
+    let ra = this.publication.PRA
+    if (ra !== undefined) {
+      this.getRAPocByRA(ra)
     }
   }
 }

@@ -32,6 +32,7 @@
                 </b-card>
               </b-link>
             </b-col>
+            <b-col cols="4"></b-col>
           </b-row>
           <b-row no-gutters>
             <b-col cols="2" class="m-0 p-1 bg-white">

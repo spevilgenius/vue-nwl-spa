@@ -8,7 +8,7 @@
               <div class="nav-header-logo" :style="{ backgroundImage: 'url(' + baseImageUrl + '/NWDCLogo100x100.png)' }"></div>
             </div>
           </b-link>
-          <b-link class="nav-header-link-sub" href="https://doctrine.navy.mil">
+          <b-link class="nav-header-link-sub" href="https://doctrine.navy.mil/Pages/Home.aspx">
             <div class="nav-header-title">{{ title }}</div>
           </b-link>
         </li>

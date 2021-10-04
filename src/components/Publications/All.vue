@@ -382,16 +382,25 @@ export default class All extends Vue {
           a = a.filter(d => d.AdditionalData.FunctionalField === 'Navy 5-01 Operational Planning')
           this.filteredpubs = a
         }
+        if (this.filterType === 'TTP') {
+          let a = this.allpublications
+          let b = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACBUL'))
+          b = b.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
+          a = a.concat(b)
+          a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
+          this.filteredpubs = a
+        }
         this.viewReady = true
       }
     }
   }
 
   viewPub(args: any) {
-    this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
+    this.$router.push({ name: 'View Publication', params: { Id: args.id, Nato: args.nato } })
   }
   editPub(args: any) {
-    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
+    this.$router.push({ name: 'Edit Publication', params: { Id: args.id, Nato: args.nato } })
   }
 }
 </script>
