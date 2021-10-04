@@ -100,17 +100,23 @@
                     </b-row>
                   </b-tab>
                   <b-tab class="mtab">
-                    <template slot="title">Supporting Documents</template>
-                    <b-row no-gutters cols="12" style="height: 50px;">
-                      <b-table id="SupportingDocsTable" striped hover :items="supportingdocs" :fields="table.fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage">
-                        <template #cell(Name)="data">
-                          <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
-                        </template>
-                      </b-table>
-                      <b-row no-gutters cols="12">
-                        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0 p-0"></b-pagination>
+                    <b-card>
+                      <template slot="title">Supporting Documents</template>
+                      <b-row no-gutters cols="12" style="height: 50px;">
+                        <b-table id="SupportingDocsTable" striped hover :items="supportingdocs" :fields="table.fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage">
+                          <template #cell(Name)="data">
+                            <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                          </template>
+                        </b-table>
+                        <b-row no-gutters cols="12">
+                          <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0 p-0"></b-pagination>
+                        </b-row>
                       </b-row>
-                    </b-row>
+                      <template #footer>
+                        <b-form-file v-model="newSupDoc" multiple v-if="currentUser.isLibrarian || currentUser.isActionOfficer" :state="Boolean(file1)" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @click="uploadSupDoc(supportingdocs.DocID, publication.IsNato)"> </b-form-file>
+                        <div>Selected file: {{ newSupDoc ? newSupDoc.name : '' }}</div>
+                      </template>
+                    </b-card>
                   </b-tab>
                   <b-tab class="mtab">
                     <template slot="title">Feedback/Comments</template>
@@ -301,6 +307,10 @@ export default class ViewPub extends Vue {
   }
 
   public editItem(id: string, nato: string) {
+    this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato, t: new Date().getTime().toString() } })
+  }
+
+  public uploadSupDoc(id: string, nato: string) {
     this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato, t: new Date().getTime().toString() } })
   }
 
