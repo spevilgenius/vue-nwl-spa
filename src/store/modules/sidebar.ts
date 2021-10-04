@@ -144,7 +144,7 @@ class Sidebar extends VuexModule {
         },
         {
           id: 202,
-          name: 'All Publications In Development',
+          name: 'All Publications In Dev',
           path: '/development/pubs/refreshall',
           library: 'fas',
           icon: 'user-shield'
