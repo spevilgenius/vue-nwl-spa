@@ -72,54 +72,54 @@ class Sidebar extends VuexModule {
       id: 100,
       isMenu: true,
       name: 'Approved Publications',
-      path: '/pubs/home',
+      path: '/approved/pubs',
       children: [
         {
           id: 101,
           name: 'Whats New',
-          path: '/pubs/home/refreshnew',
+          path: '/approved/pubs/refreshnew',
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 102,
           name: 'Navy',
-          path: '/pubs/home/refreshnavy',
+          path: '/approved/pubs/refreshnavy',
           library: 'fas',
           icon: 'anchor'
         },
         {
           id: 103,
           name: 'Allied',
-          path: '/pubs/home/refreshallied',
+          path: '/approved/pubs/refreshallied',
           library: 'fas',
           icon: 'users'
         },
         {
           id: 104,
           name: 'Joint',
-          path: '/pubs/home/refreshjoint',
+          path: '/approved/pubs/refreshjoint',
           library: 'fas',
           icon: 'user-friends'
         },
         {
           id: 105,
           name: 'MultiNational',
-          path: '/pubs/home/refreshmulti',
+          path: '/approved/pubs/refreshmulti',
           library: 'fas',
           icon: 'user-tie'
         },
         {
           id: 106,
           name: 'Other Publications',
-          path: '/pubs/home/refreshother',
+          path: '/approved/pubs/refreshother',
           library: 'fas',
           icon: 'user-tie'
         },
         {
           id: 107,
           name: 'All Publications',
-          path: '/pubs/home/refreshall',
+          path: '/approved/pubs/refreshall',
           library: 'fas',
           icon: 'user-shield'
         }
@@ -129,12 +129,29 @@ class Sidebar extends VuexModule {
     },
     {
       id: 200,
-      isMenu: false,
-      children: [],
+      isMenu: true,
       name: 'Pubs In Development',
+      path: '/development/pubs',
+      children: [
+        {
+          id: 201,
+          name: 'Add New Publication',
+          path: '/development/pubs/new',
+          library: 'fas',
+          icon: 'plus',
+          permission: 'isActionOfficer',
+          permissionvalue: true
+        },
+        {
+          id: 202,
+          name: 'All Publications In Development',
+          path: '/development/pubs/refreshall',
+          library: 'fas',
+          icon: 'user-shield'
+        }
+      ],
       library: 'fas',
-      icon: 'user-edit',
-      path: '/pubs/home/refreshdevelopment'
+      icon: 'user-edit'
     },
     {
       id: 300,
