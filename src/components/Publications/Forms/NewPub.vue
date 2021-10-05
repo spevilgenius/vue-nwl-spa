@@ -57,7 +57,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../../interfaces/User'
-import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import axios from 'axios'
 
@@ -192,18 +191,15 @@ export default class NewPub extends Vue {
         accept: 'application/pdf'
       }
     })
-    // let buff = new ArrayBuffer(response.data)
     let name = this.prfx + ' ' + this.pubid + ' ' + this.ltitle + '.pdf'
-    // let file = new File([response.data], name)
     let responsedata = response.data
-    // let buff = this.getFileBuffer(file)
     if (this.nato) {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('NATOPublications')/RootFolder/Files/Add"
     } else {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
     }
-    console.log('REAL DOC URL: ' + url)
-    // url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
+    // TODO: For testing we are using a different library with versioning turned on.
+    url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
     url += "(url='"
     url += name
     url += "',overwrite=true)"
