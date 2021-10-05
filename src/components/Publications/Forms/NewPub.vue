@@ -203,7 +203,7 @@ export default class NewPub extends Vue {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
     }
     console.log('REAL DOC URL: ' + url)
-    url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
+    // url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
     url += "(url='"
     url += name
     url += "',overwrite=true)"
@@ -239,7 +239,7 @@ export default class NewPub extends Vue {
         Prfx: this.prfx,
         PubID: this.pubid,
         LongTitle: this.ltitle,
-        DocID: this.uuid
+        DocID: this.makeGuid()
       }
       const uheaders = {
         'Content-Type': 'application/json;odata=verbose',
@@ -274,26 +274,12 @@ export default class NewPub extends Vue {
     return p
   }
 
-  public uuid(len, radix) {
-    let CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-    let chars = CHARS
-    let uuid: any = []
-    radix = radix || chars.length
-
-    if (len) {
-      for (let i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)]
-    } else {
-      var r
-      uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-'
-      uuid[14] = '4'
-      for (let i = 0; i < 36; i++) {
-        if (!uuid[i]) {
-          r = 0 | (Math.random() * 16)
-          uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r]
-        }
-      }
-    }
-    return uuid.join('')
+  public makeGuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
   }
 }
 </script>
