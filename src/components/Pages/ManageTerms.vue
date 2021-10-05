@@ -1,6 +1,6 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0" style="overflow=hidden;">
-    <b-overlay :show="!iframeloaded" variant="success" class="contentHeight">
+    <b-overlay :show="!iframeloaded" variant="danger" class="contentHeight">
       <b-embed type="iframe" src="/terminology/SitePages/search.aspx?IsDlg=1"></b-embed>
       <template #overlay>
         <div class="text-center">
