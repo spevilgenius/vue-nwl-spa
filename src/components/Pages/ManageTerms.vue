@@ -1,0 +1,30 @@
+<template>
+  <b-container fluid class="contentHeight m-0 p-0" style="overflow=hidden;">
+    <b-overlay :show="!iframeloaded" variant="success" class="contentHeight">
+      <b-embed type="iframe" src="/terminology/SitePages/search.aspx?IsDlg=1"></b-embed>
+      <template #overlay>
+        <div class="text-center">
+          <p id="busy-label">Loading...</p>
+        </div>
+      </template>
+    </b-overlay>
+  </b-container>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component
+export default class ManageTerms extends Vue {
+  iframeloaded?: boolean = false
+
+  mounted() {
+    const that = this
+    window.setInterval(function() {
+      that.iframeloaded = true
+    }, 2000)
+  }
+}
+</script>
+
+<style scoped></style>

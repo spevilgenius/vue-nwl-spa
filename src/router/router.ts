@@ -132,6 +132,12 @@ const termsMenu = {
       name: 'Terminology',
       component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminologycopy2.vue'),
       props: true
+    },
+    {
+      path: 'home/ManageTerms',
+      name: 'Manage Terms',
+      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/ManageTerms.vue'),
+      props: true
     }
   ]
 }
