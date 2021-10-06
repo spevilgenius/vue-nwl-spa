@@ -5,6 +5,7 @@ import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
+import PleaseReview from '@/components/Pages/PleaseReview.vue'
 
 Vue.use(VueRouter)
 
@@ -130,7 +131,7 @@ const termsMenu = {
     {
       path: 'home',
       name: 'Terminology',
-      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminologycopy2.vue'),
+      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminology.vue'),
       props: true
     }
   ]
@@ -177,6 +178,11 @@ const routes = [
         path: 'NavyDoctrine',
         name: 'NavyDoctrine',
         component: NavyDoctrine
+      },
+      {
+        path: 'PleaseReview',
+        name: 'PleaseReview',
+        component: PleaseReview
       }
     ]
   }

@@ -1,39 +1,49 @@
-<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <b-container fluid class="contentHeight m-2 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
-          <b-container fluid class="contentHeight m-0 p-0">
-            <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="8" class="float-left">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
-              </b-col>
-              <b-col cols="4" class="mt-1 pr-3">
-                <b-input-group class="float-right">
-                  <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
-                  <b-input-group-append>
-                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                  </b-input-group-append>
-                </b-input-group>
-              </b-col>
-            </b-row>
-            <b-row no-gutters :style="getStyle('tablerow', null)">
-              <b-col cols="12">
-                <b-table striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('maintable', null)" @filtered="onFiltered">
-                  <template #cell(definition)="data">
-                    <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
-                  </template>
-                </b-table>
-              </b-col>
-            </b-row>
-          </b-container>
-          <template #overlay>
-            <div class="text-center">
-              <p id="busy-label">{{ table.overlayText }}</p>
-            </div>
-          </template>
-        </b-overlay>
+        <b-container fluid class="contentHeight m-0 p-0">
+          <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
+            <b-col cols="4" class="float-left">
+              <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
+            </b-col>
+            <b-col cols="4">
+              <!--<b-button squared v-if="isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>-->
+              <b-button squared @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
+              <b-modal id="bv-modal-addTerm" :no-close-on-backdrop="true">
+                <template #addNewTerm>
+                  Add New Term/Acronym
+                </template>
+                <b-row>
+                  <!-- stuff -->
+                </b-row>
+                <b-row> </b-row>
+              </b-modal>
+            </b-col>
+            <b-col cols="4" class="mt-1 pr-3">
+              <b-input-group class="float-right">
+                <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
+                <b-input-group-append>
+                  <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
+          </b-row>
+          <b-row no-gutters :style="getStyle('tablerow', null)">
+            <b-col cols="12">
+              <b-table ml-0 striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('tablerow', null)" @filtered="onFiltered">
+                <template #cell(definition)="data">
+                  <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
+                </template>
+              </b-table>
+            </b-col>
+          </b-row>
+        </b-container>
+        <template #overlay>
+          <div class="text-center">
+            <p id="busy-label">Loading...</p>
+          </div>
+        </template>
       </b-col>
     </b-row>
   </b-container>
@@ -57,7 +67,7 @@ var tp2 = String(window.location.host)
 let that: any
 
 @Component({
-  name: 'dynamic-table',
+  name: 'terminology-table',
   props: {
     hascomponents: {
       type: Boolean,
@@ -70,7 +80,7 @@ let that: any
       type: Object,
       default: () => {
         return {
-          id: 'DynamicTable',
+          id: 'dynamic-table',
           list: 'ActivePublications',
           primaryKey: 'id',
           buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
@@ -288,5 +298,17 @@ export default class DynamicTable extends Vue {
 }
 .definition {
   max-width: 1800px;
+}
+
+.input-group > .custom-file,
+.input-group > .custom-select,
+.input-group > .form-control,
+.input-group > .form-control-plaintext {
+  max-height: 35px;
+}
+
+.input-group-append .btn,
+.input-group-prepend .btn {
+  max-height: 35px;
 }
 </style>

@@ -64,10 +64,16 @@ export default class All extends Vue {
   public allpublications!: Array<PublicationItem>
 
   @publication.State
+  public alldevpublications!: Array<PublicationItem>
+
+  @publication.State
   public natopubsloaded!: boolean
 
   @publication.State
   public pubsloaded!: boolean
+
+  @publication.State
+  public devpubsloaded!: boolean
 
   @publication.State
   public allpubsloaded!: boolean
@@ -79,7 +85,16 @@ export default class All extends Vue {
   public getAllNatoPublications!: () => Promise<boolean>
 
   @publication.Action
+  public getAllDevPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllNatoDevPublications!: () => Promise<boolean>
+
+  @publication.Action
   public createAllPubs!: () => Promise<boolean>
+
+  @publication.Action
+  public createAllDevPubs!: () => Promise<boolean>
 
   fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', id: 0 },
@@ -107,6 +122,8 @@ export default class All extends Vue {
   mounted() {
     this.getAllNatoPublications()
     this.getAllPublications()
+    this.getAllDevPublications()
+    /* this.getAllNatoDevPublications() */
     this.interval = setInterval(this.waitForIt, 500)
   }
 
@@ -114,6 +131,7 @@ export default class All extends Vue {
     if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
       this.createAllPubs()
+      this.createAllDevPubs()
       this.interval = setInterval(this.waitForPubs, 500)
     }
   }
@@ -129,6 +147,7 @@ export default class All extends Vue {
         console.log('filterValue=' + this.filterValue)
         console.log('filterType=' + this.filterType)
         this.filteredpubs = this.allpublications
+        console.log('FILTEREDPUBS = ' + this.filteredpubs)
         if (this.filterType === 'complex') {
           // filter pubs and send these pubs instead
           let fields: any = String(this.filterField)
@@ -325,7 +344,7 @@ export default class All extends Vue {
         if (this.filterType === 'NWP400') {
           let a = this.allpublications
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NWP'))
-          a = a.filter(d => d.AdditionalData.FunctionalField === 'Navy 4-00 Undersea Warfare')
+          a = a.filter(d => d.AdditionalData.FunctionalField === 'Navy 4-00 Naval Logistics')
           this.filteredpubs = a
         }
         if (this.filterType === 'NWP401') {
@@ -390,6 +409,13 @@ export default class All extends Vue {
           a = a.concat(b)
           a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
           this.filteredpubs = a
+        }
+        if (this.filterType === 'Development') {
+          let a = this.alldevpublications
+          console.log('DEV TYPE WORKING AND ALLDEVPUBLICATIONS = ' + this.alldevpublications)
+          console.log('DEV TYPE WORKING AND ALLPUBLICATIONS = ' + this.allpublications)
+          this.filteredpubs = a
+          console.log('DEV TYPE WORKING AND FILTERED PUBS = ' + a)
         }
         this.viewReady = true
       }

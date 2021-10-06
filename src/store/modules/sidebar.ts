@@ -155,12 +155,28 @@ class Sidebar extends VuexModule {
     },
     {
       id: 300,
-      isMenu: false,
-      children: [],
+      isMenu: true,
       name: 'Naval Terminology',
       library: 'fas',
       icon: 'spell-check',
-      path: '/terminology/home'
+      children: [
+        {
+          id: 301,
+          name: 'View Terminology',
+          path: '/terminology/home',
+          library: 'fas',
+          icon: 'plus'
+        },
+        {
+          id: 302,
+          name: 'Manage Terminology',
+          path: '/terminology/home/ManageTerms',
+          library: 'fas',
+          icon: 'plus',
+          permission: 'isTerminologist',
+          permissionvalue: true
+        }
+      ]
     },
     {
       id: 400,
@@ -169,7 +185,7 @@ class Sidebar extends VuexModule {
       name: 'PleaseReview',
       library: 'fas',
       icon: 'folder-open',
-      path: '/review/home'
+      path: '/pages/pleasereview'
     },
     {
       id: 500,
