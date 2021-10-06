@@ -170,6 +170,7 @@ class Sidebar extends VuexModule {
       library: 'fas',
       icon: 'folder-open',
       path: '/review/home'
+      /* path: '/pleasereview/main/default.aspx' */
     },
     {
       id: 500,
