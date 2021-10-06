@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="contentHeight m-0 p-0" style="overflow=hidden;">
+  <b-container fluid class="contentHeight m-0 p-0" style="overflow=hidden; max-height: -webkit-fill-available;">
     <b-overlay :show="!iframeloaded" variant="danger" class="contentHeight">
       <b-embed type="iframe" src="/terminology/SitePages/search.aspx?IsDlg=1"></b-embed>
       <template #overlay>
