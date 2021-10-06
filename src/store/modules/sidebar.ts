@@ -254,6 +254,15 @@ class Sidebar extends VuexModule {
       path: '/links/home'
     },
     {
+      id: 750,
+      isMenu: false,
+      children: [],
+      name: 'NWL Administration',
+      library: 'fas',
+      icon: 'link',
+      path: '/pages/Administration'
+    },
+    {
       id: 800,
       isMenu: true,
       name: 'Support',

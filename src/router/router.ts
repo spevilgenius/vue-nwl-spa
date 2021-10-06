@@ -4,6 +4,7 @@ import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
+import Admin from '@/components/Pages/Admin.vue'
 
 Vue.use(VueRouter)
 
@@ -161,6 +162,11 @@ const routes = [
         path: 'NavyDoctrine',
         name: 'NavyDoctrine',
         component: NavyDoctrine
+      },
+      {
+        path: 'Administration',
+        name: 'NWL Administration',
+        component: Admin
       }
     ]
   }

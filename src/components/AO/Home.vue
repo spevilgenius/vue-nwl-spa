@@ -37,6 +37,9 @@ export default class AO extends Vue {
     if (this.mode == 'refreshdevelopment') {
       this.$router.push({ name: 'Pubs In Development' })
     }
+    if (this.mode == 'refreshadmin') {
+      this.$router.push({ name: 'Admin' })
+    }
   }
 }
 </script>
