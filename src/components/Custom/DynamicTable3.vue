@@ -8,8 +8,7 @@
               <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
             </b-col>
             <b-col cols="4">
-              <!--<b-button squared v-if="isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>-->
-              <b-button squared @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
+              <b-button v-if="currentUser.isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
               <b-modal id="bv-modal-addTerm" :no-close-on-backdrop="true">
                 <template #addNewTerm>
                   Add New Term/Acronym
@@ -30,8 +29,23 @@
             </b-col>
           </b-row>
           <b-row no-gutters :style="getStyle('tablerow', null)">
-            <b-col cols="12">
-              <b-table ml-0 striped hover :items="filtereditems" :fields="table.fields" primary-key="table.primarykey" :filter="filter" :filter-included-fields="filterOn" :per-page="perPage" :current-page="currentPage" table-class="table-full" table-variant="light" :style="getStyle('tablerow', null)" @filtered="onFiltered">
+            <b-col cols="12" class="p-1">
+              <b-table
+                striped
+                hover
+                :sticky-header="getSticky('dynamictable')"
+                :items="filtereditems"
+                :fields="table.fields"
+                primary-key="table.primarykey"
+                :filter="filter"
+                :filter-included-fields="filterOn"
+                :per-page="perPage"
+                :current-page="currentPage"
+                table-class="table-full"
+                table-variant="light"
+                :style="getStyle('tablerow', null)"
+                @filtered="onFiltered"
+              >
                 <template #cell(definition)="data">
                   <div class="definition" :title="data.item.definition" v-b-tooltip.hover.v-dark>{{ data.item.definition }}</div>
                 </template>
@@ -278,6 +292,16 @@ export default class DynamicTable extends Vue {
     args.nato = nato
     EventBus.$emit('editItem', args)
   }
+
+  public getSticky(element) {
+    let h: any
+    switch (element) {
+      case 'dynamictable':
+        h = that.contentheight - 270 + 'px'
+        break
+    }
+    return h
+  }
 }
 </script>
 
@@ -285,16 +309,12 @@ export default class DynamicTable extends Vue {
 .table-full {
   border: 1px solid #000000 !important;
   text-align: left;
-  margin-left: 10px;
 }
 .table-full td,
 .table-full th {
   border: 1px solid #000000 !important;
   height: 20px !important;
   padding: 2px 5px !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: wrap;
 }
 .definition {
   max-width: 1800px;
