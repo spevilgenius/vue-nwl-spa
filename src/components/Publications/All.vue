@@ -344,7 +344,7 @@ export default class All extends Vue {
         if (this.filterType === 'NWP400') {
           let a = this.allpublications
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NWP'))
-          a = a.filter(d => d.AdditionalData.FunctionalField === 'Navy 4-00 Undersea Warfare')
+          a = a.filter(d => d.AdditionalData.FunctionalField === 'Navy 4-00 Naval Logistics')
           this.filteredpubs = a
         }
         if (this.filterType === 'NWP401') {

@@ -89,9 +89,7 @@
                 >
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
-                    <li>
-                      <b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link>
-                    </li>
+                    <li><b-link :to="{ name: 'View Publication', query: { Id: 288, Nato: 'No' } }">3 Fleet Warfare</b-link></li>
                     <li>
                       <b-link :to="{ name: 'All Publications', query: { Type: 'NWP301' } }">3-01 Air Defense</b-link>
                     </li>
@@ -228,41 +226,6 @@
                     Communications
                   </h4></b-card-header
                 >
-                <!-- <b-card-body body-class="card-body-left p-1">
-                  <ul>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Allied' } }">Allied Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Joint' } }">Joint Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
-                    </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">Fleet CONOPS</b-link></li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'OPTASK' } }">Navy-wide OPTASKS</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Universal Naval Task List' } }">Universal Naval Task List (UNTL)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'FXP' } }">Fleet Exercise Publications (Archive)</b-link>
-                    </li>
-                    <li>
-                      <b-link :to="{ name: 'All Publications', query: { Type: 'NTP' } }">Naval Telecommunications Procedures (NTPs)</b-link>
-                    </li>
-                    <li>
-                      <a href="/SitePages/bookshelves.aspx">Mission Area Bookshelves</a>
-                    </li>
-                  </ul>
-                </b-card-body> -->
               </b-card>
             </b-col>
           </b-row>
