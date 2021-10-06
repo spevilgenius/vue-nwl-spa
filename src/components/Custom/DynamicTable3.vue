@@ -14,9 +14,13 @@
                 <template #addNewTerm>
                   Add New Term/Acronym
                 </template>
+                <<<<<<< Updated upstream:src/components/Custom/DynamicTable3.vue
                 <b-row>
                   <!-- stuff -->
                 </b-row>
+                =======
+                <b-row> </b-row>
+                >>>>>>> Stashed changes:src/components/Custom/TerminologyTable.vue
               </b-modal>
             </b-col>
             <b-col cols="4" class="mt-1 pr-3">
