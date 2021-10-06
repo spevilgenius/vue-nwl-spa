@@ -137,7 +137,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import { TerminologyItem } from '@/interfaces/TerminologyItem'
 import { namespace } from 'vuex-class'
-import TerminologyTable from '../Custom/TerminologyTable.vue'
+import DynamicTable from '../Custom/DynamicTable3.vue'
 import { faAlignCenter } from '@fortawesome/free-solid-svg-icons'
 
 const terminology = namespace('terminology')
@@ -145,7 +145,7 @@ const terminology = namespace('terminology')
 @Component({
   name: 'Terminology',
   components: {
-    TerminologyTable
+    DynamicTable
   }
 })
 export default class Terminology extends Vue {
