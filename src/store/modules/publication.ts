@@ -578,7 +578,8 @@ class Publication extends VuexModule {
         DocID: j[i]['DocID'],
         Title: j[i]['Title'],
         Name: j[i]['File']['Name'],
-        RelativeURL: j[i]['File']['ServerRelativeUrl']
+        RelativeURL: j[i]['File']['ServerRelativeUrl'],
+        IsNato: data.nato
       })
     }
     this.context.commit('createSupportingDocs', p)
