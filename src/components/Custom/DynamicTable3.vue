@@ -8,13 +8,14 @@
               <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
             </b-col>
             <b-col cols="4">
-              <b-button squared v-if="isTerminologist" @click="$bvModal.show('bv-modal-addTerm')">New Term/Acronym</b-button>
+              <!--<b-button squared v-if="isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>-->
+              <b-button squared @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
               <b-modal id="bv-modal-addTerm" :no-close-on-backdrop="true">
                 <template #addNewTerm>
                   Add New Term/Acronym
                 </template>
                 <b-row>
-                  
+                  <!-- stuff -->
                 </b-row>
               </b-modal>
             </b-col>
@@ -78,7 +79,7 @@ let that: any
       type: Object,
       default: () => {
         return {
-          id: 'TerminologyTable',
+          id: 'dynamic-table',
           list: 'ActivePublications',
           primaryKey: 'id',
           buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
@@ -100,7 +101,7 @@ let that: any
     }
   }
 })
-export default class TerminologyTable extends Vue {
+export default class DynamicTable extends Vue {
   filter = null
   filterOn: Array<any> = []
   checkBoxes: Array<any> = ['Prfx', 'Branch']
