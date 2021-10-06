@@ -1,4 +1,4 @@
-ib<template>
+<template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters>
       <b-col cols="12" class="m-0 p-0">
