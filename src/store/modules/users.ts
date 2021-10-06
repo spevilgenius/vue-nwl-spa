@@ -84,6 +84,7 @@ class Users extends VuexModule {
     this.currentUser.isNATOVisitor = data.isNATOVisitor === true ? true : false
     this.currentUser.isNATOApprover = data.isNATOApprover === true ? true : false
     this.currentUser.isNATOLibrarian = data.isNATOLibrarian === true ? true : false
+    this.currentUser.isTerminologist = data.isTerminologist === true ? true : false
   }
 
   @Action
@@ -278,6 +279,10 @@ class Users extends VuexModule {
 
           case 'Library Administrators':
             permissions.isAdmin = true
+            break
+
+          case 'Terminology Members':
+            permissions.isTerminologist = true
             break
 
           case 'NATO Approvers':

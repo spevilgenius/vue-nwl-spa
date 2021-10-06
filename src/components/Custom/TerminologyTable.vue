@@ -1,12 +1,22 @@
-<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <b-container fluid class="contentHeight m-2 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
           <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-            <b-col cols="8" class="float-left">
+            <b-col cols="4" class="float-left">
               <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
+            </b-col>
+            <b-col cols="4">
+              <b-button squared v-if="isTerminologist" @click="$bvModal.show('bv-modal-addTerm')">New Term/Acronym</b-button>
+              <b-modal id="bv-modal-addTerm" :no-close-on-backdrop="true">
+                <template #addNewTerm>
+                  Add New Term/Acronym
+                </template>
+                <b-row>
+                  
+                </b-row>
+              </b-modal>
             </b-col>
             <b-col cols="4" class="mt-1 pr-3">
               <b-input-group class="float-right">
@@ -55,7 +65,7 @@ var tp2 = String(window.location.host)
 let that: any
 
 @Component({
-  name: 'dynamic-table',
+  name: 'terminology-table',
   props: {
     hascomponents: {
       type: Boolean,
@@ -68,7 +78,7 @@ let that: any
       type: Object,
       default: () => {
         return {
-          id: 'DynamicTable',
+          id: 'TerminologyTable',
           list: 'ActivePublications',
           primaryKey: 'id',
           buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
@@ -90,7 +100,7 @@ let that: any
     }
   }
 })
-export default class DynamicTable extends Vue {
+export default class TerminologyTable extends Vue {
   filter = null
   filterOn: Array<any> = []
   checkBoxes: Array<any> = ['Prfx', 'Branch']
@@ -286,5 +296,17 @@ export default class DynamicTable extends Vue {
 }
 .definition {
   max-width: 1800px;
+}
+
+.input-group > .custom-file,
+.input-group > .custom-select,
+.input-group > .form-control,
+.input-group > .form-control-plaintext {
+  max-height: 35px;
+}
+
+.input-group-append .btn,
+.input-group-prepend .btn {
+  max-height: 35px;
 }
 </style>

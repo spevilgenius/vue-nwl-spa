@@ -10,6 +10,7 @@ interface UserInt {
   isOwner?: boolean
   isActionOfficer?: boolean
   isLibrarian?: boolean
+  isTerminologist?: boolean
   isAdmin?: boolean
   isVisitor?: boolean
   isNATOVisitor?: boolean

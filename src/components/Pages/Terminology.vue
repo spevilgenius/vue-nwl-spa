@@ -1,11 +1,11 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-overlay :show="!termsloaded" :variant="danger" class="contentHeight">
+    <b-overlay :show="!termsloaded" variant="danger" class="contentHeight">
       <b-row no-gutters class="contentHeight">
         <b-col cols="12" class="m-0 p-1 bg-white">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters>
-              <b-col cols="3" class="m-0 p-1 bg-white">
+              <b-col cols="3" class="m-0 p-1 bg-white" style="height: 170px;">
                 <b-card no-body header-tag="header">
                   <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
                     ><h4 class="text-white p-0 mb-0">
@@ -15,23 +15,21 @@
                   <b-card-body class="p-1">
                     <b-card no-body class="p-1">
                       <b-row no-gutters>
-                        <b-row align="center">
-                          <b-col cols="2">
+                        <!-- <b-col cols="2">
                             <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col cols="10" class="p-1" align="center">
-                            <b-card-sub-title>The DOD Dictionary of Military and Associated Terms</b-card-sub-title>
-                            <b-card-title>
-                              <a href="https://jdeis.js.mil/jdeis/new_pubs/dictionary.pdf">DOD Dictionary</a>
-                            </b-card-title>
-                          </b-col>
-                        </b-row>
+                          </b-col> -->
+                        <b-col cols="12" class="m-1" align="center">
+                          <b-card-sub-title>The DOD Dictionary of Military and Associated Terms</b-card-sub-title>
+                          <b-card-title>
+                            <a href="https://jdeis.js.mil/jdeis/new_pubs/dictionary.pdf">DOD Dictionary</a>
+                          </b-card-title>
+                        </b-col>
                       </b-row>
                     </b-card>
                   </b-card-body>
                 </b-card>
               </b-col>
-              <b-col cols="3" class="m-0 p-1 bg-white">
+              <b-col cols="3" class="m-0 p-1 bg-white" style="height: 170px;">
                 <b-card no-body header-tag="header">
                   <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
                     ><h4 class="text-white p-0 mb-0">
@@ -41,23 +39,21 @@
                   <b-card-body class="p-1">
                     <b-card no-body class="p-1">
                       <b-row no-gutters>
-                        <b-row align="center">
-                          <b-col cols="2">
-                            <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col cols="10" class="p-1" align="center">
-                            <b-card-sub-title>Navy Supplement to the DOD Dictionary of Military and Associated Terms</b-card-sub-title>
-                            <b-card-title>
-                              <a href="https://doctrine.navy.mil/pubs/NTRP%201-02,%20Navy%20Supplement%20to%20the%20DOD%20Dictionary%20of%20Military%20and%20Associated%20Terms/NTRP_1-02.pdf">NTRP 1-02</a>
-                            </b-card-title>
-                          </b-col>
-                        </b-row>
+                        <!-- <b-col cols="2">
+                          <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
+                        </b-col> -->
+                        <b-col cols="12" class="m-1" align="center">
+                          <b-card-sub-title>Navy Supplement to the DOD Dictionary of Military and Associated Terms</b-card-sub-title>
+                          <b-card-title mb-0>
+                            <a href="https://doctrine.navy.mil/pubs/NTRP%201-02,%20Navy%20Supplement%20to%20the%20DOD%20Dictionary%20of%20Military%20and%20Associated%20Terms/NTRP_1-02.pdf">NTRP 1-02</a>
+                          </b-card-title>
+                        </b-col>
                       </b-row>
                     </b-card>
                   </b-card-body>
                 </b-card>
               </b-col>
-              <b-col cols="3" class="m-0 p-1 bg-white">
+              <b-col cols="3" class="m-0 p-1 bg-white" style="height: 170px;">
                 <b-card no-body header-tag="header">
                   <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
                     ><h4 class="text-white p-0 mb-0">
@@ -68,10 +64,10 @@
                     <b-card no-body class="p-1">
                       <b-row no-gutters>
                         <b-row align="center">
-                          <b-col cols="2">
+                          <!-- <b-col cols="2">
                             <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col cols="10" class="p-1" align="center">
+                          </b-col> -->
+                          <b-col cols="12" class="p-1" align="center">
                             <b-card-sub-title>Marine Corps Supplement to the DOD Dictionary of Military and Associated Terms</b-card-sub-title>
                             <b-card-title>
                               <a href="https://doctrine.navy.mil/pubs/MCRP%201-10.2,%20Marine%20Corps%20Terminology/MCRP_1-10.2.pdf">MCRP 1-10.2</a>
@@ -83,7 +79,7 @@
                   </b-card-body>
                 </b-card>
               </b-col>
-              <b-col cols="3" class="m-0 p-1 bg-white">
+              <b-col cols="3" class="m-0 p-1 bg-white" style="height: 170px;">
                 <b-card no-body header-tag="header">
                   <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0">
                     <h4 class="text-white p-0 mb-0">
@@ -94,10 +90,10 @@
                     <b-card no-body class="p-1">
                       <b-row no-gutters>
                         <b-row align="center">
-                          <b-col cols="2">
+                          <!-- <b-col cols="2">
                             <font-awesome-icon fas icon="book-open" class="pubicon text-success"></font-awesome-icon>
-                          </b-col>
-                          <b-col cols="10" class="p-1" align="center">
+                          </b-col> -->
+                          <b-col cols="12" class="p-1" align="center">
                             <b-card-sub-title>Joint Doctrine, Education & Training Electronic Information System (JDEIS) Terminology Program</b-card-sub-title>
                             <b-card-title>
                               <a href="https://jdeis.js.mil/jdeis/index.jsp?">JDEIS</a>
@@ -125,6 +121,11 @@
               </b-row>
             </b-row>
           </b-container>
+          <template #overlay>
+            <div class="text-center">
+              <p id="busy-label">Loading...</p>
+            </div>
+          </template>
         </b-col>
       </b-row>
     </b-overlay>
@@ -136,7 +137,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import { TerminologyItem } from '@/interfaces/TerminologyItem'
 import { namespace } from 'vuex-class'
-import DynamicTable from '../Custom/DynamicTable3.vue'
+import TerminologyTable from '../Custom/TerminologyTable.vue'
 import { faAlignCenter } from '@fortawesome/free-solid-svg-icons'
 
 const terminology = namespace('terminology')
@@ -144,7 +145,7 @@ const terminology = namespace('terminology')
 @Component({
   name: 'Terminology',
   components: {
-    DynamicTable
+    TerminologyTable
   }
 })
 export default class Terminology extends Vue {
