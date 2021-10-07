@@ -107,15 +107,39 @@
                       <b-col cols="12">
                         <b-container fluid class="m-0 p-0">
                           <b-row no-gutters style="height: calc(100vh - 300px)">
-                            <b-col cols="12">
+                            <b-col cols="12" v-if="currentUser.isActionOfficer || currentUser.isLibrarian || currentUser.isNATOLibrarian">
+                              <b-table id="SupportingDocsTable" striped hover :items="supportingdocs" :fields="table.aofields" :per-page="perPage" :current-page="currentPage">
+                                <template #cell(actions)="data">
+                                  <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="deleteItem(data.item.Id, data.item.IsNato)">
+                                    <font-awesome-icon :icon="['fas', 'trash-alt']" class="icon"></font-awesome-icon>
+                                  </b-button>
+                                  <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark ml-1" @click="toggleHidden(data.item)" v-b-tooltip.hover.v-dark title="Set visibility for AO and Librarians only.">
+                                    <font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon>
+                                  </b-button>
+                                </template>
+                                <template #cell(Name)="data">
+                                  <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                </template>
+                                <template #cell(Hidden)="data">
+                                  <b-checkbox :checked="data.item.Hidden === 'Yes'"></b-checkbox>
+                                </template>
+                              </b-table>
+                            </b-col>
+                            <b-col cols="12" v-else>
                               <b-table id="SupportingDocsTable" striped hover :items="supportingdocs" :fields="table.fields" :per-page="perPage" :current-page="currentPage">
                                 <template #cell(actions)="data">
                                   <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="deleteItem(data.item.Id, data.item.IsNato)">
                                     <font-awesome-icon :icon="['fas', 'trash-alt']" class="icon"></font-awesome-icon>
                                   </b-button>
+                                  <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark ml-1" @click="toggleHidden(data.item)" v-b-tooltip.hover.v-dark title="Set visibility for AO and Librarians only.">
+                                    <font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon>
+                                  </b-button>
                                 </template>
                                 <template #cell(Name)="data">
                                   <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                </template>
+                                <template #cell(Hidden)="data">
+                                  <b-checkbox :checked="data.item.Hidden === 'Yes'"></b-checkbox>
                                 </template>
                               </b-table>
                             </b-col>
@@ -178,10 +202,12 @@ var tp2 = String(window.location.host)
       default: () => {
         return {
           id: 'SupportingDocsTable',
-          fields: [
+          aofields: [
             { key: 'actions', label: 'Actions', tdClass: 'px80' },
-            { key: 'Name', label: 'Document Name', sortable: true, type: 'default', format: 'text', tdClass: 'text-left', id: 1 }
+            { key: 'Name', label: 'Document Name', sortable: true, type: 'default', format: 'text', tdClass: 'text-left', id: 1 },
+            { key: 'Hidden', label: 'Hidden', sortable: true, type: 'default', format: 'checkbox', id: 2 }
           ],
+          fields: [{ key: 'Name', label: 'Document Name', sortable: true, type: 'default', format: 'text', tdClass: 'text-left', id: 1 }],
           items: [],
           overlayText: 'Loading. Please Wait...',
           overlayVariant: 'success',
@@ -204,6 +230,7 @@ export default class ViewPub extends Vue {
   buffer?: any = null
   fileUploaded?: boolean = false
   fileDeleted?: boolean = false
+  fileUpdated?: boolean = false
   docdata: any = {}
 
   @users.State
@@ -262,6 +289,11 @@ export default class ViewPub extends Vue {
       let data: any = {}
       data.DocID = this.publication.DocID
       data.nato = this.publication.IsNato
+      if (this.currentUser.isActionOfficer || this.currentUser.isLibrarian || this.currentUser.isNATOLibrarian) {
+        data.showhidden = 'Yes'
+      } else {
+        data.showhidden = 'No'
+      }
       this.docdata = data
       this.getSupportingDocs(data)
       this.interval = setInterval(this.waitForData, 500)
@@ -318,9 +350,10 @@ export default class ViewPub extends Vue {
   }
 
   public async refreshDocs() {
-    if (this.fileUploaded || this.fileDeleted) {
+    if (this.fileUploaded || this.fileDeleted || this.fileUpdated) {
       this.fileUploaded = false
       this.fileDeleted = false
+      this.fileUpdated = false
       this.getSupportingDocs(this.docdata)
     }
   }
@@ -353,8 +386,41 @@ export default class ViewPub extends Vue {
   }
 
   public async deleteFile(uri: string, config: any) {
-    let response = await axios.post(uri, null, config)
+    await axios.post(uri, null, config)
     this.fileDeleted = true
+    this.refreshDocs()
+  }
+
+  public async toggleHidden(item: any) {
+    const that = this
+    this.getDigest().then(function() {
+      let url = ''
+      if (item.IsNato === 'Yes') {
+        url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('NATOSupportingDocuments')/items(" + item.Id + ')'
+      } else {
+        url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('SupportingDocuments')/items(" + item.Id + ')'
+      }
+      let headers = {
+        'Content-Type': 'application/json;odata=verbose',
+        Accept: 'application/json;odata=verbose',
+        'X-RequestDigest': that.digest,
+        'X-HTTP-Method': 'MERGE',
+        'If-Match': '*'
+      }
+      let config = {
+        headers: headers
+      }
+      let itemprops = {
+        __metadata: { type: item.type },
+        Hidden: item.Hidden === 'Yes' ? false : true
+      }
+      that.updateFile(url, config, itemprops)
+    })
+  }
+
+  public async updateFile(uri: string, config: any, itemprops: any) {
+    await axios.post(uri, itemprops, config)
+    this.fileUpdated = true
     this.refreshDocs()
   }
 

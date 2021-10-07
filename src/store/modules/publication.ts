@@ -5,7 +5,6 @@ import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 // import { EventBus } from '../../main'
 import axios from 'axios'
-import { MonthWeekdayFn } from 'moment'
 import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
 import Support from './support'
 
@@ -602,6 +601,9 @@ class Publication extends VuexModule {
       url += this.sdUrl
       url += "&$filter=(DocID eq '" + data.DocID + "')"
     }
+    if (data.showhidden === 'No') {
+      url += ' and (Hidden ne 1)'
+    }
     console.log('getSupportingDocs url: ' + url)
     const response = await axios.get(url, {
       headers: {
@@ -616,7 +618,9 @@ class Publication extends VuexModule {
         Title: j[i]['Title'],
         Name: j[i]['File']['Name'],
         RelativeURL: j[i]['File']['ServerRelativeUrl'],
-        IsNato: data.nato
+        IsNato: data.nato,
+        Hidden: j[i]['Hidden'] === true ? 'Yes' : 'No',
+        type: j[i]['__metadata']['type']
       })
     }
     this.context.commit('createSupportingDocs', p)

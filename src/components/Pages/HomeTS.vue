@@ -4,24 +4,24 @@
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid class="contentHeight m-0 p-0">
           <b-row no-gutters>
-            <b-col cols="12" class="m-0 p-0">
-              <b-carousel>
+            <b-col cols="12" class="m-0 p-0 bg-blue-600">
+              <b-carousel fade controls interval="10000">
                 <b-carousel-slide v-for="announcement in announcements" :key="announcement">
                   <template #img>
                     <b-container fluid class="py100">
                       <b-row>
                         <b-col md="4" class="centerFlex py100">
-                          <h5 class="text-black">{{ announcement.Title }}</h5>
-                          <h6 class="text-black">
+                          <h5 class="text-white">{{ announcement.Title }}</h5>
+                          <h6 class="text-white">
                             {{ announcement.Modified }}
                           </h6>
-                          <h6 class="text-black">
+                          <h6 class="text-white">
                             {{ announcement.ModifiedBy.Title }}
                           </h6>
                         </b-col>
                         <b-col md="8" class="centerFlex py100">
-                          <span class="text-black" v-html="limitText(announcement.Info)"></span>
-                          <!-- <h5 class="text-black">
+                          <span class="text-white" v-html="limitText(announcement.Info)"></span>
+                          <!-- <h5 class="text-white">
                             <a :href="announcement.link">{{ announcement.title }}</a>
                           </h5> -->
                         </b-col>
