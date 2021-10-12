@@ -69,6 +69,20 @@ let additionalData: any = {
   Update: ''
 }
 
+let development: any = {
+  Phase: '',
+  ProjectStart: '',
+  ProgramDirective: '',
+  FirstDraft: '',
+  FinalDraft: '',
+  FinalManuscript: '',
+  SignatureDraft: '',
+  PRAApproval: '',
+  NWDCSignature: '',
+  PhaseFinish: '',
+  ProjectFinish: ''
+}
+
 function isJson(item) {
   item = typeof item !== 'string' ? JSON.stringify(item) : item
   try {
@@ -93,6 +107,16 @@ function FormatAD(ad: any, id: any, nato: any): any {
   } else {
     console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
     return JSON.parse(additionalData)
+  }
+}
+
+function FormatDevelopment(dev: any): any {
+  if (isJson(dev)) {
+    dev = JSON.parse(dev)
+    return dev
+  } else {
+    // console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
+    return JSON.parse(development)
   }
 }
 
@@ -397,6 +421,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -462,6 +487,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
           })
         }
@@ -524,6 +550,7 @@ class Publication extends VuexModule {
     p.StatusComments = j[0]['StatusComments']
     p.Replaces = j[0]['Replaces']
     p.Bookshelf = j[0]['Bookshelf']
+    p.Development = j[0]['Development'] === null ? development : FormatDevelopment(j[0]['Development'])
     p.AdditionalData = ad
     p.ActionButtons = []
     p.etag = j[0]['__metadata']['etag']
@@ -578,6 +605,7 @@ class Publication extends VuexModule {
       StatusComments: data.StatusComments,
       Replaces: data.Replaces,
       Bookshelf: data.Bookshelf,
+      Development: JSON.stringify(data.Development),
       AdditionalData: JSON.stringify(data.AdditionalData)
     }
 
@@ -681,6 +709,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -746,6 +775,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
           })
         }
@@ -1100,6 +1130,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -1167,6 +1198,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
+            Development: FormatDevelopment(j[i]['Development']),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }

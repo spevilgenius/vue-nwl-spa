@@ -118,7 +118,66 @@
                                   </b-button>
                                 </template>
                                 <template #cell(Name)="data">
-                                  <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                  <b-container fluid v-if="String(data.item.Name).indexOf('.doc') > 0">
+                                    <b-row no-gutters>
+                                      <b-col cols="1">
+                                        <div style="width: 16px; height: 16px;">
+                                          <img
+                                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHRpdGxlPldvcmRfMTZ4PC90aXRsZT48cGF0aCBkPSJNMTYsNFYxYTEsMSwwLDAsMC0xLTFINEExLDEsMCwwLDAsMywxVjRMOS41LDUuMzc5WiIgZmlsbD0iIzQxYTVlZSIvPjxwb2x5Z29uIHBvaW50cz0iMTUuOTk5IDQgMi45OTkgNCAyLjk5OSA4IDkuNSA5LjE2OCAxNS45OTkgOCAxNS45OTkgNCIgZmlsbD0iIzJiN2NkMyIvPjxwb2x5Z29uIHBvaW50cz0iMTYgOCAzIDggMyAxMiA5LjQ5OSAxMyAxNiAxMiAxNiA4IiBmaWxsPSIjMTg1YWJkIi8+PHBhdGggZD0iTTMsMTJ2M2ExLDEsMCwwLDAsMSwxSDE1YTEsMSwwLDAsMCwxLTFWMTJaIiBmaWxsPSIjMTAzZjkxIi8+PHBhdGggZD0iTTEwLDQsMyw0LDMsMTRIOWEyLDIsMCwwLDAsMi0yVjVBMSwxLDAsMCwwLDEwLDRaIiBvcGFjaXR5PSIwLjUiLz48cmVjdCB5PSIzIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHJ4PSIxIiBmaWxsPSIjMTg1YWJkIi8+PHBhdGggZD0iTTMuMzUyLDkuNTRjLjAxNy4xNDIuMDI5LjI2Ni4wMzQuMzcyaC4wMTljLjAwOC0uMS4wMjMtLjIyMi4wNDYtLjM2NHMuMDQ0LS4yNjIuMDY1LS4zNkw0LjQyOSw1SDUuNjFsLjk0NSw0LjEyNmE2LjI2Nyw2LjI2NywwLDAsMSwuMTE4Ljc3OGguMDE2YTYuMzQ4LDYuMzQ4LDAsMCwxLC4xLS43NTNMNy41NDMsNUg4LjYxOEw3LjMsMTFINi4wMzlsLS45LTMuOTc1Yy0uMDI2LS4xMTQtLjA1Ni0uMjY0LS4wODktLjQ0OHMtLjA1My0uMzE4LS4wNjEtLjRINC45NzJjLS4wMS4xLS4wMy4yNDItLjA2MS40MzVzLS4wNTQuMzM1LS4wNzIuNDI3TDMuOTkyLDExSDIuNzE2TDEuMzgyLDVIMi40NzZMMy4zLDkuMkMzLjMxOCw5LjI4MywzLjMzNSw5LjQsMy4zNTIsOS41NFoiIGZpbGw9IiNmZmYiLz48L3N2Zz4="
+                                            class="ms-Image-image is-loaded ms-Image-image--portrait image-104"
+                                          />
+                                        </div>
+                                      </b-col>
+                                      <b-col cols="11">
+                                        <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                  <b-container fluid v-if="String(data.item.Name).indexOf('.xls') > 0">
+                                    <b-row no-gutters>
+                                      <b-col cols="1">
+                                        <div style="width: 16px; height: 16px;">
+                                          <img
+                                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHRpdGxlPkV4Y2VsXzE2eDwvdGl0bGU+PHBhdGggZD0iTTEwLDBINEExLDEsMCwwLDAsMywxVjRsNyw0LDMsMS45NjhMMTYsOFY0WiIgZmlsbD0iIzIxYTM2NiIvPjxwb2x5Z29uIHBvaW50cz0iMTYgOCAzIDggMyAxMiAxMCAxMy40IDE2IDEyIDE2IDgiIGZpbGw9IiMxMDdjNDEiLz48cGF0aCBkPSJNMywxMnYzYTEsMSwwLDAsMCwxLDFIMTVhMSwxLDAsMCwwLDEtMVYxMloiIGZpbGw9IiMxODVjMzciLz48cGF0aCBkPSJNMTAsNEgzVjE0SDlhMiwyLDAsMCwwLDItMlY1QTEsMSwwLDAsMCwxMCw0WiIgb3BhY2l0eT0iMC41Ii8+PHJlY3QgeT0iMyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiByeD0iMSIgZmlsbD0iIzEwN2M0MSIvPjxwYXRoIGQ9Ik0yLjI5MiwxMSw0LjIzNCw3Ljk5MiwyLjQ1NSw1SDMuODg2bC45NzEsMS45MTJjLjA4OS4xODIuMTUxLjMxNy4xODQuNDA2aC4wMTNxLjEtLjIxNy4yLS40MjNMNi4yOTIsNUg3LjYwNkw1Ljc4Miw3Ljk3NSw3LjY1MiwxMWgtMS40TDUuMTMzLDguOUExLjgwNiwxLjgwNiwwLDAsMSw1LDguNjE5SDQuOTgzYTEuMzQsMS4zNCwwLDAsMS0uMTMuMjcyTDMuNywxMVoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMTYsMVY0SDEwVjBoNUExLDEsMCwwLDEsMTYsMVoiIGZpbGw9IiMzM2M0ODEiLz48L3N2Zz4="
+                                            class="ms-Image-image is-loaded ms-Image-image--portrait image-104"
+                                          />
+                                        </div>
+                                      </b-col>
+                                      <b-col cols="11">
+                                        <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                  <b-container fluid v-if="String(data.item.Name).indexOf('.ppt') > 0">
+                                    <b-row no-gutters>
+                                      <b-col cols="1">
+                                        <div style="width: 16px; height: 16px;">
+                                          <img
+                                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHRpdGxlPlBvd2VyUG9pbnRfMTZ4PC90aXRsZT48cGF0aCBkPSJNOCwwQTguMDI0LDguMDI0LDAsMCwwLDAsOGwxMCwyLjM2M1oiIGZpbGw9IiNlZDZjNDciLz48cGF0aCBkPSJNOCwwVjhsNCwyLjU5TDE2LDhBOC4wMjQsOC4wMjQsMCwwLDAsOCwwWiIgZmlsbD0iI2ZmOGY2YiIvPjxwYXRoIGQ9Ik0xNiw4QTgsOCwwLDAsMSwwLDhaIiBmaWxsPSIjZDM1MjMwIi8+PHBhdGggZD0iTTEwLDRIMS4wODZBNy45Myw3LjkzLDAsMCwwLDIuNzM1LDE0SDlhMiwyLDAsMCwwLDItMlY1QTEsMSwwLDAsMCwxMCw0WiIgb3BhY2l0eT0iMC41Ii8+PHBhdGggZD0iTTEwLDRIMS4wODZBNy45Myw3LjkzLDAsMCwwLDIuNzM1LDE0SDlhMiwyLDAsMCwwLDItMlY1QTEsMSwwLDAsMCwxMCw0WiIgb3BhY2l0eT0iMC4xIi8+PHJlY3QgeT0iMyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiByeD0iMSIgZmlsbD0iI2M0M2UxYyIvPjxwYXRoIGQ9Ik01LjMzNiw1QTIuMjc1LDIuMjc1LDAsMCwxLDYuOSw1LjQ4MWExLjc2NiwxLjc2NiwwLDAsMSwuNTQxLDEuMzkzLDIuMDIzLDIuMDIzLDAsMCwxLS4yNjcsMS4wNDIsMS44MzYsMS44MzYsMCwwLDEtLjc2Mi43MSwyLjQ4NCwyLjQ4NCwwLDAsMS0xLjE0NC4yNTNINC4xODJWMTFIMy4wNzJWNVpNNC4xODIsNy45NjJoLjk1NkExLjIsMS4yLDAsMCwwLDUuOTgzLDcuN2ExLjAxMiwxLjAxMiwwLDAsMCwuMjg1LS43NzdxMC0uOTkxLTEuMDk0LS45OTFINC4xODJaIiBmaWxsPSIjZmZmIi8+PC9zdmc+"
+                                            class="ms-Image-image is-loaded ms-Image-image--portrait image-104"
+                                          />
+                                        </div>
+                                      </b-col>
+                                      <b-col cols="11">
+                                        <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                  <b-container fluid v-if="String(data.item.Name).indexOf('.pdf') > 0">
+                                    <b-row no-gutters>
+                                      <b-col cols="1">
+                                        <div style="width: 16px; height: 16px;">
+                                          <img
+                                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAInSURBVDhPpVM9SytREI2ijdqqlYq2/gDBSqy19Qf4CyzsFMROUBBsLBTRQkSwE0QLazvzZRINSEx8eY/w8r3Z3WSzu+edmU2i4b3uHTjMvXdmzp07OxvCf0IFstksyuWystZswrq/hx2Pw263Ydu20jRN1Go1lEolFAoFZDKZL4F0Oo02gy3LgisHZ2fAyYms+tCNEaFkMqlnKpBKpWAYht7kycHNDXB4KKs+uK6rAvV6XXMEfQJNlu95KgEsLQX2G8Qnl/wlIOX0KugK7O8HlXzD9wr6npBIJPRQe8AgxdUV8P4OnJ8He8IhTbLGiyRHoAJxdlwa02CnW9z7xSKwsQFcXgJ7e8D6OvzlZbQvLtA8Pobx+Ij466ukBgLRaBSVahV1VuAwwGOwx350IY9y6Gvxy1hHR6i8vSH68qI+FQhzU3QcmPx8zvY2bJ5Jue0OW74PmzS4LrNHxUZDcwQq8MT3ZsNh5DgPeQ5Vge8rCtmoEvmbLMRiyDMpx2o/np/xdH39JfAzREP6YgcHYc7Po7KwgMbiIsq0zbk51PmsXgz5S2xXIDcwAI+JztgY3OFhtE5PUXl4gHtwAGd3F9bdHapra/BGRuCMjsJj/CfZE8h3VLv0t7bUOpwFY2cH2NwMfENDvRitWgSkw7crK4hNTiIyNRVwfByR2VlEJiYQJcVGZmYC3/S0xt6urup/E/LZ3R+cgQ/OQJafSinrf7Hjl1jJ8X0ffwD6zWt+lsTfRwAAAABJRU5ErkJggg=="
+                                            class="ms-Image-image is-loaded ms-Image-image--portrait image-104"
+                                          />
+                                        </div>
+                                      </b-col>
+                                      <b-col cols="11">
+                                        <b-link :href="data.item.RelativeURL">{{ data.item.Name }}</b-link>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
                                 </template>
                                 <template #cell(Hidden)="data">
                                   <b-checkbox :checked="data.item.Hidden === 'Yes'"></b-checkbox>
