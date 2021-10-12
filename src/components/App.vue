@@ -8,10 +8,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
-import { NotificationItem } from '../interfaces/NotificationItem'
-import { forEach } from 'lodash'
+/* import { NotificationItem } from '../interfaces/NotificationItem' */
 
-const notify = namespace('notify')
+/*  Do not remove notification code. Leave it hidden.  */
+/* const notify = namespace('notify') */
 const users = namespace('users')
 const publication = namespace('publication')
 
@@ -30,8 +30,8 @@ export default class App extends Vue {
   @publication.State
   public pubsloaded!: boolean
 
-  @notify.Action
-  public add!: (notification: NotificationItem) => void
+  /* @notify.Action
+  public add!: (notification: NotificationItem) => void */
 
   @users.Action
   public getUserId!: () => Promise<UserInt>
@@ -56,11 +56,6 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   public created(): void {
-    /* let oldbanners = document.getElementsByClassName('classificationbanner')
-    while (oldbanners.length > 0) {
-      let b = oldbanners[0] as HTMLElement
-      b.remove()
-    } */
     let loc = String(window.location)
     if (loc.indexOf('WSSWebPartPage') >= 0) {
       this.isVisible = false
@@ -82,20 +77,20 @@ export default class App extends Vue {
                 this.getTodosByUser().then(response => {
                   if (response) {
                     console.log('App loaded.')
-                    this.add({
+                    /* this.add({
                       id: 'WelcomeMSG',
                       type: 'success',
                       title: 'Welcome',
                       message: 'Welcome'
-                    })
+                    }) */
                   } else {
                     console.log('App loaded. No Todos for current user')
-                    this.add({
+                    /* this.add({
                       id: 'WelcomeMSG',
                       type: 'success',
                       title: 'Welcome',
                       message: 'Welcome'
-                    })
+                    }) */
                   }
                 })
               } else {

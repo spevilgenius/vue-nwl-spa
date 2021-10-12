@@ -231,8 +231,9 @@
                   <b-col cols="9"></b-col>
                   <b-col cols="3">
                     <b-button-group>
-                      <b-button size="sm" @click="onCancel">Cancel</b-button>
-                      <b-button size="sm" @click="onSave" variant="success">Save</b-button>
+                      <b-button size="sm" class="ml-1" @click="onCancel">Cancel</b-button>
+                      <b-button size="sm" class="ml-1" @click="onSave" variant="success">Save</b-button>
+                      <b-button size="sm" class="ml-1" @click="onPublish" variant="success">Publish</b-button>
                     </b-button-group>
                   </b-col>
                 </b-row>
@@ -289,6 +290,7 @@ export default class EditPub extends Vue {
   totalcalls = 0
   completedcalls = 0
   formReady = false
+  data: any = {}
 
   bsfields = [
     { key: 'actions', label: 'Select' },
@@ -510,6 +512,8 @@ export default class EditPub extends Vue {
     if (this.completedcalls === this.totalcalls) {
       clearInterval(this.interval)
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+      this.data.id = this.publication.Id
+      this.data.nato = this.publication.IsNato
       this.formReady = true
     } else {
       console.log('WAITING FOR FORM')
@@ -540,11 +544,30 @@ export default class EditPub extends Vue {
       if (this.publication.Id !== undefined) {
         this.updatePublicationById(this.publication).then(function() {
           // wait for update to finish then reload
-          that.$router.push({ name: 'View Publication', params: { Id: that.$router.currentRoute.params.Id, Nato: that.$router.currentRoute.params.Nato } })
+          that.$router.push({ name: 'View Publication', params: { Id: that.data.id, Nato: that.data.nato } })
         })
       }
     } else {
       console.log('Awaiting Digest')
+    }
+  }
+
+  public onPublish() {
+    // need to get the digest first
+    this.getDigest().then(response => {
+      if (response) {
+        this.interval = setInterval(this.publishForm, 500)
+      }
+    })
+  }
+
+  public publishForm() {
+    if (this.currentUser.isActionOfficer === true) {
+      // action officer so set request for approval and assign a task to the librarians.
+      console.log('ACTION OFFICER REQUEST APPROVAL')
+    } else {
+      // librarian so really publish an approved version
+      console.log('LIBRARIAN APPROVE/PUBLISH CHANGES')
     }
   }
 
