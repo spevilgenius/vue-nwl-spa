@@ -107,7 +107,7 @@
             </b-row>
             <b-row no-gutters :style="getStyle('pagingrow', null)">
               <b-col cols="6">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0" first-number last-number></b-pagination>
               </b-col>
               <b-col>
                 <div class="pubcount"># Publications Found: {{ this.totalRows }}</div>
