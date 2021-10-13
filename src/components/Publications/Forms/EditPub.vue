@@ -225,14 +225,40 @@
                     </b-col>
                   </b-row>
                 </b-tab>
+                <b-tab v-if="currentUser.isActionOfficer" class="mtab">
+                  <template slot="title">Development</template>
+                  <b-row>
+                    <b-col cols="12">
+                      <b-form>
+                        <b-form-row>
+                          <b-col cols="4" class="text-left text-dark p-1">
+                            <b-row no-gutters>
+                              <!-- b-row added for spacing -->
+                              <b-form-group label="Phase">
+                                <b-form-select class="form-control" v-model="publication.Development.Phase" size="sm" id="ddPhases" :options="phases" ref="Phase" @change="onPhaseSelected"></b-form-select>
+                              </b-form-group>
+                            </b-row>
+                          </b-col>
+                          <b-col cols="8"></b-col>
+                        </b-form-row>
+                        <b-form-row v-for="phase in phases" :key="phase">
+                          <b-form-group :label="phase.text" label-cols="2" content-cols="3">
+                            <b-form-input type="date" class="form-control" v-model="publication.Development[phase.value]" size="sm"></b-form-input>
+                          </b-form-group>
+                        </b-form-row>
+                      </b-form>
+                    </b-col>
+                  </b-row>
+                </b-tab>
               </b-tabs>
               <template #footer>
                 <b-row no-gutters>
                   <b-col cols="9"></b-col>
                   <b-col cols="3">
                     <b-button-group>
-                      <b-button size="sm" @click="onCancel">Cancel</b-button>
-                      <b-button size="sm" @click="onSave" variant="success">Save</b-button>
+                      <b-button size="sm" class="ml-1" @click="onCancel">Cancel</b-button>
+                      <b-button size="sm" class="ml-1" @click="onSave" variant="success">Save</b-button>
+                      <b-button size="sm" class="ml-1" @click="onPublish" variant="success">Publish</b-button>
                     </b-button-group>
                   </b-col>
                 </b-row>
@@ -289,6 +315,7 @@ export default class EditPub extends Vue {
   totalcalls = 0
   completedcalls = 0
   formReady = false
+  data: any = {}
 
   bsfields = [
     { key: 'actions', label: 'Select' },
@@ -441,9 +468,21 @@ export default class EditPub extends Vue {
   availability = [
     { value: 'N/A', text: 'N/A' },
     { value: 'Posted on SIPRNET only', text: 'Posted on SIPRNET only' },
-    /* { value: 'Posted to URL below', text: 'Posted to URL below' }, */
     { value: 'Contact originator to obtain', text: 'Contact originator to obtain' },
     { value: 'Available in print or CD-ROM only', text: 'Available in print or CD-ROM only' }
+  ]
+
+  phases = [
+    { value: 'ProjectStart', text: 'Project Start', index: 0, description: 'Record planned start date for Project Status = Not Started. Actual start date is usually PD DTG date (but could be date that first draft review commenced). Completion date should match approved publication Date of Issue.' },
+    { value: 'ProgramDirective', text: 'Program Directive', index: 1, description: 'Planned/actual date that program directive issued.' },
+    { value: 'FirstDraft', text: 'First Draft', index: 2, description: 'Planned/actual date that 1st draft review message/announcement issued.' },
+    { value: 'FinalDraft', text: 'Final Draft', index: 3, description: 'Planned/actual date date that final draft review message/announcement issued.' },
+    { value: 'FinalManuscript', text: 'Final Manuscript', index: 4, description: 'Planned/actual date that final manuscript message/announcement issued.' },
+    { value: 'SignatureDraft', text: 'Signature Draft', index: 5, description: 'Planned/actual date that the draft pub is transferred to editors to prepare for PRA approval, i.e. date that final draft review is complete and all issues have been resolved.' },
+    { value: 'PRAApproval', text: 'PRA Approval', index: 6, description: 'Planned/actual date of approval by PRA.' },
+    { value: 'NWDCSignature', text: 'NWDC Signature', index: 7, description: 'Planned/actual date of NWDC signature date. PRA Approval and NWDC Signature dates are the same when NWDC is PRA.' },
+    { value: 'PhaseFinish', text: 'Phase Finish', index: 8, description: 'Planned or actual finish date of Current Phase. (Usually the planned finish date.)' },
+    { value: 'ProjectFinish', text: 'Project Finish', index: 9, description: 'Project finish date. (Actual finish date if the project is complete or cancelled, otherwise, it is the estimated finish date.)' }
   ]
 
   reltos = []
@@ -510,6 +549,8 @@ export default class EditPub extends Vue {
     if (this.completedcalls === this.totalcalls) {
       clearInterval(this.interval)
       console.log('Single Pub Loaded: ' + this.publication.RelativeURL)
+      this.data.id = this.publication.Id
+      this.data.nato = this.publication.IsNato
       this.formReady = true
     } else {
       console.log('WAITING FOR FORM')
@@ -540,11 +581,30 @@ export default class EditPub extends Vue {
       if (this.publication.Id !== undefined) {
         this.updatePublicationById(this.publication).then(function() {
           // wait for update to finish then reload
-          that.$router.push({ name: 'View Publication', params: { Id: that.$router.currentRoute.params.Id, Nato: that.$router.currentRoute.params.Nato } })
+          that.$router.push({ name: 'View Publication', params: { Id: that.data.id, Nato: that.data.nato } })
         })
       }
     } else {
       console.log('Awaiting Digest')
+    }
+  }
+
+  public onPublish() {
+    // need to get the digest first
+    this.getDigest().then(response => {
+      if (response) {
+        this.interval = setInterval(this.publishForm, 500)
+      }
+    })
+  }
+
+  public publishForm() {
+    if (this.currentUser.isActionOfficer === true) {
+      // action officer so set request for approval and assign a task to the librarians.
+      console.log('ACTION OFFICER REQUEST APPROVAL')
+    } else {
+      // librarian so really publish an approved version
+      console.log('LIBRARIAN APPROVE/PUBLISH CHANGES')
     }
   }
 

@@ -5,6 +5,8 @@ interface SupportingDocItem {
   Name?: string
   IsNato?: string
   RelativeURL?: string
+  Hidden?: string
+  type?: string
 }
 
 export { SupportingDocItem }

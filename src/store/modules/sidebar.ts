@@ -185,7 +185,7 @@ class Sidebar extends VuexModule {
       name: 'PleaseReview',
       library: 'fas',
       icon: 'folder-open',
-      path: '/review/home'
+      path: '/pages/pleasereview'
     },
     {
       id: 500,
