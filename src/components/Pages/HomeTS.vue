@@ -32,7 +32,7 @@
               </b-carousel>
             </b-col>
           </b-row>
-          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/headeridealight.PNG)' }">
+          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/headeridealightnew.PNG)' }">
             <b-col cols="12">
               <b-container fluid class="m-0 p-0">
                 <b-row no-gutters class="titleRow">
@@ -52,11 +52,11 @@
           <b-row no-gutters>
             <b-col cols="4" class="m-0 p-1 bg-white">
               <b-card no-body header-tag="header">
-                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0"
-                  ><h4 class="text-white p-0 mb-0">
+                <b-card-header header-bg-variant="blue-800" header-text-variant="white" class="p-0">
+                  <h4 class="text-white p-0 mb-0">
                     Navy Doctrinal Publications
-                  </h4></b-card-header
-                >
+                  </h4>
+                </b-card-header>
                 <b-card-body class="p-1">
                   <b-list-group>
                     <b-link :to="{ name: 'NavyDoctrine' }">
