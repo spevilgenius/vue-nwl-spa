@@ -6,6 +6,7 @@ import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
+import LibrarianAdmin from '@/components/Pages/LibrarianAdmin.vue'
 
 Vue.use(VueRouter)
 
@@ -183,6 +184,11 @@ const routes = [
         path: 'PleaseReview',
         name: 'PleaseReview',
         component: PleaseReview
+      },
+      {
+        path: 'LibrarianAdmin',
+        name: 'LibrarianAdmin',
+        component: LibrarianAdmin
       }
     ]
   }

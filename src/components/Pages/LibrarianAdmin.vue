@@ -15,7 +15,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class PleaseReview extends Vue {
+export default class LibrarianAdmin extends Vue {
   iframeloaded?: boolean = false
 
   mounted() {
