@@ -170,7 +170,7 @@ class Sidebar extends VuexModule {
         {
           id: 302,
           name: 'Manage Terminology',
-          path: '/terminology/home/ManageTerms',
+          path: '/terminology/home/manageterms',
           library: 'fas',
           icon: 'plus',
           permission: 'isTerminologist',

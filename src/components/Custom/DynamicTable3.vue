@@ -8,11 +8,10 @@
               <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
             </b-col>
             <b-col v-if="currentUser.isTerminologist" cols="4">
-              <!-- <input onclick="javascript:ShowPopupDialog('/terminology/Lists/Terminology/NewTerm.aspx');" type="button" value="New Term/Acronym" /> -->
               <b-button v-if="currentUser.isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
-              <b-modal size="xl" id="bv-modal-addTerm" :no-close-on-backdrop="true" hide-footer scrollable title="Add New Term/Acronym!">
-                <b-container size="xl" fluid class="m-0 p-0" :style="getStyle('modalheight', null)">
-                  <b-row no-gutters class="text-center">
+              <b-modal size="xl" id="bv-modal-addTerm" :no-close-on-backdrop="true" hide-footer scrollable title="Add New Term/Acronym">
+                <b-container fluid class="m-0 p-0" :style="getStyle('modalheight', null)">
+                  <b-row no-gutters>
                     <b-col cols="12" class="m-0 p-1">
                       <iframe type="iframe" :style="getStyle('iframeheight', null)" width="100%" src="/terminology/Lists/Terminology/NewTerm.aspx?IsDlg=1"></iframe>
                     </b-col>
@@ -22,7 +21,7 @@
             </b-col>
             <b-col cols="4" class="mt-1 pr-3">
               <b-input-group class="float-right">
-                <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
+                <b-form-input v-model="filter" placeholder="Search Terminology..." type="search"></b-form-input>
                 <b-input-group-append>
                   <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
                 </b-input-group-append>
@@ -293,11 +292,11 @@ export default class DynamicTable extends Vue {
         break
 
       case 'modalheight':
-        style.height = that.contentheight - 200 + 'px'
+        style.height = that.contentheight - 100 + 'px'
         break
 
       case 'iframeheight':
-        style.height = that.contentheight - 200 + 'px'
+        style.height = that.contentheight - 100 + 'px'
         break
     }
     return style
