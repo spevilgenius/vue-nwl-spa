@@ -88,19 +88,24 @@
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                    </b-button>
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Rescind" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="rescindItem(data.item.Id, data.item.IsNato)">
+                      <font-awesome-icon :icon="['fas', 'reply']" class="icon"></font-awesome-icon>
+                    </b-button>
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Cancel" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="cancelItem(data.item.Id, data.item.IsNato)">
+                      <font-awesome-icon :icon="['fas', 'ban']" class="icon"></font-awesome-icon>
+                    </b-button>
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Supercede" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="supercedeItem(data.item.Id, data.item.IsNato)">
+                      <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
                   <template #cell(Title)="data">
-                    <!-- <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div> -->
                     <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
-                    <!-- <div v-if="data.field.key === 'actions'">
-                      <component v-for="comp in data.item.ActionButtons" :key="comp.id" :is="comp.component" v-bind="comp.props"></component>
-                    </div> -->
                   </template>
                 </b-table>
               </b-col>
@@ -517,6 +522,28 @@ export default class DynamicTable extends Vue {
     args.id = id
     args.nato = nato
     EventBus.$emit('editItem', args)
+  }
+
+  public rescindItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('rescindItem', args)
+  }
+
+  public cancelItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('cancelItem', args)
+  }
+
+  public supercedeItem(id: string, nato: string) {
+    // Need to get the user input on the publication title that is superceding this item. Need to check if the superceded(Replaces) box is filled out.
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('supercedeItem', args)
   }
 }
 </script>

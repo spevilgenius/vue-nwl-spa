@@ -101,11 +101,10 @@ function FormatAD(ad: any, id: any, nato: any): any {
     ad = JSON.parse(ad)
     // fixup some elements that are stored as strings
     if (ad.RELTO && ad.RELTO.length > 0) {
-      // console.log(id + ' has RELTO: ' + ad.RELTO)
+      // do something?
     }
     return ad
   } else {
-    console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
     return JSON.parse(additionalData)
   }
 }
@@ -115,13 +114,11 @@ function FormatDevelopment(dev: any): any {
     dev = JSON.parse(dev)
     return dev
   } else {
-    // console.log('Error parsing JSON for item ID: ' + id + ', isNato: ' + nato)
     return JSON.parse(development)
   }
 }
 
 function formatMedia(media: any) {
-  console.log('MEDIA: ' + media + ', TYPE: ' + typeof media)
   if (media !== null && media !== '') {
     let ops = String(media)
     let lion = ops.split(',')
@@ -141,26 +138,6 @@ function formatMedia(media: any) {
   }
 }
 
-function makeArray(data: string, delimiter: string) {
-  if (data !== null && data.length > 1) {
-    let zebra: any = []
-    // there may only be one so test that
-    if (data.indexOf(delimiter) > 0) {
-      // there are more than one
-      console.log('MAKING ARRAY: ' + delimiter)
-      let snake = data.split(delimiter)
-      for (let v = 0; v < snake.length; v++) {
-        zebra.push(snake[v])
-      }
-    } else {
-      zebra.push(data)
-    }
-    // console.log('ARRAY CREATED: ' + snake.length)
-    return zebra
-  } else {
-    return []
-  }
-}
 @Module({ namespaced: true })
 class Publication extends VuexModule {
   public digest?: string = ''
@@ -221,7 +198,6 @@ class Publication extends VuexModule {
   @Mutation updateDigest(digest: string): void {
     this.digest = digest
     this.digestloaded = true
-    console.log('DIGEST: ' + digest)
   }
 
   @Mutation updateDigestLoaded(loaded: boolean): void {
@@ -232,21 +208,18 @@ class Publication extends VuexModule {
   public createPublications(items: Array<PublicationItem>): void {
     this.publications = items
     this.pubsloaded = true
-    console.log('publications length: ' + items.length)
   }
 
   @Mutation
   public createNatoPublications(items: Array<PublicationItem>): void {
     this.natopublications = items
     this.natopubsloaded = true
-    console.log('Nato publications length: ' + items.length)
   }
 
   @Mutation
   public createSupportingDocs(items: Array<SupportingDocItem>): void {
     this.supportingdocs = items
     this.supportingdocsloaded = true
-    console.log('supporticdocs length: ' + items.length)
   }
 
   @Mutation
@@ -260,16 +233,13 @@ class Publication extends VuexModule {
   @Mutation
   public createDevPublications(items: Array<PublicationItem>): void {
     this.devpublications = items
-    console.log('MUTATION CREATEDEVPUBLICATION ITEMS = ' + items)
     this.devpubsloaded = true
-    console.log('DEV publications length: ' + items.length)
   }
 
   @Mutation
   public createNatoDevPublications(items: Array<PublicationItem>): void {
     this.natodevpublications = items
     this.natodevpubsloaded = true
-    console.log('Nato DEVELOPMENT publications length: ' + items.length)
   }
 
   @Mutation
@@ -344,14 +314,12 @@ class Publication extends VuexModule {
   public createArchivePublications(items: Array<PublicationItem>): void {
     this.archivepublications = items
     this.archivepubsloaded = true
-    console.log('publications length: ' + items.length)
   }
 
   @Mutation
   public createNatoArchivePublications(items: Array<PublicationItem>): void {
     this.natoarchivepublications = items
     this.natoarchivepubsloaded = true
-    console.log('Nato publications length: ' + items.length)
   }
   //#endregion
 
@@ -362,7 +330,6 @@ class Publication extends VuexModule {
       method: 'POST',
       headers: { Accept: 'application/json; odata=verbose' }
     })
-    console.log('FormDigestValue = ' + response.data.d.GetContextWebInformation.FormDigestValue)
     this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
     return true
   }
@@ -384,7 +351,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllPubs(url)
       } else {
-        //console.log('getAllPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
@@ -429,7 +395,6 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.pubsUrl
-    // console.log('getAllPublications URL: ' + turl)
     getAllPubs(turl)
     return true
   }
@@ -451,7 +416,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllNatoPubs(url)
       } else {
-        //console.log('getAllNatoPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             Id: j[i]['Id'],
@@ -501,14 +465,12 @@ class Publication extends VuexModule {
 
   @Action
   public async getPublicationById(data: any): Promise<boolean> {
-    console.log('getPublicationById: ' + data.nato)
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
     if (data.nato === 'Yes') {
       url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
     } else {
       url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
     }
-    console.log('getPublicationById url: ' + url)
     const response = await axios.get(url, {
       headers: {
         accept: 'application/json;odata=verbose'
@@ -517,7 +479,6 @@ class Publication extends VuexModule {
     let j = response.data.d.results
     let p = {} as PublicationItem
     let ad = JSON.parse(j[0]['AdditionalData'])
-    console.log('GETPUBBYID RESPONSE: ' + response)
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
@@ -563,7 +524,6 @@ class Publication extends VuexModule {
   @Action
   public async updatePublicationById(data: any): Promise<boolean> {
     // update the publication data
-    console.log('ID: ' + data.Id)
     const url = this.updatePubUrl + data.Id + ')'
     const headers = {
       'Content-Type': 'application/json;odata=verbose',
@@ -632,7 +592,6 @@ class Publication extends VuexModule {
     if (data.showhidden === 'No') {
       url += ' and (Hidden ne 1)'
     }
-    console.log('getSupportingDocs url: ' + url)
     const response = await axios.get(url, {
       headers: {
         accept: 'application/json;odata=verbose'
@@ -672,7 +631,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getArchivePubs(url)
       } else {
-        //console.log('getArchivePublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
@@ -717,7 +675,6 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.pubsUrl
-    // console.log('getAllPublications URL: ' + turl)
     getArchivePubs(turl)
     return true
   }
@@ -739,7 +696,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllNatoArchivePubs(url)
       } else {
-        //console.log('getAllNatoArchivePublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             Id: j[i]['Id'],
@@ -804,7 +760,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllPrefixes(url)
       } else {
-        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
@@ -817,7 +772,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.prefixUrl
     turl += branch
     turl += "')"
-    console.log('getPrefixesByBranch URL: ' + turl)
     getAllPrefixes(turl)
     return true
   }
@@ -839,7 +793,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllStatuses(url)
       } else {
-        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
@@ -852,7 +805,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.statusUrl
     turl += branch
     turl += "')"
-    console.log('getStatusesByBranch URL: ' + turl)
     getAllStatuses(turl)
     return true
   }
@@ -874,7 +826,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllStatuses(url)
       } else {
-        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
@@ -887,7 +838,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.functionalseriesUrl
     turl += branch
     turl += "')"
-    console.log('getFunctionalSeriesByBranch URL: ' + turl)
     getAllStatuses(turl)
     return true
   }
@@ -909,7 +859,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllStatuses(url)
       } else {
-        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['funcField'],
@@ -922,7 +871,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.functionalfieldsUrl
     turl += series
     turl += "')"
-    console.log('getFunctionalFieldByFunctionalSeries URL: ' + turl)
     getAllStatuses(turl)
     return true
   }
@@ -938,14 +886,12 @@ class Publication extends VuexModule {
           accept: 'application/json;odata=verbose'
         }
       })
-      // console.log('getAllRelto Initial Response: ' + response)
       j = j.concat(response.data.d.results)
       // recursively load items if there is a next result
       if (response.data.d.__next) {
         url = response.data.d.__next
         return getAllRelto(url)
       } else {
-        // console.log('getAllRelto Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
@@ -970,7 +916,6 @@ class Publication extends VuexModule {
       }
     })
     let j = response.data.d.results
-    // if (console) console.log('GET AO RESPONSE: ' + JSON.stringify(j))
     let p: Array<ObjectItem> = []
     for (let i = 0; i < j.length; i++) {
       p.push({
@@ -1003,7 +948,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllRA(url)
       } else {
-        // console.log('getAllRA Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
@@ -1040,7 +984,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllRAPoc(url)
       } else {
-        // console.log('getPrefixesByBranch results: ' + JSON.stringify(j))
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['FullName'],
@@ -1053,7 +996,6 @@ class Publication extends VuexModule {
     let turl = tp1 + slash + slash + tp2 + this.rapocUrl
     turl += ra
     turl += "')"
-    console.log('getRAPocByRA URL: ' + turl)
     getAllRAPoc(turl)
     return true
   }
@@ -1093,7 +1035,6 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllDevPubs(url)
       } else {
-        console.log('getAllDevPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
           // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
@@ -1134,12 +1075,10 @@ class Publication extends VuexModule {
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
-        console.log('P IN ACTION = ' + p)
         that.context.commit('createDevPublications', p)
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.devpubsUrl
-    // console.log('getAllPublications URL: ' + turl)
     getAllDevPubs(turl)
     return true
   }
@@ -1161,9 +1100,7 @@ class Publication extends VuexModule {
         url = response.data.d.__next
         return getAllDevPubs(url)
       } else {
-        //console.log('getAllPublications Response: ' + j)
         for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
@@ -1206,8 +1143,49 @@ class Publication extends VuexModule {
       }
     }
     let turl = tp1 + slash + slash + tp2 + this.natodevpubsUrl
-    // console.log('getAllPublications URL: ' + turl)
     getAllDevPubs(turl)
+    return true
+  }
+
+  @Action
+  public async requestApproval(data: any): Promise<boolean> {
+    // build url to post and update. return true to resolve the promise
+    const url = tp1 + slash + slash + tp2 + "/_api/web/getfilebyserverrelativeurl('" + data.RelativeURL + "')/publish(comment='')"
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'POST'
+    }
+    const config = {
+      headers: headers
+    }
+    try {
+      await axios.post(url, null, config)
+    } catch (e) {
+      // don't care yet
+    }
+    return true
+  }
+
+  @Action
+  public async approvePublication(data: any): Promise<boolean> {
+    // build url to post and update. return true to resolve the promise
+    const url = tp1 + slash + slash + tp2 + "/_api/web/getfilebyserverrelativeurl('" + data.RelativeURL + "')/approve(comment='')"
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'POST'
+    }
+    const config = {
+      headers: headers
+    }
+    try {
+      await axios.post(url, null, config)
+    } catch (e) {
+      // don't care yet
+    }
     return true
   }
 }
