@@ -796,7 +796,10 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
-            text: j[i]['Title']
+            text: j[i]['Title'],
+            props: {
+              generalstatus: j[i]['GeneralStatus']
+            }
           })
         }
         that.context.commit('createStatuses', p)

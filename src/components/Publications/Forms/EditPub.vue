@@ -52,9 +52,6 @@
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
                             <dynamic-modal-select v-if="formReady" id="dmsBookshelf" v-model="publication.Bookshelf" :items="bookshelves" :fields="bsfields" :filter="bsfilter" title="Select Bookshelf" label="Bookshelf"></dynamic-modal-select>
-                            <!-- <b-form-group label="Bookshelf" label-for="ddBookshelf">
-                              <b-form-select multiple class="form-control" size="sm" id="ddBookshelf" v-model="publication.Bookshelf" :options="bookshelves"></b-form-select>
-                            </b-form-group> -->
                           </b-col>
                         </b-form-row>
                         <b-form-row>
@@ -91,12 +88,12 @@
                     <b-col cols="12">
                       <b-form class="mt-0">
                         <b-form-row>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Edition" label-for="txtEdition">
                               <b-form-input class="form-control" size="sm" id="txtEdition" v-model="publication.AdditionalData.Edition" placeholder="Enter Edition" ref="Edition"></b-form-input>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="Change" label-for="txtChange">
                               <b-form-input class="form-control" size="sm" id="txtChange" v-model="publication.AdditionalData.Change" placeholder="Enter Change" ref="Change"></b-form-input>
                             </b-form-group>
@@ -116,16 +113,16 @@
                               <b-form-checkbox class="form-control" size="sm" id="cbResourced" v-model="publication.Resourced" ref="Resourced" v-b-tooltip title="When checked(Yes), indicates that the PRA has resources needed to update the publication."></b-form-checkbox>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="2" class="text-center text-dark p-1">
-                            <b-form-group label="Status" label-for="ddStatus">
-                              <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.Status" :options="statuses" ref="Status" v-b-tooltip title="Status of publication. Choices depend on the Branch."></b-form-select>
-                            </b-form-group>
-                          </b-col>
                         </b-form-row>
                         <b-form-row>
-                          <b-col cols="6" class="text-center text-dark p-1">
-                            <b-form-group label="Status Comments" label-for="txtStatusComments">
-                              <vue-editor id="txtStatusComments" v-model="publication.StatusComments"></vue-editor>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="General Status" label-for="ddGeneralStatus">
+                              <b-form-select class="form-control" size="sm" id="ddGeneralStatus" v-model="publication.AdditionalData.GeneralStatus" :options="generalstatuses" ref="GeneralStatus" @change="onGeneralStatusSelected" v-b-tooltip title="General Status of publication."></b-form-select>
+                            </b-form-group>
+                          </b-col>
+                          <b-col cols="3" class="text-center text-dark p-1">
+                            <b-form-group label="Status" label-for="ddStatus">
+                              <b-form-select class="form-control" size="sm" id="ddStatus" v-model="publication.AdditionalData.Status" :options="filteredstatuses" ref="Status" v-b-tooltip title="Status of publication. Choices depend on the Branch and General Status."></b-form-select>
                             </b-form-group>
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
@@ -190,7 +187,6 @@
                         <b-form-row>
                           <b-col cols="3" class="text-center text-dark p-1">
                             <b-row no-gutters>
-                              <!-- b-row added for spacing -->
                               <b-form-group label="Primary Review Authority" label-for="ddPRA">
                                 <b-form-select class="form-control" v-model="publication.PRA" size="sm" id="ddPRA" :options="reviewauthority" ref="PRA" @change="onPRASelected"></b-form-select>
                               </b-form-group>
@@ -206,7 +202,7 @@
                           </b-col>
                         </b-form-row>
                         <b-form-row>
-                          <b-col cols="2" class="text-center text-dark p-1">
+                          <b-col cols="3" class="text-center text-dark p-1">
                             <b-form-group label="NWDC AO" label-for="ddNWDCAO">
                               <b-form-select class="form-control" v-model="publication.NWDCAO.Title" size="sm" id="ddNWDCAO" :options="actionofficers" ref="NWDCAO" @change="onAOSelected"></b-form-select>
                             </b-form-group>
@@ -216,10 +212,9 @@
                               <b-form-input class="form-control" size="sm" id="txtReviewDate" v-model="publication.ReviewDate" ref="ReviewDate" type="date"></b-form-input>
                             </b-form-group>
                           </b-col>
-                          <b-col cols="8" class="text-center text-dark p-1">
-                            <b-form-group label="AO Remarks" label-for="txtRemarks">
-                              <!-- <vue-editor id="txtRemarks" v-model="publication.AdditionalData.Remarks"></vue-editor> -->
-                              <b-form-input class="form-control" size="sm" id="txtRemarks" v-model="publication.AdditionalData.Remarks" ref="Remarks"></b-form-input>
+                          <b-col cols="7" class="text-center text-dark p-1">
+                            <b-form-group label="Status Comments" label-for="txtStatusComments">
+                              <vue-editor id="txtStatusComments" v-model="publication.StatusComments"></vue-editor>
                             </b-form-group>
                           </b-col>
                         </b-form-row>
@@ -252,11 +247,6 @@
                                 <b-form-input type="date" class="form-control" v-model="publication.Development[phase.value]" size="sm" v-b-tooltip.hover.v-dark :title="phase.description"></b-form-input>
                               </b-col>
                             </b-form-row>
-                            <!-- <b-form-row>
-                              <b-col cols="12" class="text-left">
-                                <span class="text-dark">{{ phase.description }}</span>
-                              </b-col>
-                            </b-form-row> -->
                           </b-col>
                         </b-form-row>
                       </b-form>
@@ -333,6 +323,7 @@ export default class EditPub extends Vue {
   saveReady = false
   canPublish = false
   formfields = ['branch', 'prfx', 'pubid', 'ltitle']
+  filteredstatuses: Array<ObjectItem> = []
 
   bsfields = [
     { key: 'actions', label: 'Select' },
@@ -509,6 +500,13 @@ export default class EditPub extends Vue {
     { value: 'ProjectFinish', text: 'Project Finish', index: 9, description: 'Project finish date. (Actual finish date if the project is complete or cancelled, otherwise, it is the estimated finish date.)' }
   ]
 
+  generalstatuses = [
+    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'Approved', text: 'Approved' },
+    { value: 'Draft', text: 'Draft' },
+    { value: 'Obsolete', text: 'Obsolete' }
+  ]
+
   reltos = []
 
   // #endregion
@@ -578,6 +576,7 @@ export default class EditPub extends Vue {
       if (this.currentUser.isActionOfficer || this.currentUser.isLibrarian || this.currentUser.isNATOLibrarian) {
         this.canPublish = true
       }
+      this.filteredstatuses = this.statuses
     } else {
       console.log('WAITING FOR FORM')
     }
@@ -803,6 +802,21 @@ export default class EditPub extends Vue {
     let ra = this.publication.PRA
     if (ra !== undefined) {
       this.getRAPocByRA(ra)
+    }
+  }
+
+  public onGeneralStatusSelected() {
+    // set the NWDCAO values based on the selected user title
+    let p: Array<ObjectItem> = []
+    for (let i = 0; i < this.statuses.length; i++) {
+      let gs: any = this.publication.AdditionalData.GeneralStatus
+      let props: any = this.statuses[i].props
+      console.log('testing statuses gs: ' + gs + ', prop: ' + props.generalstatus)
+      if (props.generalstatus === gs) {
+        // keep this selection
+        p.push(this.statuses[i])
+      }
+      this.filteredstatuses = p
     }
   }
   // #endregion
