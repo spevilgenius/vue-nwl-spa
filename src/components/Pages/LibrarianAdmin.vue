@@ -26,5 +26,3 @@ export default class LibrarianAdmin extends Vue {
   }
 }
 </script>
-
-<style scoped></style>
