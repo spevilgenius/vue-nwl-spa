@@ -97,7 +97,7 @@ export default class All extends Vue {
   public createAllDevPubs!: () => Promise<boolean>
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', id: 0 },
+    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 0 },
     { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
     { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
     { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 2 },
@@ -143,11 +143,7 @@ export default class All extends Vue {
         this.filterField = this.$route.query.Field
         this.filterValue = this.$route.query.Value
         this.filterType = this.$route.query.Type
-        console.log('filterField=' + this.filterField)
-        console.log('filterValue=' + this.filterValue)
-        console.log('filterType=' + this.filterType)
         this.filteredpubs = this.allpublications
-        console.log('FILTEREDPUBS = ' + this.filteredpubs)
         if (this.filterType === 'complex') {
           // filter pubs and send these pubs instead
           let fields: any = String(this.filterField)
@@ -412,10 +408,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'Development') {
           let a = this.alldevpublications
-          console.log('DEV TYPE WORKING AND ALLDEVPUBLICATIONS = ' + this.alldevpublications)
-          console.log('DEV TYPE WORKING AND ALLPUBLICATIONS = ' + this.allpublications)
           this.filteredpubs = a
-          console.log('DEV TYPE WORKING AND FILTERED PUBS = ' + a)
         }
         this.viewReady = true
       }

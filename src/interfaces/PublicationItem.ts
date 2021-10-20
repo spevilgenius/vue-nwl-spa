@@ -29,6 +29,19 @@ interface PublicationItem {
   StatusComments?: string
   Replaces: string
   Bookshelf?: string
+  Development: {
+    Phase: string
+    ProjectStart: string
+    ProgramDirective: string
+    FirstDraft: string
+    FinalDraft: string
+    FinalManuscript: string
+    SignatureDraft: string
+    PRAApproval: string
+    NWDCSignature: string
+    PhaseFinish: string
+    ProjectFinish: string
+  }
   AdditionalData: {
     AdminComments: string
     Archived: string
