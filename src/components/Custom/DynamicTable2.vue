@@ -61,46 +61,27 @@
                   thead-class="tbl-dynamic-header"
                   @filtered="onFiltered"
                 >
-                  <!-- <template #thead-top="">
-                    <b-tr>
-                      <b-th>Filters</b-th>
-                      <b-th><b-form-select class="form-control px100" size="sm" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch" v-b-tooltip.hover.v-dark title="Indicates the branch of the library to which the publication belongs. Supports filtering of publications."></b-form-select></b-th>
-                      <b-th
-                        ><b-form-select class="form-control px100 ml-1" size="sm" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix"
-                          ><template #first>
-                            <b-form-select-option value="">Select Branch</b-form-select-option>
-                          </template></b-form-select
-                        ></b-th
-                      >
-                      <b-th><b-form-input class="form-control" size="sm" v-model="PubID" @input="onPubIDSelected"></b-form-input></b-th>
-                      <b-th><b-form-input class="form-control" size="sm" v-model="Title" @input="onTitleSelected"></b-form-input></b-th>
-                      <b-th><b-form-select class="form-control-bookshelf" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select></b-th>
-                      <b-th></b-th>
-                      <b-th><b-form-input class="form-control p-r-20" size="sm" v-model="PRAAbbrev" @input="onPRAAbbrevSelected"></b-form-input></b-th>
-                      <b-th></b-th>
-                    </b-tr>
-                  </template> -->
                   <template #cell(actions)="data">
-                    <b-button variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                    <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                    </b-button>
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
+                      <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
                   <template #cell(Title)="data">
-                    <!-- <div class="pubtitle" :title="data.item.Title" v-b-tooltip.hover.v-dark>{{ data.item.Title }}</div> -->
-                    <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link>
+                    <!-- <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link> -->
+                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Title }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
-                    <!-- <div v-if="data.field.key === 'actions'">
-                      <component v-for="comp in data.item.ActionButtons" :key="comp.id" :is="comp.component" v-bind="comp.props"></component>
-                    </div> -->
                   </template>
                 </b-table>
               </b-col>
@@ -518,6 +499,34 @@ export default class DynamicTable extends Vue {
     args.nato = nato
     EventBus.$emit('editItem', args)
   }
+
+  public archiveItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('archiveItem', args)
+  }
+
+  /* public rescindItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('rescindItem', args)
+  }
+
+  public cancelItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('cancelItem', args)
+  }
+
+  public supercedeItem(id: string, nato: string) {
+    let args: any = {}
+    args.id = id
+    args.nato = nato
+    EventBus.$emit('supercedeItem', args)
+  } */
 }
 </script>
 

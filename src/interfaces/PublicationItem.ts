@@ -83,7 +83,6 @@ interface PublicationItem {
     ProjectStatus: string
     PubCategory: string
     RELTO: string
-    Remarks: string
     Reviewed: string
     SignatureDraft: string
     Status: string

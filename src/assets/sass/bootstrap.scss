@@ -77,6 +77,14 @@ $modal-sm:                          300px !default;
   height: 130px;
 }
 
+.carousel-control-next {
+  right: -100px;
+}
+
+.carousel-control-prev {
+  left: -100px;
+}
+
 .tbl-dynamic-header {
   background-color: $blue-500 !important;
 }
