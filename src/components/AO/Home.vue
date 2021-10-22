@@ -13,8 +13,8 @@ export default class AO extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
-    if (this.mode == 'refreshnew') {
-      this.$router.push({ name: 'Whats New' })
+    if (this.mode == 'aoadministration') {
+      this.$router.push({ name: 'AO Administration' })
     }
     if (this.mode == 'refreshnavy') {
       this.$router.push({ name: 'All Publications', query: { Field: 'Branch', Value: 'Navy' } })

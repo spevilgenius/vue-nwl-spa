@@ -342,7 +342,7 @@ class Sidebar extends VuexModule {
         {
           id: 901,
           name: 'AO Administration',
-          path: '/ao/home/admin',
+          path: '/ao/home/aoadministration',
           library: 'fas',
           icon: 'tools'
         },

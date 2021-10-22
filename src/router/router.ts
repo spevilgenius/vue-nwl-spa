@@ -7,6 +7,7 @@ import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
+import AoAdministration from '@/components/AO/AOAdministration.vue'
 
 Vue.use(VueRouter)
 
@@ -94,7 +95,13 @@ const aoMenu = {
     {
       path: 'home/:mode',
       name: 'AO Actions',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
+      component: () => import(/* webpackChunkName: "publications" */ '../components/AO/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/aoadministration',
+      name: 'AO Administration',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/AO/AOAdministration.vue'),
       props: true
     },
     {
@@ -152,6 +159,7 @@ const routes = [
   pubsMenu,
   pubsDevMenu,
   termsMenu,
+  aoMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,
