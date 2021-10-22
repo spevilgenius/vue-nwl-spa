@@ -396,6 +396,9 @@ export default class EditPub extends Vue {
   public getPublicationById!: (data: any) => Promise<boolean>
 
   @publication.Action
+  public setPubLoaded!: (loaded: boolean) => void
+
+  @publication.Action
   public getPrefixesByBranch!: (branch: string) => Promise<boolean>
 
   @publication.Action
@@ -514,20 +517,15 @@ export default class EditPub extends Vue {
   // #region METHODS
 
   mounted() {
-    if (this.$route) {
-      let id = this.$route.params.Id
-      let nato = this.$route.params.Nato
-      if (id !== null) {
-        let data: any = {}
-        data.id = id
-        data.nato = nato
-        this.getPublicationById(data).then(response => {
-          if (response) {
-            this.interval = setInterval(this.loadData, 500)
-          }
-        })
-      }
-    }
+    this.setPubLoaded(false)
+    const that = this
+    this.$nextTick(function() {
+      that.getPublicationById(this.$route.query).then(response => {
+        if (response) {
+          that.interval = setInterval(that.loadData, 1500)
+        }
+      })
+    })
   }
 
   public loadData() {
@@ -618,7 +616,7 @@ export default class EditPub extends Vue {
       if (this.publication.Id !== undefined) {
         this.updatePublicationById(this.publication).then(function() {
           // wait for update to finish then reload
-          that.$router.push({ name: 'View Publication', params: { Id: that.data.id, Nato: that.data.nato } })
+          that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
         })
       }
     } else {
@@ -657,7 +655,7 @@ export default class EditPub extends Vue {
             // user wants to publish
             that.requestApproval(that.publication).then(function() {
               // route the user back to the view form
-              that.$router.push({ name: 'View Publication', params: { Id: that.data.id, Nato: that.data.nato } })
+              that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
             })
           }
         })
@@ -685,7 +683,7 @@ export default class EditPub extends Vue {
             // user wants to publish
             that.approvePublication(that.publication).then(function() {
               // route the user back to the view form
-              that.$router.push({ name: 'View Publication', params: { Id: that.data.id, Nato: that.data.nato } })
+              that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
             })
           }
         })

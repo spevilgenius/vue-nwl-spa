@@ -60,7 +60,6 @@ let additionalData: any = {
   ProjectStatus: '',
   PubCategory: '',
   RELTO: '',
-  Remarks: '',
   Reviewed: '',
   SignatureDraft: '',
   Status: '',
@@ -105,6 +104,7 @@ function FormatAD(ad: any, id: any, nato: any): any {
     }
     return ad
   } else {
+    console.log('Error Parsing JSON: ID: ' + id + ', nato: ' + nato)
     return JSON.parse(additionalData)
   }
 }
@@ -150,7 +150,6 @@ class Publication extends VuexModule {
   public natodevpublications: Array<PublicationItem> = []
   public natoarchivepublications: Array<PublicationItem> = []
   public archivepublications: Array<PublicationItem> = []
-  public publication?: PublicationItem
   public pubsloaded?: boolean = false
   public devpublication?: PublicationItem
   public devpubsloaded?: boolean = false
@@ -160,6 +159,7 @@ class Publication extends VuexModule {
   public natoarchivepubsloaded?: boolean = false
   public allpubsloaded?: boolean = false
   public alldevpubsloaded?: boolean = false
+  public publication?: any //PublicationItem
   public publoaded?: boolean = false // single publication
   public prefixes: Array<ObjectItem> = []
   public statuses: Array<ObjectItem> = []
@@ -223,6 +223,12 @@ class Publication extends VuexModule {
   }
 
   @Mutation
+  public updateSupportingDocsLoaded(loaded: boolean): void {
+    this.supportingdocs = []
+    this.supportingdocsloaded = loaded
+  }
+
+  @Mutation
   public createAllPublications(): void {
     let p: Array<PublicationItem>
     p = this.publications.concat(this.natopublications)
@@ -262,6 +268,14 @@ class Publication extends VuexModule {
   public updatePublication(item: PublicationItem): void {
     this.publication = item
     this.publoaded = true
+    console.log('MUTATION updatePublication: true')
+  }
+
+  @Mutation
+  public updatePubLoaded(loaded: boolean): void {
+    this.publication = null
+    this.publoaded = loaded
+    console.log('MUTATION updatePubLoaded: ' + loaded)
   }
 
   @Mutation
@@ -332,6 +346,12 @@ class Publication extends VuexModule {
     })
     this.context.commit('updateDigest', response.data.d.GetContextWebInformation.FormDigestValue)
     return true
+  }
+
+  @Action
+  public setPubLoaded(loaded: boolean): void {
+    console.log('ACTION: setPubLoaded: ' + loaded)
+    this.context.commit('updatePubLoaded', loaded)
   }
 
   @Action
@@ -465,12 +485,15 @@ class Publication extends VuexModule {
 
   @Action
   public async getPublicationById(data: any): Promise<boolean> {
+    this.context.commit('updatePubLoaded', false)
+    this.context.commit('updateSupportingDocsLoaded', false)
     let url = tp1 + slash + slash + tp2 // + this.pubsUrl + '&$filter=(Id eq ' + id + ')'
-    if (data.nato === 'Yes') {
-      url += this.natoUrl + '&$filter=(Id eq ' + data.id + ')'
+    if (data.Nato === 'Yes') {
+      url += this.natoUrl + '&$filter=(Id eq ' + data.Id + ')'
     } else {
-      url += this.pubsUrl + '&$filter=(Id eq ' + data.id + ')'
+      url += this.pubsUrl + '&$filter=(Id eq ' + data.Id + ')'
     }
+    console.log('getPublicationById: ' + data.Id + ', ' + data.Nato + ', ' + url)
     const response = await axios.get(url, {
       headers: {
         accept: 'application/json;odata=verbose'
@@ -491,7 +514,7 @@ class Publication extends VuexModule {
     p.ClassAbv = j[0]['ClassAbv']
     p.CoordinatingRA = j[0]['CoordinatingRA']
     p.CoordinatingRAAbv = j[0]['CoordinatingRAAbv']
-    p.DTIC = j[0]['DTIC']
+    p.DTIC = j[0]['Distribution']
     p.LibrarianRemarks = j[0]['LibrarianRemarks']
     p.LongTitle = j[0]['LongTitle']
     p.Media = j[0]['Media'] !== null ? formatMedia(j[0]['Media']['results']) : ''

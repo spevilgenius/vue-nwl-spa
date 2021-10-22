@@ -62,31 +62,23 @@
                   @filtered="onFiltered"
                 >
                   <template #cell(actions)="data">
-                    <b-button title="View" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                    <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                       <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <!-- <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Rescind" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="rescindItem(data.item.Id, data.item.IsNato)">
-                      <font-awesome-icon :icon="['fas', 'reply']" class="icon"></font-awesome-icon>
-                    </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Cancel" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="cancelItem(data.item.Id, data.item.IsNato)">
-                      <font-awesome-icon :icon="['fas', 'ban']" class="icon"></font-awesome-icon>
-                    </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Supercede" v-b-tooltip.hover.v-dark variant="white" size="lg" class="actionbutton text-dark" @click="supercedeItem(data.item.Id, data.item.IsNato)">
-                      <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
-                    </b-button> -->
                   </template>
                   <template #cell(Title)="data">
-                    <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link>
+                    <!-- <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link> -->
+                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Title }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>

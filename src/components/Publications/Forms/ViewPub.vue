@@ -4,8 +4,15 @@
       <b-col cols="12" class="m-0 p-0">
         <b-container fluid v-if="publoaded" class="contentHeight m-0 p-0">
           <b-row no-gutters>
-            <b-col id="FrameColumn" cols="8" class="m-0 p-0">
-              <iframe id="pubFrame" height="100%" width="100%"></iframe>
+            <b-col id="FrameColumn" cols="8" class="contentHeight m-0 p-0">
+              <b-overlay :show="!publoaded" variant="success" class="contentHeight">
+                <iframe id="pubFrame" height="100%" width="100%"></iframe>
+                <template #overlay>
+                  <div class="text-center">
+                    <p id="busy-label">Loading Publication</p>
+                  </div>
+                </template>
+              </b-overlay>
             </b-col>
             <b-col cols="4" class="m-0 p-0">
               <b-card no-body>
@@ -89,9 +96,9 @@
                             <b-col cols="7" class="text-left">{{ publication.DTIC }}</b-col>
                           </b-row>
                           <b-row class="py20"></b-row>
-                          <b-row id="DTIC">
+                          <b-row>
                             <b-col cols="4" class="text-left">
-                              <b-button v-if="currentUser.isLibrarian || currentUser.isActionOfficer" variant="success" size="sm" @click="editItem(publication.Id, publication.IsNato)">
+                              <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" variant="success" size="sm" @click="editItem(publication.Id, publication.IsNato)">
                                 Edit Properties
                               </b-button>
                             </b-col>
@@ -275,6 +282,12 @@ var tp2 = String(window.location.host)
         }
       }
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    console.log('BEFOREROUTELEAVE: ' + to)
+    next(vm => {
+      ;(vm as ViewPub).unload()
+    })
   }
 })
 export default class ViewPub extends Vue {
@@ -292,14 +305,18 @@ export default class ViewPub extends Vue {
   fileUpdated?: boolean = false
   docdata: any = {}
 
+  get publoaded() {
+    return this.$store.state.publication.publoaded
+  }
+
   @users.State
   public currentUser!: UserInt
 
   @publication.State
   public digest!: string
 
-  @publication.State
-  public publoaded!: boolean
+  /* @publication.State
+  public publoaded!: boolean */
 
   @publication.State
   public publication!: PublicationItem
@@ -317,6 +334,9 @@ export default class ViewPub extends Vue {
   public pubBuffer!: ArrayBuffer
 
   @publication.Action
+  public setPubLoaded!: (loaded: boolean) => void
+
+  @publication.Action
   public getSupportingDocs!: (data: any) => Promise<boolean>
 
   @publication.Action
@@ -325,26 +345,38 @@ export default class ViewPub extends Vue {
   @publication.Action
   public getDigest!: () => Promise<boolean>
 
+  /* beforeRouteLeave(to: any, from: any, next: any) {
+    console.log('BEFOREROUTELEAVE: ' + to)
+    this.setPubLoaded(false)
+    next()
+  } */
+
   mounted() {
-    if (this.$route) {
-      let id = this.$route.params.Id
-      let nato = this.$route.params.Nato
-      if (id !== null) {
-        let data: any = {}
-        data.id = id
-        data.nato = nato
-        this.getPublicationById(data).then(response => {
-          if (response) {
-            this.interval = setInterval(this.loadData, 500)
-          }
-        })
-      }
-    }
+    console.log('ViewPub Mounted!')
+    this.setPubLoaded(false)
+    const that = this
+    this.$nextTick(function() {
+      that.getPublicationById(this.$route.query).then(response => {
+        if (response) {
+          that.interval = setInterval(that.loadData, 1500)
+        }
+      })
+    })
+  }
+
+  updated() {
+    console.log('ViewPub Updated!')
+  }
+
+  public unload() {
+    console.log('UNLOADING PUB!')
+    this.setPubLoaded(false)
   }
 
   public loadData() {
     if (this.publoaded) {
       clearInterval(this.interval)
+      const that = this
       let data: any = {}
       data.DocID = this.publication.DocID
       data.nato = this.publication.IsNato
@@ -354,8 +386,11 @@ export default class ViewPub extends Vue {
         data.showhidden = 'No'
       }
       this.docdata = data
-      this.getSupportingDocs(data)
-      this.interval = setInterval(this.waitForData, 500)
+      this.getSupportingDocs(data).then(response => {
+        if (response) {
+          that.interval = setInterval(that.waitForData, 500)
+        }
+      })
     }
   }
 

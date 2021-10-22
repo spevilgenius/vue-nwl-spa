@@ -1,5 +1,24 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
+    <b-modal id="ArchiveModal" size="lg" centered header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk()" @show="onShow()">
+      <template v-slot:modal-title>Archive Publication</template>
+      <b-container class="p-0">
+        <b-form>
+          <b-row no-gutters>
+            <b-col cols="4">
+              <b-form-group label="Archive Type">
+                <b-form-select class="form-control" v-model="archive.type" size="sm" id="ddArchive" :options="archives" ref="Archive" @change="onArchiveSelected"></b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row v-if="superceded" no-gutters>
+            <b-col cols="12">
+              <dynamic-modal-select id="dmsSuperceded" v-model="supercededby" :items="allpublications" :fields="pubsfields" :filter="pubsfilter" title="Select Superceding Publication" label="Superceded By"></dynamic-modal-select>
+            </b-col>
+          </b-row>
+        </b-form>
+      </b-container>
+    </b-modal>
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
@@ -30,8 +49,8 @@ import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '../../interfaces/PublicationItem'
 import DynamicTable from '../Custom/DynamicTable2.vue'
+import DynamicModalSelect from '../Custom/DynamicModalSelect.vue'
 import { EventBus } from '../../main'
-import { concat } from 'lodash'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -39,7 +58,8 @@ const publication = namespace('publication')
 @Component({
   name: 'All',
   components: {
-    DynamicTable
+    DynamicTable,
+    DynamicModalSelect
   }
 })
 export default class All extends Vue {
@@ -54,8 +74,29 @@ export default class All extends Vue {
   filterType: any
   interval!: any
   filteredpubs: Array<PublicationItem> = []
+  pubs: Array<PublicationItem> = []
   Prfx: any
   viewReady?: boolean = false
+  archive: any = {
+    type: '',
+    id: 0,
+    nato: ''
+  }
+  superceded?: boolean = false
+  supercededby: any
+  pubsfilter = ''
+
+  pubsfields = [
+    { key: 'actions', label: 'Select' },
+    { key: 'Title', label: 'Title', sortable: true }
+  ]
+
+  archives = [
+    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'Rescinded', text: 'Rescinded' },
+    { value: 'Cancelled', text: 'Cancelled' },
+    { value: 'Superceded', text: 'Superceded' }
+  ]
 
   @users.State
   public currentUser!: UserInt
@@ -77,6 +118,9 @@ export default class All extends Vue {
 
   @publication.State
   public allpubsloaded!: boolean
+
+  @publication.Action
+  public setPubLoaded!: (loaded: boolean) => void
 
   @publication.Action
   public getAllPublications!: () => Promise<boolean>
@@ -110,20 +154,24 @@ export default class All extends Vue {
 
   created() {
     EventBus.$on('viewItem', args => {
+      this.setPubLoaded(false)
       this.viewPub(args)
     })
     EventBus.$on('editItem', args => {
+      this.setPubLoaded(false)
       this.editPub(args)
+    })
+    EventBus.$on('archiveItem', args => {
+      this.archivePub(args)
     })
   }
 
   /** @method - lifecycle hook */
-
   mounted() {
+    this.setPubLoaded(false)
     this.getAllNatoPublications()
     this.getAllPublications()
     this.getAllDevPublications()
-    /* this.getAllNatoDevPublications() */
     this.interval = setInterval(this.waitForIt, 500)
   }
 
@@ -416,10 +464,32 @@ export default class All extends Vue {
   }
 
   viewPub(args: any) {
-    this.$router.push({ name: 'View Publication', params: { Id: args.id, Nato: args.nato } })
+    this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato } })
   }
+
   editPub(args: any) {
-    this.$router.push({ name: 'Edit Publication', params: { Id: args.id, Nato: args.nato } })
+    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato } })
+  }
+
+  archivePub(args: any) {
+    // console.log('Archive Pub')
+    this.archive.id = args.id
+    this.archive.nato = args.nato
+    this.$bvModal.show('ArchiveModal')
+  }
+
+  onArchiveSelected() {
+    if (this.archive.type === 'Superceded') {
+      this.superceded = true
+    }
+  }
+
+  onOk() {
+    console.log('Publication selected for archive: ' + this.archive.type + ', id: ' + this.archive.id)
+  }
+
+  onShow() {
+    console.log('Showing modal')
   }
 }
 </script>
