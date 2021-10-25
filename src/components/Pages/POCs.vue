@@ -34,13 +34,13 @@ export default class Poc extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
   readonly baseImageUrl!: string
 
-  @Poc.State
+  @Pocs.State
   public pocs!: Array<PocItem>
 
-  @Poc.State
+  @Pocs.State
   public pocsloaded!: boolean
 
-  @Poc.Action
+  @Pocs.Action
   public getPocs!: () => Promise<boolean>
 
   public interval: any

@@ -18,14 +18,14 @@ var tp2 = String(window.location.host)
 
 @Module({ namespaced: true })
 class Poc extends VuexModule {
-  public terms: Array<PocItem> = []
+  public pocs: Array<PocItem> = []
   public pocsloaded?: boolean = false
 
   pocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Type,Title,FirstName,MI,Rank,Command,Code,Job_x0020_Title,Phone,Email,TaxKeyword&$top=9999999"
 
   @Mutation
   public createPocs(items: Array<PocItem>): void {
-    this.poc = items
+    this.pocs = items
     this.pocsloaded = true
     console.log('pocs length: ' + items.length)
   }

@@ -291,6 +291,7 @@ class Users extends VuexModule {
 
           case 'NATO Librarians':
             permissions.isNATOLibrarian = true
+            permissions.isLibrarian = true
             break
 
           case 'NATO Visitors':
