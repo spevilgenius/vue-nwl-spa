@@ -83,6 +83,7 @@ interface PublicationItem {
     ProjectStatus: string
     PubCategory: string
     RELTO: string
+    Remarks: string
     Reviewed: string
     SignatureDraft: string
     Status: string
@@ -91,6 +92,9 @@ interface PublicationItem {
     Update: string
   }
   ActionButtons?: []
+  value?: string
+  text?: string
+  selected?: boolean
   etag?: string
   uri?: string
   type?: string

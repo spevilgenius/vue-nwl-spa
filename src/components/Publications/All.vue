@@ -83,7 +83,7 @@ export default class All extends Vue {
     nato: ''
   }
   superceded?: boolean = false
-  supercededby: any
+  supercededby = null
   pubsfilter = ''
 
   pubsfields = [
