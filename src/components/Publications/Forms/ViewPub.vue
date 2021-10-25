@@ -453,7 +453,7 @@ export default class ViewPub extends Vue {
   }
 
   public editItem(id: string, nato: string) {
-    this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato, t: new Date().getTime().toString() } })
+    this.$router.push({ name: 'Edit Publication', query: { Id: id, Nato: nato, t: new Date().getTime().toString() } })
   }
 
   public async deleteItem(id: string, nato: string) {
