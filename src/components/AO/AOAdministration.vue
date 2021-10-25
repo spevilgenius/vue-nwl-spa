@@ -173,6 +173,7 @@ export default class AoAdministration extends Vue {
       this.createAllPubs()
       this.createAllDevPubs()
       this.filterResourced()
+      console.log('filter should have ran')
       this.interval = setInterval(this.waitForPubs, 500)
     }
   }
@@ -206,11 +207,8 @@ export default class AoAdministration extends Vue {
         if (this.filterType === 'AOResourced') {
           let a = this.filteredresourcedpubs
           a = a.filter(search => Vue._.isEqual(search['Branch'], 'Navy'))
-          console.log('1st filter' + a)
           a = a.filter(d => d.AdditionalData.ProjectStatus === 'Not Started')
-          console.log('2nd filter' + a)
           a = a.filter(d => d.Prfx !== 'TACMEMO')
-          console.log('3rd filter' + a)
           this.filteredpubs = a
         }
         this.viewReady = true
@@ -240,7 +238,7 @@ export default class AoAdministration extends Vue {
     console.log('2nd filter = ' + a)
     a = a.filter(d => d.Prfx !== 'TACMEMO')
     console.log('3rd filter = ' + a)
-    this.filteredpubs = a
+    this.filteredresourcedpubs = a
   }
 
   viewPub(args: any) {
