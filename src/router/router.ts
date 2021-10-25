@@ -8,6 +8,7 @@ import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import LibrarianAdmin from '@/components/Pages/LibrarianAdmin.vue'
 import Faq from '@/components/Pages/FAQ.vue'
+import POCs from '@/components/Pages/POCs.vue'
 
 Vue.use(VueRouter)
 
@@ -195,6 +196,11 @@ const routes = [
         path: 'FAQ',
         name: 'FAQ',
         component: Faq
+      },
+      {
+        path: 'POCs',
+        name: 'POCs',
+        component: POCs
       }
     ]
   }

@@ -32,7 +32,7 @@
               </b-carousel>
             </b-col>
           </b-row>
-          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/headeridealightnew.PNG)' }">
+          <b-row no-gutters class="banner" :style="{ backgroundImage: 'url(' + baseImageUrl + '/headeridealightnew.png)' }">
             <b-col cols="12">
               <b-container fluid class="m-0 p-0">
                 <b-row no-gutters class="titleRow">
