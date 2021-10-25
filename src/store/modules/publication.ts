@@ -60,6 +60,7 @@ let additionalData: any = {
   ProjectStatus: '',
   PubCategory: '',
   RELTO: '',
+  Remarks: '',
   Reviewed: '',
   SignatureDraft: '',
   Status: '',
@@ -82,35 +83,60 @@ let development: any = {
   ProjectFinish: ''
 }
 
-function isJson(item) {
-  item = typeof item !== 'string' ? JSON.stringify(item) : item
-  try {
-    item = JSON.parse(item)
-  } catch (e) {
-    return false
+function isJson(item: any, type: string) {
+  let ij = false
+  let obj = false
+  let ret: any = {}
+  if (typeof item === 'string') {
+    try {
+      JSON.parse(item)
+      ij = true
+    } catch (e) {
+      ij = false
+    }
+  } else {
+    // console.log('ITEM is not a string: ' + typeof item)
+    if (typeof item === 'object') {
+      obj = true
+      try {
+        item = JSON.stringify(item)
+        JSON.parse(item)
+        ij = true
+      } catch (e) {
+        ij = false
+      }
+    }
   }
-  if (typeof item === 'object' && item !== null) {
-    return true
-  }
-  return false
+  ret.ij = ij
+  ret.obj = obj
+  return ret
 }
 
 function FormatAD(ad: any, id: any, nato: any): any {
-  if (isJson(ad)) {
+  // console.log('checking AD id: ' + id + ', nato: ' + nato)
+  let test = isJson(ad, 'AD')
+  if (test.ij === true && test.obj === false) {
     ad = JSON.parse(ad)
-    // fixup some elements that are stored as strings
-    if (ad.RELTO && ad.RELTO.length > 0) {
-      // do something?
-    }
     return ad
   } else {
-    console.log('Error Parsing JSON: ID: ' + id + ', nato: ' + nato)
-    return JSON.parse(additionalData)
+    // this item may already an object
+    if (test.obj === true) {
+      return ad
+      /* console.log('ITEM ID: ' + id + ', NATO: ' + nato + ' is an Object so convert and test.')
+      try {
+        let item = JSON.stringify(ad)
+        item = JSON.parse(item)
+        return item
+      } catch (e) {
+        return additionalData
+      } */
+    }
   }
 }
 
-function FormatDevelopment(dev: any): any {
-  if (isJson(dev)) {
+function FormatDevelopment(dev: any, id: any, nato: any): any {
+  // console.log('checking DEV id: ' + id + ', nato: ' + nato)
+  if (isJson(dev, 'DEV')) {
     dev = JSON.parse(dev)
     return dev
   } else {
@@ -372,11 +398,13 @@ class Publication extends VuexModule {
         return getAllPubs(url)
       } else {
         for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
             Title: j[i]['Title'],
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
             Name: j[i]['File']['Name'],
             RelativeURL: j[i]['File']['ServerRelativeUrl'],
             IsNato: 'No',
@@ -407,7 +435,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'No'),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -441,6 +469,9 @@ class Publication extends VuexModule {
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
             Title: j[i]['Title'],
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
             Name: j[i]['File']['Name'],
             RelativeURL: j[i]['File']['ServerRelativeUrl'],
             IsNato: 'Yes',
@@ -471,7 +502,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'Yes'),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
           })
         }
@@ -501,10 +532,13 @@ class Publication extends VuexModule {
     })
     let j = response.data.d.results
     let p = {} as PublicationItem
-    let ad = JSON.parse(j[0]['AdditionalData'])
+    let ad = FormatAD(j[0]['AdditionalData'], j[0]['Id'], data.Nato)
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
+    /* p.value = j[0]['Title']
+    p.text = j[0]['Title']
+    p.selected = false */
     p.Name = j[0]['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
     p.IsNato = data.nato
@@ -534,7 +568,7 @@ class Publication extends VuexModule {
     p.StatusComments = j[0]['StatusComments']
     p.Replaces = j[0]['Replaces']
     p.Bookshelf = j[0]['Bookshelf']
-    p.Development = j[0]['Development'] === null ? development : FormatDevelopment(j[0]['Development'])
+    p.Development = j[0]['Development'] === null ? development : FormatDevelopment(j[0]['Development'], j[0]['Id'], data.nato)
     p.AdditionalData = ad
     p.ActionButtons = []
     p.etag = j[0]['__metadata']['etag']
@@ -655,11 +689,13 @@ class Publication extends VuexModule {
         return getArchivePubs(url)
       } else {
         for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
             Title: j[i]['Title'],
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
             Name: j[i]['File']['Name'],
             RelativeURL: j[i]['File']['ServerRelativeUrl'],
             IsNato: 'No',
@@ -690,7 +726,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'No'),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -724,6 +760,9 @@ class Publication extends VuexModule {
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
             Title: j[i]['Title'],
+            value: j[i]['Title'],
+            text: j[i]['Title'],
+            selected: false,
             Name: j[i]['File']['Name'],
             RelativeURL: j[i]['File']['ServerRelativeUrl'],
             IsNato: 'Yes',
@@ -754,7 +793,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development']),
+            Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'Yes'),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
           })
         }
@@ -1062,7 +1101,6 @@ class Publication extends VuexModule {
         return getAllDevPubs(url)
       } else {
         for (let i = 0; i < j.length; i++) {
-          // let ad = that.FormatAD(j[i]['AdditionalData']) // JSON.parse(j[i]['AdditionalData'])
           p.push({
             Id: j[i]['Id'],
             DocID: j[i]['DocID'],
@@ -1097,7 +1135,7 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: FormatDevelopment(j[i]['Development']),
+            Development: FormatDevelopment(j[i]['Development'], j[i]['Id'], 'No'),
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
@@ -1161,8 +1199,8 @@ class Publication extends VuexModule {
             StatusComments: j[i]['statuscomments'],
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
-            Development: FormatDevelopment(j[i]['Development']),
-            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+            Development: FormatDevelopment(j[i]['Development'], j[i]['Id'], 'Yes'),
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
           })
         }
         that.context.commit('updateDevPublications', p)
