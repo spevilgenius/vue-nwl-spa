@@ -6,6 +6,7 @@ import users from './modules/users'
 import sidebar from './modules/sidebar'
 import publication from './modules/publication'
 import terminology from './modules/terminology'
+import poc from './modules/poc'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     sidebar,
     notify,
     publication,
-    terminology
+    terminology,
+    poc
   }
 })

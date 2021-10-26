@@ -21,7 +21,7 @@ class Poc extends VuexModule {
   public pocs: Array<PocItem> = []
   public pocsloaded?: boolean = false
 
-  pocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Type,Title,FirstName,MI,Rank,Command,Code,Job_x0020_Title,Phone,Email,TaxKeyword&$top=9999999"
+  pocUrl = "/_api/lists/getbytitle('Doctrine POCs')/items?$select=*,Command/PLA,Command/abbr&$expand=Command&$orderby=Title"
 
   @Mutation
   public createPocs(items: Array<PocItem>): void {
@@ -52,16 +52,15 @@ class Poc extends VuexModule {
           p.push({
             Id: j[i]['Id'],
             type: j[i]['Type'],
-            Title: j[i]['Title'],
             Firstname: j[i]['FirstName'],
             MI: j[i]['MI'],
+            Title: j[i]['Title'],
             Rank: j[i]['Rank'],
-            Command: j[i]['Command'],
+            Command: j[i]['Command']['PLA'],
             Code: j[i]['Code'],
-            Jobtitle: j[i]['Jobtitle'],
-            Phone: j[i]['Phone'],
-            Email: j[i]['Email'],
-            TaxKeyword: j[i]['TaxKeyword']
+            Jobtitle: j[i]['Job_x0020_Title'],
+            Phone: j[i]['phone'],
+            Email: j[i]['Email']
           })
         }
         that.context.commit('createPocs', p)

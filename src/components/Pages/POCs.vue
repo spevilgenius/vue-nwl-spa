@@ -1,38 +1,40 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-overlay :show="!termsloaded" variant="danger" class="contentHeight">
+    <b-overlay :show="!pocsloaded" variant="danger" class="contentHeight">
       <b-row no-gutters class="contentHeight">
-        <b-col cols="12" class="m-0 p-1 bg-white">
-          <template #overlay>
-            <div class="text-center">
-              <p id="busy-label">Loading...</p>
-            </div>
-          </template>
+        <b-col cols="12" class="m-0 p-1 bg-white contentHeight">
+          <b-table :sticky-header="dHeight" :items="pocs" :fields="fields" head-variant="bg-blue-400"></b-table>
         </b-col>
       </b-row>
+      <template #overlay>
+        <div class="text-center">
+          <p id="busy-label">Loading...</p>
+        </div>
+      </template>
     </b-overlay>
   </b-container>
 </template>
-
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import { PocItem } from '@/interfaces/PocItem'
 import { namespace } from 'vuex-class'
-import DynamicTable from '../Custom/DynamicTable3.vue'
-import { faAlignCenter } from '@fortawesome/free-solid-svg-icons'
+import { takeRight } from 'lodash'
+/* import DynamicTable from '../Custom/DynamicTable3.vue' */
+/* import { faAlignCenter } from '@fortawesome/free-solid-svg-icons' */
 
 const Pocs = namespace('poc')
+const support = namespace('support')
 
 @Component({
-  name: 'poc',
-  components: {
-    DynamicTable
-  }
+  name: 'poc'
 })
 export default class Poc extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
   readonly baseImageUrl!: string
+
+  @support.State
+  public contentheight!: number
 
   @Pocs.State
   public pocs!: Array<PocItem>
@@ -51,32 +53,42 @@ export default class Poc extends Vue {
   overlayVariant = 'danger'
   rowHeight = 0
   pageSize = 20
+  dHeight = ''
 
   fields: any = [
-    { key: 'firstname', label: 'First Name', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 20 },
-    { key: 'MI', label: 'Middle Initial', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 20 },
-    { key: 'lastname', label: 'Last Name', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 20 },
-    { key: 'rank', label: 'Rank', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 20 },
-    { key: 'command', label: 'Command', type: 'default', format: 'text', tdClass: 'px250', thClass: 'tbl-dynamic-header', id: 1 },
-    { key: 'code', label: 'Code', type: 'default', format: 'text', tdClass: 'px600', thClass: 'tbl-dynamic-header', id: 2 },
-    { key: 'jobtitle', label: 'Job Title', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 3 },
-    { key: 'phone', label: 'Phone', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 4 },
-    { key: 'email', label: 'Email', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 5 },
-    { key: 'enterprisekeywords', label: 'Enterprise Keywords', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 6 }
+    { key: 'Title', label: 'Last Name', type: 'default', format: 'text', tdClass: 'px200', thClass: 'tbl-dynamic-header', id: 18 },
+    { key: 'Firstname', label: 'First Name', type: 'default', format: 'text', tdClass: 'px200', thClass: 'tbl-dynamic-header', id: 20 },
+    { key: 'MI', label: 'MI', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 19 },
+    { key: 'Rank', label: 'Rank', type: 'default', format: 'text', tdClass: 'px80', thClass: 'tbl-dynamic-header', id: 17 },
+    { key: 'Command', label: 'Command', type: 'default', format: 'text', tdClass: 'px300', thClass: 'tbl-dynamic-header', id: 1 },
+    { key: 'Code', label: 'Code', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 2 },
+    { key: 'Jobtitle', label: 'Job Title', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 3 },
+    { key: 'Phone', label: 'Phone', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 4 },
+    { key: 'Email', label: 'Email', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 5 }
   ]
-
   mounted() {
     this.getPocs().then(response => {
       if (response) {
         console.log('Pocs Loaded')
+        this.dHeight = this.contentheight - 100 + 'px'
       }
     })
+  }
+
+  public getSticky(element) {
+    let h: any
+    switch (element) {
+      case 'dynamictable':
+        h = this.contentheight - 100 + 'px'
+        break
+    }
+    return h
   }
 }
 </script>
 
 <style lang="scss" scoped>
-#NWLTitle {
+#PocTitle {
   text-align: center;
   font-family: 'Arial', Gadget, sans-serif;
   font-variant: small-caps;
