@@ -486,6 +486,21 @@ export default class All extends Vue {
 
   onOk() {
     console.log('Publication selected for archive: ' + this.archive.type + ', id: ' + this.archive.id)
+    // Based on the selected type of archive move or copy document to archived pub library.
+    const that = this
+    switch (this.archive.type) {
+      case 'Cancelled':
+        // copy to archive library setting general status to obsolete and status to cancelled. Then delete this document.
+        break
+
+      case 'Rescinded':
+        // copy to archive library setting general status to obsolete and status to rescinded. Then delete this document.
+        break
+
+      case 'Superceded':
+        // copy to archive library setting general status to obsolete, status to rescinded, and SupercededBy to the selected document. Then delete this document.
+        break
+    }
   }
 
   onShow() {
