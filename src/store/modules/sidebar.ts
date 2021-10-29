@@ -334,20 +334,39 @@ class Sidebar extends VuexModule {
     {
       id: 900,
       isMenu: true,
+      name: 'Librarian Actions',
+      path: '/librarian/home',
+      permission: 'isLibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 901,
+          name: 'NWL Administration',
+          path: '/librarian/home/refreshadmin',
+          library: 'fas',
+          icon: 'tools'
+        }
+      ],
+      library: 'fas',
+      icon: 'question'
+    },
+    {
+      id: 950,
+      isMenu: true,
       name: 'AO Actions',
       path: '/ao/home',
       permission: 'isActionOfficer',
       permissionvalue: true,
       children: [
         {
-          id: 901,
+          id: 951,
           name: 'AO Administration',
           path: '/ao/home/aoadministration',
           library: 'fas',
           icon: 'tools'
         },
         {
-          id: 902,
+          id: 952,
           name: 'Pubs in Development(By PRA)',
           path: '/pubs/development/pra',
           library: 'fas',
@@ -357,7 +376,7 @@ class Sidebar extends VuexModule {
           }
         },
         {
-          id: 903,
+          id: 953,
           name: 'Pubs in Development(By Project Status)',
           path: '/pubs/development/status',
           library: 'fas',
@@ -367,21 +386,21 @@ class Sidebar extends VuexModule {
           }
         },
         {
-          id: 904,
+          id: 954,
           name: 'Pubs in Development(Archived)',
           path: '/pubs/development/archive',
           library: 'fas',
           icon: 'file-signature'
         },
         {
-          id: 905,
+          id: 955,
           name: 'Create New Draft Publication',
           path: '/pubs/forms/new',
           library: 'fas',
           icon: 'edit'
         },
         {
-          id: 906,
+          id: 956,
           name: 'Combined APP & PID Pubs View',
           path: '/ao/home/requestit',
           library: 'fas',

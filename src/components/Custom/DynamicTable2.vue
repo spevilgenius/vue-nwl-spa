@@ -7,7 +7,7 @@
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
               <b-col cols="8" class="mt-1 p-0">
-                <b-row>
+                <!-- <b-row>
                   <p class="ml-3" style="font-size: 22px;">Filters</p>
                   <p class="ml-5 mt-2" style="font-size: 16px;">Branch:</p>
                   <b-form-select class="form-control px200 ml-1" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch"></b-form-select>
@@ -15,7 +15,7 @@
                   <b-form-select class="form-control px200 ml-1" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix" v-b-tooltip.hover.v-dark title="Filter on Branch to display Prefix choices."></b-form-select>
                   <p class="ml-3 mt-2" style="font-size: 16px;">Bookshelf:</p>
                   <b-form-select class="form-control-bookshelf px250 ml-1" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select>
-                </b-row>
+                </b-row> -->
               </b-col>
               <b-col cols="4" class="mt-1 pr-3">
                 <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
@@ -61,6 +61,13 @@
                   thead-class="tbl-dynamic-header"
                   @filtered="onFiltered"
                 >
+                  <template #head()="data">
+                    <!-- <b-dropdown split split-variant="light" variant="light" size="sm" :text="data.field.label" toggle-class="text-decoration-none" @show="drawFilterData(data.field.key)"></b-dropdown> -->
+                    <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" v-model="data.field.model" :type="data.field.type" :pubs="filtereditems" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
+                  </template>
+                  <template #head(actions)="data">
+                    Actions
+                  </template>
                   <template #cell(actions)="data">
                     <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
@@ -76,9 +83,9 @@
                       <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
-                  <template #cell(Title)="data">
+                  <template #cell(Name)="data">
                     <!-- <b-link :to="{ name: 'View Publication', params: { Id: data.item.Id, Nato: data.item.IsNato } }">{{ data.item.Title }}</b-link> -->
-                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Title }}</b-link>
+                    <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
                   </template>
                   <template #cell()="data">
                     <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
@@ -87,8 +94,11 @@
               </b-col>
             </b-row>
             <b-row no-gutters :style="getStyle('pagingrow', null)">
-              <b-col cols="12">
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
+              <b-col cols="6">
+                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0" first-number last-number></b-pagination>
+              </b-col>
+              <b-col>
+                <div class="pubcount"># Publications Found: {{ this.totalRows }}</div>
               </b-col>
             </b-row>
           </b-container>
@@ -112,6 +122,7 @@ import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
 import { UserInt } from '../../interfaces/User'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import DynamicFilterSelect from './DynamicFilterSelect.vue'
 
 const support = namespace('support')
 const users = namespace('users')
@@ -125,6 +136,9 @@ let that: any
 
 @Component({
   name: 'dynamic-table',
+  components: {
+    DynamicFilterSelect
+  },
   props: {
     hascomponents: {
       type: Boolean,
@@ -132,6 +146,10 @@ let that: any
     },
     user: {
       type: Object
+    },
+    ready: {
+      type: Boolean,
+      default: false
     },
     table: {
       type: Object,
@@ -371,6 +389,10 @@ export default class DynamicTable extends Vue {
     }
   }
 
+  public drawFilterData(field) {
+    alert(field)
+  }
+
   public waitForBranch() {
     console.log('WAITING FOR BRANCH, ')
     if (this.Branch.length > 0) {
@@ -539,6 +561,11 @@ export default class DynamicTable extends Vue {
   border: 1px solid #000000 !important;
   height: 20px !important;
   padding: 2px 5px !important;
+}
+.pubcount {
+  border: 1px solid #ffffff !important;
+  padding: 2px 2px !important;
+  color: $pagination-color;
 }
 /* .pubtitle {
   max-width: 500px;

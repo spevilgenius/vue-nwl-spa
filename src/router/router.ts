@@ -8,6 +8,9 @@ import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
 import AoAdministration from '@/components/AO/AOAdministration.vue'
+import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
+import Faq from '@/components/Pages/FAQ.vue'
+import POCs from '@/components/Pages/POCs.vue'
 
 Vue.use(VueRouter)
 
@@ -44,6 +47,26 @@ const pubsMenu = {
       path: 'pubs/view',
       name: 'View Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const librarianMenu = {
+  path: '/librarian',
+  component: Layout,
+  redirect: '/librarian/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'Librarian',
+      component: () => import(/* webpackChunkName: "librarian" */ '../components/Librarian/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/admin',
+      name: 'NWL Administration',
+      component: () => import(/* webpackChunkName: "librarian" */ '../components/Librarian/LibrarianAdmin.vue'),
       props: true
     }
   ]
@@ -154,6 +177,7 @@ const routes = [
   pubsDevMenu,
   termsMenu,
   aoMenu,
+  librarianMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,
@@ -192,6 +216,16 @@ const routes = [
         path: 'PleaseReview',
         name: 'PleaseReview',
         component: PleaseReview
+      },
+      {
+        path: 'FAQ',
+        name: 'FAQ',
+        component: Faq
+      },
+      {
+        path: 'POCs',
+        name: 'POCs',
+        component: POCs
       }
     ]
   }

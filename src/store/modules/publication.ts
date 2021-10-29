@@ -363,6 +363,7 @@ class Publication extends VuexModule {
   }
   //#endregion
 
+  //#region Actions
   @Action
   public async getDigest(): Promise<boolean> {
     const response = await axios.request({
@@ -1252,5 +1253,6 @@ class Publication extends VuexModule {
     }
     return true
   }
+  //#endregion
 }
 export default Publication

@@ -24,6 +24,7 @@
         <dynamic-table
           v-if="viewReady"
           :user="currentUser"
+          :ready="true"
           :table="{
             id: tblId,
             primaryKey: primaryKey,
@@ -140,7 +141,7 @@ export default class All extends Vue {
   @publication.Action
   public createAllDevPubs!: () => Promise<boolean>
 
-  fields: any = [
+  /* fields: any = [
     { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 0 },
     { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
     { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
@@ -150,6 +151,23 @@ export default class All extends Vue {
     { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 6 },
     { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12 },
     { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 10 }
+  ] */
+
+  fields: any = [
+    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 0, model: '' },
+    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1, model: '' },
+    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px60', id: 2, model: '' },
+    { key: 'Name', label: 'Name', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 3, model: '' },
+    { key: 'LongTitle', label: 'Long Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 4, model: '' },
+    { key: 'AdditionalData.Status', label: 'Status', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 5, model: '' },
+    { key: 'AdditionalData.Edition', label: 'Edition', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 6, model: '' },
+    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 7, model: '' },
+    /* { key: 'Remarks', label: 'Remarks', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 8, model: '' }, */
+    { key: 'Resourced', label: 'Resourced', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px110', id: 9, model: '' },
+    { key: 'DTIC', label: 'DTIC', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 10, model: '' },
+    { key: 'AdditionalData.GeneralStatus', label: 'GeneralStatus', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px140', id: 11, model: '' },
+    { key: 'NWDCAO.Title', label: 'NWDC AO', sortable: true, type: 'NWDCAO', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12, model: '' },
+    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 13, model: '' }
   ]
 
   created() {
@@ -486,6 +504,21 @@ export default class All extends Vue {
 
   onOk() {
     console.log('Publication selected for archive: ' + this.archive.type + ', id: ' + this.archive.id)
+    // Based on the selected type of archive move or copy document to archived pub library.
+    const that = this
+    switch (this.archive.type) {
+      case 'Cancelled':
+        // copy to archive library setting general status to obsolete and status to cancelled. Then delete this document.
+        break
+
+      case 'Rescinded':
+        // copy to archive library setting general status to obsolete and status to rescinded. Then delete this document.
+        break
+
+      case 'Superceded':
+        // copy to archive library setting general status to obsolete, status to rescinded, and SupercededBy to the selected document. Then delete this document.
+        break
+    }
   }
 
   onShow() {
