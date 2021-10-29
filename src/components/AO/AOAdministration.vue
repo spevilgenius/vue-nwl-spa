@@ -1,17 +1,17 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
-      <b-col cols="12" class="m-0 p-0 accordion" role="tablist">
-        <b-card no-body class="mb-1">
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.accordion-1 variant="info">Pubs Not Started or Not Resourced</b-button>
+      <b-col cols="12" class="m-0 p-0 accordion contentHeight" role="tablist">
+        <b-card no-body class="mb-1 contentHeight">
+          <b-card-header header-tag="header" class="p-1" role="tab" cols="6">
+            <b-button block v-b-toggle.accordion-1 variant="info">Navy Pubs by Resourced</b-button>
           </b-card-header>
           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
               <b-table
                 striped
                 hover
-                :items="filteredresourcedpubs"
+                :items="filterednoresourcedpubs"
                 :fields="fields"
                 primary-key="primarykey"
                 :filter="filter"
@@ -25,16 +25,19 @@
                 table-variant="light"
                 thead-class="tbl-dynamic-header"
                 @filtered="onFiltered"
+                caption-top
+                style="max-height: 350px"
               >
+                <template #table-caption>Not Resourced</template>
               </b-table>
             </b-card-body>
             <b-card-body>
-              <!-- <b-table
+              <b-table
                 striped
                 hover
-                :items="filtereditems"
-                :fields="table.fields"
-                primary-key="table.primarykey"
+                :items="filteredyesresourcedpubs"
+                :fields="fields"
+                primary-key="primarykey"
                 :filter="filter"
                 :filter-included-fields="filterOn"
                 :sort-by.sync="sortBy"
@@ -46,8 +49,11 @@
                 table-variant="light"
                 thead-class="tbl-dynamic-header"
                 @filtered="onFiltered"
+                caption-top
+                style="max-height: 350px"
               >
-              </b-table> -->
+                <template #table-caption>Resourced</template>
+              </b-table>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -88,6 +94,8 @@ export default class AoAdministration extends Vue {
   interval!: any
   filteredpubs: Array<PublicationItem> = []
   filteredresourcedpubs: Array<PublicationItem> = []
+  filteredyesresourcedpubs: Array<PublicationItem> = []
+  filterednoresourcedpubs: Array<PublicationItem> = []
   Prfx: any
   viewReady?: boolean = false
 
@@ -233,12 +241,19 @@ export default class AoAdministration extends Vue {
     console.log('0 filter = ' + a)
     a = a.filter(search => Vue._.isEqual(search['Branch'], 'Navy'))
     console.log('1st filter = ' + a)
+    console.log(a.length)
+    /* console.log(JSON.stringify(a)) */
+    // Project status was used in nwl 2.0, but that column did not carry over
     /* a = a.filter(search => Vue._.isEqual(search['AdditionalData.ProjectStatus'], 'Not Started')) */
-    a = a.filter(d => d.AdditionalData.ProjectStatus === 'Not Started')
-    console.log('2nd filter = ' + a)
+    /* a = a.filter(d => d.AdditionalData.ProjectStatus === 'Not Started') */
+    /* console.log('2nd filter = ' + a) */
     a = a.filter(d => d.Prfx !== 'TACMEMO')
     console.log('3rd filter = ' + a)
-    this.filteredresourcedpubs = a
+    let b = a
+    a = a.filter(d => d.Resourced === 'No')
+    b = b.filter(d => d.Resourced === 'Yes')
+    this.filterednoresourcedpubs = a
+    this.filteredyesresourcedpubs = b
   }
 
   viewPub(args: any) {
@@ -249,3 +264,19 @@ export default class AoAdministration extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.table-full {
+  border: 1px solid #000000 !important;
+}
+.table-full td,
+.table-full th {
+  border: 1px solid #000000 !important;
+  height: 20px !important;
+  padding: 2px 5px !important;
+}
+#caption {
+  padding: 0;
+  margin: 0;
+}
+</style>
