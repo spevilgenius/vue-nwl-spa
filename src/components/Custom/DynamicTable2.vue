@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
@@ -65,9 +64,9 @@
                     <!-- <b-dropdown split split-variant="light" variant="light" size="sm" :text="data.field.label" toggle-class="text-decoration-none" @show="drawFilterData(data.field.key)"></b-dropdown> -->
                     <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" v-model="data.field.model" :type="data.field.type" :pubs="filtereditems" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
                   </template>
-                  <template #head(actions)="data">
+                  <!-- <template #head(actions)="data">
                     Actions
-                  </template>
+                  </template> -->
                   <template #cell(actions)="data">
                     <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>

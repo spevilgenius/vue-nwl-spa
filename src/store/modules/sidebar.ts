@@ -420,6 +420,23 @@ class Sidebar extends VuexModule {
       icon: 'search-plus'
     },
     {
+      id: 1100,
+      isMenu: true,
+      name: 'Reports',
+      path: '/reports/home',
+      permission: 'islibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 1101,
+          name: 'AO Administration',
+          path: '/ao/home/aoadministration',
+          library: 'fas',
+          icon: 'chartbar'
+        }
+      ]
+    },
+    {
       id: 1500,
       isMenu: false,
       children: [],

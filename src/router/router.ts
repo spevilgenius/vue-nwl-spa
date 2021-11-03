@@ -112,37 +112,31 @@ const aoMenu = {
     {
       path: 'home/:mode',
       name: 'AO Actions',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/AO/Home.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/Home.vue'),
       props: true
     },
     {
       path: 'home/aoadministration',
       name: 'AO Administration',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/AO/AOAdministration.vue'),
-      props: true
-    },
-    {
-      path: 'page/development',
-      name: 'Pubs In Development',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Development.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdministration.vue'),
       props: true
     },
     {
       path: 'forms/view',
       name: 'View Publication',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/ViewPub.vue'),
       props: true
     },
     {
       path: 'forms/edit',
       name: 'Edit Publication',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/EditPub.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/EditPub.vue'),
       props: true
     },
     {
       path: 'forms/new',
       name: 'New Publication',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/NewPub.vue'),
       props: true
     }
   ]

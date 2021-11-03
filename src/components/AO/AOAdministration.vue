@@ -3,58 +3,118 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0 accordion contentHeight" role="tablist">
         <b-card no-body class="mb-1 contentHeight">
-          <b-card-header header-tag="header" class="p-1" role="tab" cols="6">
-            <b-button block v-b-toggle.accordion-1 variant="info">Navy Pubs by Resourced</b-button>
+          <b-card-header header-tag="header" class="p-1" role="tab">
+            <b-button block v-b-toggle.resourcedaccordion variant="info">Navy Pubs by Resourced (# of Pubs = {{ filteredresourcedpubs.length }})</b-button>
           </b-card-header>
-          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
-            <b-card-body>
-              <b-table
-                striped
-                hover
-                :items="filterednoresourcedpubs"
-                :fields="fields"
-                primary-key="primarykey"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :per-page="perPage"
-                :current-page="currentPage"
-                table-class="table-full"
-                :sticky-header="getSticky('dynamictable')"
-                table-variant="light"
-                thead-class="tbl-dynamic-header"
-                @filtered="onFiltered"
-                caption-top
-                style="max-height: 350px"
-              >
-                <template #table-caption>Not Resourced</template>
-              </b-table>
-            </b-card-body>
-            <b-card-body>
-              <b-table
-                striped
-                hover
-                :items="filteredyesresourcedpubs"
-                :fields="fields"
-                primary-key="primarykey"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :per-page="perPage"
-                :current-page="currentPage"
-                table-class="table-full"
-                :sticky-header="getSticky('dynamictable')"
-                table-variant="light"
-                thead-class="tbl-dynamic-header"
-                @filtered="onFiltered"
-                caption-top
-                style="max-height: 350px"
-              >
-                <template #table-caption>Resourced</template>
-              </b-table>
-            </b-card-body>
+          <b-collapse id="resourcedaccordion" visible accordion="myresourcedaccordion" role="tabpanel">
+            <b-col cols="12" class="m-0 p-0 accordion contentHeight" role="tablist">
+              <b-card>
+                <b-card-header header-tag="header" class="p-1" role="tab">
+                  <b-button block v-b-toggle.resourcednoaccordion variant="info">Not Resourced (# of Pubs = {{ filterednoresourcedpubs.length }})</b-button>
+                </b-card-header>
+                <b-collapse id="resourcednoaccordion" visible accordion="my-accordion" role="tabpanel">
+                  <b-card-body>
+                    <b-table
+                      striped
+                      hover
+                      :items="filterednoresourcedpubs"
+                      :fields="fields"
+                      primary-key="primarykey"
+                      :filter="filter"
+                      :filter-included-fields="filterOn"
+                      :sort-by.sync="sortBy"
+                      :sort-desc.sync="sortDesc"
+                      :per-page="perPage"
+                      :current-page="currentPage"
+                      table-class="table-full"
+                      :sticky-header="getSticky('dynamictable')"
+                      table-variant="light"
+                      thead-class="tbl-dynamic-header"
+                      @filtered="onFiltered"
+                      style="max-height: 350px"
+                    >
+                      <template #head()="data">
+                        <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" v-model="data.field.model" :type="data.field.type" :pubs="filtereditems" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
+                      </template>
+                      <template #cell(actions)="data">
+                        <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                        </b-button>
+                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                        </b-button>
+                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                        </b-button>
+                      </template>
+                      <template #cell(Name)="data">
+                        <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                      </template>
+                      <template #cell()="data">
+                        <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                      </template>
+                    </b-table>
+                  </b-card-body>
+                </b-collapse>
+              </b-card>
+              <b-card>
+                <b-card-header header-tag="header" class="p-1" role="tab">
+                  <b-button block v-b-toggle.resourcedyesaccordion variant="info">Resourced (# of Pubs = {{ filteredyesresourcedpubs.length }})</b-button>
+                </b-card-header>
+                <b-collapse id="resourcedyesaccordion" accordion="my-accordion" role="tabpanel">
+                  <b-card-body>
+                    <b-table
+                      striped
+                      hover
+                      :items="filteredyesresourcedpubs"
+                      :fields="fields"
+                      primary-key="primarykey"
+                      :filter="filter"
+                      :filter-included-fields="filterOn"
+                      :sort-by.sync="sortBy"
+                      :sort-desc.sync="sortDesc"
+                      :per-page="perPage"
+                      :current-page="currentPage"
+                      table-class="table-full"
+                      :sticky-header="getSticky('dynamictable')"
+                      table-variant="light"
+                      thead-class="tbl-dynamic-header"
+                      @filtered="onFiltered"
+                      style="max-height: 350px"
+                    >
+                      <template #head()="data">
+                        <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" v-model="data.field.model" :type="data.field.type" :pubs="filtereditems" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
+                      </template>
+                      <template #cell(actions)="data">
+                        <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                        </b-button>
+                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                        </b-button>
+                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
+                          <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                        </b-button>
+                      </template>
+                      <template #cell(Name)="data">
+                        <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                      </template>
+                      <template #cell()="data">
+                        <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                      </template>
+                    </b-table>
+                  </b-card-body>
+                </b-collapse>
+              </b-card>
+            </b-col>
           </b-collapse>
         </b-card>
       </b-col>
@@ -250,10 +310,21 @@ export default class AoAdministration extends Vue {
     a = a.filter(d => d.Prfx !== 'TACMEMO')
     console.log('3rd filter = ' + a)
     let b = a
+    this.filteredresourcedpubs = a
     a = a.filter(d => d.Resourced === 'No')
     b = b.filter(d => d.Resourced === 'Yes')
     this.filterednoresourcedpubs = a
     this.filteredyesresourcedpubs = b
+  }
+
+  public renderElement(data) {
+    let html = ''
+    switch (data.field.format) {
+      default:
+        html = data.value
+        break
+    }
+    return html
   }
 
   viewPub(args: any) {
