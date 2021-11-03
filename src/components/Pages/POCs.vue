@@ -3,8 +3,13 @@
     <b-overlay :show="!pocsloaded" variant="danger" class="contentHeight">
       <b-row no-gutters class="contentHeight">
         <b-col cols="12" class="m-0 p-1 bg-white contentHeight">
-          <b-table :sticky-header="dHeight" :items="pocs" :fields="fields" head-variant="bg-blue-400"></b-table>
+          <b-table :sticky-header="dHeight" :items="pocs" :fields="fields" :head-variant="bg - blue - 400"></b-table>
         </b-col>
+        <!--  <b-row>
+          <b-col cols="12" class="float-left">
+            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0" :items="pocs" :fields="fields"></b-pagination>
+          </b-col>
+        </b-row> -->
       </b-row>
       <template #overlay>
         <div class="text-center">
@@ -54,6 +59,7 @@ export default class Poc extends Vue {
   rowHeight = 0
   pageSize = 20
   dHeight = ''
+  perPage = 20
 
   fields: any = [
     { key: 'Title', label: 'Last Name', type: 'default', format: 'text', tdClass: 'px200', thClass: 'tbl-dynamic-header', id: 18 },
@@ -66,11 +72,14 @@ export default class Poc extends Vue {
     { key: 'Phone', label: 'Phone', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 4 },
     { key: 'Email', label: 'Email', type: 'default', format: 'text', tdClass: 'px100', thClass: 'tbl-dynamic-header', id: 5 }
   ]
+  totalRows: number | undefined
+
   mounted() {
     this.getPocs().then(response => {
       if (response) {
         console.log('Pocs Loaded')
         this.dHeight = this.contentheight - 100 + 'px'
+        this.totalRows = this.pocs.length
       }
     })
   }

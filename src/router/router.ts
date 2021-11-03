@@ -9,6 +9,7 @@ import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
 import Faq from '@/components/Pages/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
+import ReqNatoAccess from '@/components/Pages/ReqNatoAccess.vue'
 
 Vue.use(VueRouter)
 
@@ -173,6 +174,11 @@ const routes = [
         path: 'POCs',
         name: 'POCs',
         component: POCs
+      },
+      {
+        path: 'ReqNatoAccess',
+        name: 'ReqNatoAccess',
+        component: ReqNatoAccess
       }
     ]
   }
