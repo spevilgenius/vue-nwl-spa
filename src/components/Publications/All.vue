@@ -154,20 +154,20 @@ export default class All extends Vue {
   ] */
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 0, model: '' },
-    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1, model: '' },
-    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px60', id: 2, model: '' },
-    { key: 'Name', label: 'Name', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 3, model: '' },
-    { key: 'LongTitle', label: 'Long Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 4, model: '' },
-    { key: 'AdditionalData.Status', label: 'Status', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 5, model: '' },
-    { key: 'AdditionalData.Edition', label: 'Edition', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 6, model: '' },
-    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 7, model: '' },
-    /* { key: 'Remarks', label: 'Remarks', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 8, model: '' }, */
-    { key: 'Resourced', label: 'Resourced', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px110', id: 9, model: '' },
-    { key: 'DTIC', label: 'DTIC', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 10, model: '' },
-    { key: 'AdditionalData.GeneralStatus', label: 'GeneralStatus', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px140', id: 11, model: '' },
-    { key: 'NWDCAO.Title', label: 'NWDC AO', sortable: true, type: 'NWDCAO', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12, model: '' },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 13, model: '' }
+    { key: 'actions', field: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 0, model: '', ops: [] },
+    { key: 'Prfx', field: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1, model: '', ops: [] },
+    { key: 'PubID', field: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px90', id: 2, model: '', ops: [] },
+    { key: 'Name', field: 'Name', label: 'Name', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 3, model: '', ops: [] },
+    { key: 'LongTitle', field: 'LongTitle', label: 'Long Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 4, model: '', ops: [] },
+    { key: 'AdditionalData.Status', field: 'Status', label: 'Status', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 5, model: '', ops: [] },
+    { key: 'AdditionalData.Edition', field: 'Edition', label: 'Edition', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px110', id: 6, model: '', ops: [] },
+    { key: 'AdditionalData.PRAAbbrev', field: 'PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 7, model: '', ops: [] },
+    /* { key: 'Remarks', label: 'Remarks', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 8, model: '', ops: [] }, */
+    { key: 'Resourced', field: 'Resourced', label: 'Resourced', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px130', id: 9, model: '', ops: [] },
+    { key: 'DTIC', field: 'DTIC', label: 'DTIC', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 10, model: '', ops: [] },
+    { key: 'AdditionalData.GeneralStatus', field: 'GeneralStatus', label: 'GeneralStatus', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px140', id: 11, model: '', ops: [] },
+    { key: 'NWDCAO.Title', field: 'Title', label: 'NWDC AO', sortable: true, type: 'NWDCAO', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12, model: '', ops: [] },
+    { key: 'Class', field: 'GeneralStatus', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 13, model: '', ops: [] }
   ]
 
   created() {
@@ -182,6 +182,9 @@ export default class All extends Vue {
     EventBus.$on('archiveItem', args => {
       this.archivePub(args)
     })
+    /* EventBus.$on('filterView', args => {
+      this.filterView(args)
+    }) */
   }
 
   /** @method - lifecycle hook */
@@ -210,6 +213,32 @@ export default class All extends Vue {
         this.filterValue = this.$route.query.Value
         this.filterType = this.$route.query.Type
         this.filteredpubs = this.allpublications
+        // #region filters
+        if (this.filterType === 'Navy') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Branch'], 'Navy'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Allied') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Branch'], 'Allied'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Joint') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Branch'], 'Joint'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Multinational') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Branch'], 'Multinational'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Other') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Branch'], 'Other'))
+          this.filteredpubs = a
+        }
         if (this.filterType === 'complex') {
           // filter pubs and send these pubs instead
           let fields: any = String(this.filterField)
@@ -222,6 +251,51 @@ export default class All extends Vue {
             p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
           }
           this.filteredpubs = p
+        }
+        if (this.filterType === 'NTP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NTP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'FXP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'FXP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'NTRP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NTRP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'NTTP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NTTP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'CONOPS') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'CONOPS'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'OPTASK') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'OPTASK'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'ATP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'ATP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'AJP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'AJP'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'AMP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'AMP'))
+          this.filteredpubs = a
         }
         if (this.filterType === 'NWP105') {
           let a = this.allpublications
@@ -476,10 +550,62 @@ export default class All extends Vue {
           let a = this.alldevpublications
           this.filteredpubs = a
         }
-        this.viewReady = true
+        // #endregion
+        this.buildFilters()
+        // this.viewReady = true
       }
     }
   }
+
+  buildFilters() {
+    // build the filters for all of the fields except actions
+    for (let j = 1; j < this.fields.length; j++) {
+      let p: any = []
+      for (let i = 0; i < this.filteredpubs.length; i++) {
+        // get the current value in this iteration based on the field. Then test if it is already in the array and add it if not
+        let val = ''
+        let pub: PublicationItem = this.filteredpubs[i]
+        if (this.fields[j].type === 'AD') {
+          try {
+            let fld = String(this.fields[j].field)
+            val = this.filteredpubs[i]['AdditionalData'][fld]
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        if (this.fields[j].type === 'NWDCAO') {
+          if (this.filteredpubs[i] !== null) {
+            let ao: any = pub.NWDCAO
+            let t: any = ao.Title
+            val = t
+          }
+        }
+        if (this.fields[j].type === 'default') {
+          val = this.filteredpubs[i][this.fields[j].field]
+        }
+        if (p.indexOf(val) < 0) {
+          p.push(val)
+        }
+      }
+      // sort vals. TODO: build a more comprehensive sort if needed
+      p.sort()
+      this.fields[j].ops = p
+    }
+    this.viewReady = true
+  }
+
+  /* filterView(args: any) {
+    console.log('FILTERVIEW: ' + args.selected)
+    let a = this.allpublications
+    this.filterField = args.key
+    if (args.selected === 'clear') {
+      this.filteredpubs = this.allpublications
+    } else {
+      this.filterValue = args.selected
+    }
+    a = a.filter(search => Vue._.isEqual(search[args.key], args.selected))
+    this.filteredpubs = a
+  } */
 
   viewPub(args: any) {
     this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato } })

@@ -5,17 +5,7 @@
         <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
-              <b-col cols="8" class="mt-1 p-0">
-                <!-- <b-row>
-                  <p class="ml-3" style="font-size: 22px;">Filters</p>
-                  <p class="ml-5 mt-2" style="font-size: 16px;">Branch:</p>
-                  <b-form-select class="form-control px200 ml-1" id="ddBranch" v-model="Branch" :options="branches" @change="onBranchSelect" ref="Branch"></b-form-select>
-                  <p class="ml-3 mt-2" style="font-size: 16px;">Prefix:</p>
-                  <b-form-select class="form-control px200 ml-1" id="ddPrefix" v-model="Prfx" :options="prefixes" @change="onPrfxSelect" ref="Prefix" v-b-tooltip.hover.v-dark title="Filter on Branch to display Prefix choices."></b-form-select>
-                  <p class="ml-3 mt-2" style="font-size: 16px;">Bookshelf:</p>
-                  <b-form-select class="form-control-bookshelf px250 ml-1" v-model="Bookshelf" :options="bookshelves" ref="Bookshelves" @change="onBookshelfSelected"></b-form-select>
-                </b-row> -->
-              </b-col>
+              <b-col cols="8" class="mt-1 p-0"></b-col>
               <b-col cols="4" class="mt-1 pr-3">
                 <!-- <b-form v-if="searchEnabled" @submit="onSubmit"> -->
                 <b-input-group class="float-right">
@@ -26,13 +16,8 @@
                       @click="
                         filter = ''
                         filterOn = []
-                        Branch = []
-                        Prfx = ''
-                        PubID = ''
-                        Title = ''
-                        Bookshelf = ''
-                        PRAAbbrev = ''
                       "
+                      title="Clear filters to show all pubs."
                       >Clear</b-button
                     >
                   </b-input-group-append>
@@ -62,7 +47,7 @@
                 >
                   <template #head()="data">
                     <!-- <b-dropdown split split-variant="light" variant="light" size="sm" :text="data.field.label" toggle-class="text-decoration-none" @show="drawFilterData(data.field.key)"></b-dropdown> -->
-                    <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" v-model="data.field.model" :type="data.field.type" :pubs="filtereditems" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
+                    <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" :type="data.field.type" :ops="data.field.ops" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
                   </template>
                   <!-- <template #head(actions)="data">
                     Actions
@@ -178,7 +163,7 @@ let that: any
   }
 })
 export default class DynamicTable extends Vue {
-  filter = null
+  filter = ''
   filterOn: Array<any> = []
   checkBoxes: Array<any> = ['Prfx', 'Branch']
   Branch!: any
@@ -227,6 +212,9 @@ export default class DynamicTable extends Vue {
 
   created() {
     that = this
+    EventBus.$on('filterView', args => {
+      this.filterView(args)
+    })
   }
 
   mounted() {
@@ -242,7 +230,7 @@ export default class DynamicTable extends Vue {
       this.getBS()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
-      if (this.$props.table.filterType === 'NTP') {
+      /* if (this.$props.table.filterType === 'NTP') {
         this.Branch = 'Other'
         that.getPrefixesByBranch('Other').then(response => {
           if (response) {
@@ -376,11 +364,11 @@ export default class DynamicTable extends Vue {
             this.filterOn = ['Prfx']
           }
         })
-      }
-      if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
+      } */
+      /* if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
         this.filter = this.$props.table.filterValue
         this.filterOn.push(this.$props.table.filterField)
-      }
+      } */
       // Calculate perPage based on counting the number of rows that will fit in the available space
       /* let available = this.contentheight - 130
       let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
@@ -388,11 +376,7 @@ export default class DynamicTable extends Vue {
     }
   }
 
-  public drawFilterData(field) {
-    alert(field)
-  }
-
-  public waitForBranch() {
+  /* public waitForBranch() {
     console.log('WAITING FOR BRANCH, ')
     if (this.Branch.length > 0) {
       console.log('Branch Loaded')
@@ -452,6 +436,17 @@ export default class DynamicTable extends Vue {
     if (this.Bookshelf !== null && this.Bookshelf !== '') {
       this.filter = this.Bookshelf
       this.filterOn = ['Bookshelf']
+    }
+  } */
+
+  public filterView(args: any) {
+    console.log('FILTERVIEW: ' + args.selected)
+    let a = this.$props.table.items // .allpublications
+    this.filterOn = args.key
+    if (args.selected === 'clear') {
+      this.filter = ''
+    } else {
+      this.filter = args.selected
     }
   }
 
@@ -527,27 +522,6 @@ export default class DynamicTable extends Vue {
     args.nato = nato
     EventBus.$emit('archiveItem', args)
   }
-
-  /* public rescindItem(id: string, nato: string) {
-    let args: any = {}
-    args.id = id
-    args.nato = nato
-    EventBus.$emit('rescindItem', args)
-  }
-
-  public cancelItem(id: string, nato: string) {
-    let args: any = {}
-    args.id = id
-    args.nato = nato
-    EventBus.$emit('cancelItem', args)
-  }
-
-  public supercedeItem(id: string, nato: string) {
-    let args: any = {}
-    args.id = id
-    args.nato = nato
-    EventBus.$emit('supercedeItem', args)
-  } */
 }
 </script>
 
