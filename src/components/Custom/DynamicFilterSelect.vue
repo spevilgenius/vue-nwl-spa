@@ -1,13 +1,19 @@
 <template>
   <div v-if="ready">
+    <b-modal :id="getID('dfs', id)" :ref="getID('dfs', id)" centered scrollable hide-header modal-class="filterModal" @ok="onOk(id)" @show="onShow()">
+      <b-form-checkbox v-for="option in ops" v-model="selected" :key="option" class="dfs" :value="option" :name="name" @input.native="toggleSelection(option, $event)">
+        {{ option }}
+      </b-form-checkbox>
+    </b-modal>
     <b-input-group>
-      <b-form-input :id="getID('dfs', id)" :ref="getID('dfs', id)" size="sm" class="hidden" :value="value"></b-form-input>
+      <b-form-input :id="getID('dfsi', id)" :ref="getID('dfsi', id)" size="sm" class="hidden" :value="value"></b-form-input>
       <template #prepend>
-        <b-dropdown variant="blue-500" @show="onShow" size="sm" :text="label" menu-class="filterdrop">
-          <b-form-checkbox v-for="option in options" v-model="selected" :key="option" class="dfs" :value="option" :name="name" @input.native="toggleSelection(option, $event)">
-            {{ option }}
-          </b-form-checkbox>
-        </b-dropdown>
+        <b-button variant="blue-500" size="sm" class="actionbutton">{{ label }}</b-button>
+      </template>
+      <template #append>
+        <b-button variant="blue-500" @click="showFilter(id, position)" size="sm" class="actionbutton">
+          <font-awesome-icon fas icon="filter" class="icon txt-light"></font-awesome-icon>
+        </b-button>
       </template>
     </b-input-group>
   </div>
@@ -15,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { EventBus } from '../../main'
 import { PublicationItem } from '@/interfaces/PublicationItem'
 
 @Component({
@@ -25,11 +32,11 @@ export default class DynamicCheckboxSelect extends Vue {
   // uses bootstrap-vue components
   @Prop(String) readonly id: string | undefined
   @Prop() value!: any
-  @Prop(Array) pubs!: Array<PublicationItem>
-  /* @Prop(Array) options!: [] */
+  @Prop(Array) ops!: []
   @Prop(String) label!: string
   @Prop(String) name!: string
   @Prop(String) type!: string
+  @Prop(String) position!: string
   @Prop(String) key!: string
   @Prop(Boolean) ad!: boolean
   @Prop(Boolean) ready!: boolean
@@ -41,31 +48,33 @@ export default class DynamicCheckboxSelect extends Vue {
     return prefix + '_' + id
   }
 
+  public showFilter(id: string, position: string) {
+    // open the modal
+    console.log('OPEN MODAL: ' + id)
+    id = 'dfs_' + id
+    this.$bvModal.show(id)
+  }
+
+  mounted() {
+    // do we have the information to build the actual dropdown options?
+    this.$nextTick(function() {
+      // console.log('PUBS LENGTH: ' + this.pubs.length)
+    })
+  }
+
+  public onOk() {
+    // set the filter to the selected value by emitting it to the parent
+    // alert(this.selected)
+    let args: any = {}
+    args.type = this.type
+    args.key = this.key
+    args.selected = this.selected
+    EventBus.$emit('filterView', args)
+  }
+
   public onShow() {
-    // we need to get the unique values of the field that is selected. This is based on the passed pubs array so just go get them.
-    let p: any = []
-    for (let i = 0; i < this.pubs.length; i++) {
-      // get the current value in this iteration based on the field. Then test if it is already in the array and add it if not
-      let val = ''
-      let pub: PublicationItem = this.pubs[i]
-      if (this.type === 'AD') {
-        val = this.pubs[i].AdditionalData[this.label]
-      }
-      if (this.type === 'NWDCAO') {
-        if (this.pubs[i] !== null) {
-          let ao: any = pub.NWDCAO
-          let t: any = ao.Title
-          val = t
-        }
-      }
-      if (this.type === 'default') {
-        val = this.pubs[i][this.name]
-      }
-      if (p.indexOf(val) < 0) {
-        p.push(val)
-      }
-    }
-    this.options = p
+    // Needed?
+    console.log('show event: ' + event)
   }
 
   public toggleSelection(item: any, event: any) {
@@ -73,12 +82,15 @@ export default class DynamicCheckboxSelect extends Vue {
     if (event.target.checked) {
       this.selected = item
     } else {
-      this.selected = ''
+      this.selected = 'clear'
     }
-    // emit the value back out for the v-model
-    let result = this.selected
-    this.value = result
-    this.$emit('input', this.value)
+    let args: any = {}
+    args.type = this.type
+    args.key = this.key
+    args.selected = this.selected
+    EventBus.$emit('filterView', args)
+    let id = 'dfs_' + this.id
+    this.$bvModal.hide(id)
   }
 }
 </script>
@@ -86,5 +98,10 @@ export default class DynamicCheckboxSelect extends Vue {
 <style>
 .filterdrop {
   min-width: 300px;
+}
+.filterModal > div {
+  position: relative;
+  top: 30px;
+  left: 0;
 }
 </style>
