@@ -7,9 +7,10 @@ import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
-import Faq from '@/components/Pages/FAQ.vue'
+import Faq from '@/components/NWLSupport/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
-import ReqNatoAccess from '@/components/Pages/ReqNatoAccess.vue'
+import ReqNatoAccess from '@/components/NWLSupport/ReqNatoAccess.vue'
+import ReqNWLSpt from '@/components/NWLSupport/ReqNWLSpt.vue'
 
 Vue.use(VueRouter)
 
@@ -117,6 +118,37 @@ const termsMenu = {
   ]
 }
 
+const nwlsupportMenu = {
+  path: '/support',
+  component: Layout,
+  redirect: '/support/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/faq',
+      name: 'FAQ',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/FAQ.vue'),
+      props: true
+    },
+    {
+      path: 'home/reqnwlsupport',
+      name: 'Request NWL Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/RequestNWLSpt.vue'),
+      props: true
+    },
+    {
+      path: 'home/reqnatoaccess',
+      name: 'Request NATO Access',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNatoAccess.vue'),
+      props: true
+    }
+  ]
+}
 const routes = [
   {
     path: '/',
@@ -126,6 +158,7 @@ const routes = [
   pubsDevMenu,
   termsMenu,
   librarianMenu,
+  nwlsupportMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,

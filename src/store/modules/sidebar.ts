@@ -289,7 +289,7 @@ class Sidebar extends VuexModule {
     {
       id: 800,
       isMenu: true,
-      name: 'Support',
+      name: 'NWL Support',
       path: '/support/home',
       children: [
         {
