@@ -9,6 +9,7 @@ import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
 import AoAdministration from '@/components/AO/AOAdministration.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
+import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
 
@@ -120,23 +121,25 @@ const aoMenu = {
       name: 'AO Administration',
       component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdministration.vue'),
       props: true
-    },
+    }
+  ]
+}
+
+const reportsMenu = {
+  path: '/reports',
+  component: Layout,
+  redirect: '/reports/home',
+  children: [
     {
-      path: 'forms/view',
-      name: 'View Publication',
-      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/ViewPub.vue'),
+      path: 'home/:mode',
+      name: 'Reports',
+      component: () => import(/* webpackChunkName: "reports" */ '../components/Reports/Home.vue'),
       props: true
     },
     {
-      path: 'forms/edit',
-      name: 'Edit Publication',
-      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/EditPub.vue'),
-      props: true
-    },
-    {
-      path: 'forms/new',
-      name: 'New Publication',
-      component: () => import(/* webpackChunkName: "ao" */ '../components/Publications/Forms/NewPub.vue'),
+      path: 'home/fiscalyearreport',
+      name: 'Fiscal Year Report',
+      component: () => import(/* webpackChunkName: "reports" */ '../components/Reports/FiscalYearReport.vue'),
       props: true
     }
   ]
@@ -155,7 +158,7 @@ const termsMenu = {
     },
     {
       path: 'home/manageterms',
-      name: 'ManageTerms',
+      name: 'Manage Terms',
       component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/ManageTerms.vue'),
       props: true
     }
@@ -172,6 +175,7 @@ const routes = [
   termsMenu,
   aoMenu,
   librarianMenu,
+  reportsMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,

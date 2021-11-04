@@ -429,12 +429,14 @@ class Sidebar extends VuexModule {
       children: [
         {
           id: 1101,
-          name: 'AO Administration',
-          path: '/ao/home/aoadministration',
+          name: 'Fiscal Year Report',
+          path: '/reports/home/fiscalyearreport',
           library: 'fas',
-          icon: 'chartbar'
+          icon: 'chart-bar'
         }
-      ]
+      ],
+      library: 'fas',
+      icon: 'chart-pie'
     },
     {
       id: 1500,
