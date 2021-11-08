@@ -153,7 +153,7 @@ export default class DynamicModalSelect extends Vue {
     }
     console.log('RESULT: ' + result)
     this.$emit('input', result)
-    id = 'dm_' + id
+    id = 'dms_' + id
     this.$bvModal.hide(id)
   }
 }

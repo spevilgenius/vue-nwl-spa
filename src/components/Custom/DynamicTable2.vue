@@ -64,7 +64,7 @@
                     <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
                     </b-button>
-                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato)">
+                    <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
                       <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
                     </b-button>
                   </template>
@@ -106,6 +106,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
 import { UserInt } from '../../interfaces/User'
+import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import DynamicFilterSelect from './DynamicFilterSelect.vue'
 
@@ -185,6 +186,9 @@ export default class DynamicTable extends Vue {
   public contentwidth!: number
 
   @publication.State
+  public allpublications!: Array<PublicationItem>
+
+  @publication.State
   public prefixes!: Array<ObjectItem>
 
   @publication.Action
@@ -231,214 +235,12 @@ export default class DynamicTable extends Vue {
       this.getBS()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
-      /* if (this.$props.table.filterType === 'NTP') {
-        this.Branch = 'Other'
-        that.getPrefixesByBranch('Other').then(response => {
-          if (response) {
-            this.Prfx = 'NTP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'FXP') {
-        this.Branch = 'Navy'
-        that.getPrefixesByBranch('Navy').then(response => {
-          if (response) {
-            this.Prfx = 'FXP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'NTRP') {
-        this.Branch = 'Navy'
-        that.getPrefixesByBranch('Navy').then(response => {
-          if (response) {
-            this.Prfx = 'NTRP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'NTTP') {
-        this.Branch = 'Navy'
-        that.getPrefixesByBranch('Navy').then(response => {
-          if (response) {
-            this.Prfx = 'NTTP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'CONOPS') {
-        this.Branch = 'Other'
-        that.getPrefixesByBranch('Other').then(response => {
-          if (response) {
-            this.Prfx = 'CONOPS'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'OPTASK') {
-        this.Branch = 'Other'
-        that.getPrefixesByBranch('Other').then(response => {
-          if (response) {
-            this.Prfx = 'OPTASK'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'Allied') {
-        this.Branch = 'Allied'
-        that.getPrefixesByBranch('Allied').then(response => {
-          if (response) {
-            this.filter = this.Branch
-            this.filterOn = ['Branch']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'Joint') {
-        this.Branch = 'Joint'
-        that.getPrefixesByBranch('Joint').then(response => {
-          if (response) {
-            this.filter = this.Branch
-            this.filterOn = ['Branch']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'Multinational') {
-        this.Branch = 'Multinational'
-        that.getPrefixesByBranch('Multinational').then(response => {
-          if (response) {
-            this.filter = this.Branch
-            this.filterOn = ['Branch']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'Other') {
-        this.Branch = 'Other'
-        that.getPrefixesByBranch('Other').then(response => {
-          if (response) {
-            this.filter = this.Branch
-            this.filterOn = ['Branch']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'Navy') {
-        this.Branch = 'Navy'
-        that.getPrefixesByBranch('Navy').then(response => {
-          if (response) {
-            this.filter = this.Branch
-            this.filterOn = ['Branch']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'ATP') {
-        this.Branch = 'Allied'
-        that.getPrefixesByBranch('Allied').then(response => {
-          if (response) {
-            this.Prfx = 'ATP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'AJP') {
-        this.Branch = 'Allied'
-        that.getPrefixesByBranch('Allied').then(response => {
-          if (response) {
-            this.Prfx = 'AJP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      }
-      if (this.$props.table.filterType === 'AMP') {
-        this.Branch = 'Allied'
-        that.getPrefixesByBranch('Allied').then(response => {
-          if (response) {
-            this.Prfx = 'AMP'
-            this.filter = this.Prfx
-            this.filterOn = ['Prfx']
-          }
-        })
-      } */
-      /* if (this.$props.table.filterField !== null && this.$props.table.filterField !== '') {
-        this.filter = this.$props.table.filterValue
-        this.filterOn.push(this.$props.table.filterField)
-      } */
       // Calculate perPage based on counting the number of rows that will fit in the available space
       /* let available = this.contentheight - 130
       let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
       this.perPage = amount */
     }
   }
-
-  /* public waitForBranch() {
-    console.log('WAITING FOR BRANCH, ')
-    if (this.Branch.length > 0) {
-      console.log('Branch Loaded')
-      clearInterval(that.interval)
-    }
-  }
-
-  public onBranchSelect() {
-    console.log('BRANCH SELECTED')
-    if (this.Branch !== null && this.Branch !== 'Please Select...') {
-      // call getPrefixesByBranch
-      this.getPrefixesByBranch(String(this.Branch)).then(response => {
-        if (response) {
-          this.filter = this.Branch
-          this.filterOn = ['Branch']
-        }
-      })
-    }
-  }
-
-  public onPrfxSelect() {
-    if (this.Prfx !== null && this.Prfx !== 'Please Select...') {
-      this.filter = this.Prfx
-      this.filterOn = ['Prfx']
-    }
-  }
-
-  public onPubIDSelected() {
-    if (this.PubID !== null && this.PubID !== '') {
-      this.filter = this.PubID
-      this.filterOn = ['PubID']
-    }
-  }
-
-  public onPRAAbbrevSelected() {
-    if (this.PRAAbbrev !== null && this.PRAAbbrev !== '') {
-      this.filter = this.PRAAbbrev
-      this.filterOn = ['AdditionalData.PRAAbbrev']
-    }
-  }
-
-  public onFunctionalSeriesSelected() {
-    if (this.FunctionalSeries !== null && this.FunctionalSeries !== '') {
-      this.filter = this.FunctionalSeries
-      this.filterOn = ['AdditionalData.FunctionalSeries']
-    }
-  }
-
-  public onTitleSelected() {
-    if (this.Title !== null && this.Title !== '') {
-      this.filter = this.Title
-      this.filterOn = ['Title']
-    }
-  }
-
-  public onBookshelfSelected() {
-    if (this.Bookshelf !== null && this.Bookshelf !== '') {
-      this.filter = this.Bookshelf
-      this.filterOn = ['Bookshelf']
-    }
-  } */
 
   public filterView(args: any) {
     console.log('FILTERVIEW: ' + args.selected)
@@ -517,10 +319,11 @@ export default class DynamicTable extends Vue {
     EventBus.$emit('editItem', args)
   }
 
-  public archiveItem(id: string, nato: string) {
+  public archiveItem(id: string, nato: string, item: any) {
     let args: any = {}
     args.id = id
     args.nato = nato
+    args.item = item
     EventBus.$emit('archiveItem', args)
   }
 }

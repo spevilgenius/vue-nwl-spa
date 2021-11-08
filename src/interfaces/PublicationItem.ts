@@ -2,6 +2,7 @@ interface PublicationItem {
   Id?: number
   DocID?: string
   Title: string
+  Archive?: string
   Name?: string
   IsNato?: string
   RelativeURL?: string
@@ -67,6 +68,7 @@ interface PublicationItem {
     FunctionalField: string
     FunctionalSeries: string
     Hidden: string
+    LastPublished?: string
     NewPub: string
     NWDCSignature: string
     OldShortTitles: string

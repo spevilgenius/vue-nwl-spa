@@ -681,6 +681,7 @@ export default class EditPub extends Vue {
         .then(value => {
           if (value === true) {
             // user wants to publish
+            that.publication.AdditionalData.LastPublished = new Date().toDateString()
             that.approvePublication(that.publication).then(function() {
               // route the user back to the view form
               that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
