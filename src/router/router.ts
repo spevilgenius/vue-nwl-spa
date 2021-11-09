@@ -12,6 +12,7 @@ import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
 import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
+import Search from '@/components/Pages/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -224,6 +225,11 @@ const routes = [
         path: 'POCs',
         name: 'POCs',
         component: POCs
+      },
+      {
+        path: 'Search',
+        name: 'Search',
+        component: Search
       }
     ]
   }

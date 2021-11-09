@@ -364,8 +364,8 @@ class Sidebar extends VuexModule {
           path: '/ao/home/aoadministration',
           library: 'fas',
           icon: 'tools'
-        },
-        {
+        }
+        /* {
           id: 952,
           name: 'Pubs in Development(By PRA)',
           path: '/pubs/development/pra',
@@ -405,7 +405,7 @@ class Sidebar extends VuexModule {
           path: '/ao/home/requestit',
           library: 'fas',
           icon: 'archive'
-        }
+        } */
       ],
       library: 'fas',
       icon: 'question'
@@ -415,11 +415,11 @@ class Sidebar extends VuexModule {
       isMenu: false,
       children: [],
       name: 'Search',
-      path: '/search/home',
+      path: '/Pages/Search',
       library: 'fas',
       icon: 'search-plus'
-    },
-    {
+    }
+    /* {
       id: 1100,
       isMenu: true,
       name: 'Reports',
@@ -448,7 +448,7 @@ class Sidebar extends VuexModule {
       icon: 'user-shield',
       permission: 'isDeveloper',
       permissionvalue: true
-    }
+    } */
   ]
 
   public navigationloaded = false
