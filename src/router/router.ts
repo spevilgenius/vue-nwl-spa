@@ -98,6 +98,12 @@ const pubsDevMenu = {
       name: 'Add New Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
       props: true
+    },
+    {
+      path: 'pubs/forms/upload',
+      name: 'Upload Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/UploadPub.vue'),
+      props: true
     }
   ]
 }
