@@ -199,7 +199,7 @@ export default class NewPub extends Vue {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
     }
     // TODO: For testing we are using a different library with versioning turned on.
-    url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
+    // url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
     url += "(url='"
     url += name
     url += "',overwrite=true)"
