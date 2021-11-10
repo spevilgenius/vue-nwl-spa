@@ -1,26 +1,5 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    <b-modal id="UploadModal" size="lg" centered header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk()">
-      <template v-slot:modal-title>Upload Publication</template>
-      <b-container class="p-0">
-        <b-form>
-          <b-row no-gutters>
-            <b-col cols="12">
-              <b-form-group label="Select Publication">
-                <b-form-file placeholder="Choose a file" no-drop class="form-control" v-model="file" id="UploadFile" @input="fileSelected()"></b-form-file>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row no-gutters>
-            <b-col cols="8"></b-col>
-            <b-col cols="4" class="p-0 text-right">
-              <b-button v-if="isUploading" variant="blue-500"><b-spinner variant="light" class="loading-spinner"></b-spinner>&nbsp;Uploading...</b-button>
-              <b-button variant="blue-500" @click.stop="uploadFile" title="Upload"><font-awesome-icon far icon="file-upload" class="icon"></font-awesome-icon>Upload</b-button>
-            </b-col>
-          </b-row>
-        </b-form>
-      </b-container>
-    </b-modal>
     <b-overlay :show="!formReady" :variant="success" class="contentHeight m-0 p-0">
       <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
         <b-row no-gutters class="contentHeight">
@@ -332,7 +311,6 @@ export default class EditPub extends Vue {
   interval!: any
   invalidTitle = 'Please input a valid Title.'
   invalidBranch = 'Please select a valid Branch.'
-  isUploading = false
   reltofilter = ''
   crafilter = ''
   bsfilter = ''
@@ -347,9 +325,6 @@ export default class EditPub extends Vue {
   canPublish = false
   formfields = ['branch', 'prfx', 'pubid', 'ltitle']
   filteredstatuses: Array<ObjectItem> = []
-  file?: File
-  buffer?: any = null
-  fileUploaded?: boolean = false
 
   bsfields = [
     { key: 'actions', label: 'Select' },
@@ -743,102 +718,6 @@ export default class EditPub extends Vue {
           // An error occurred
         })
     }
-  }
-
-  public fileSelected() {
-    // get the bufffer
-    const that = this
-    let buffer = this.getFileBuffer(this.file)
-    buffer.then(function(buff: any) {
-      that.buffer = buff
-    })
-    // get the digest so we can upload
-    this.getDigest()
-    /* this.getDigest().then(response => {
-      if (response) {
-        this.interval = setInterval(this.uploadFile, 500)
-      }
-    }) */
-  }
-
-  public async uploadFile() {
-    // get a buffer for the file and then upload to the appropriate library
-    // after upload we can then set the properties of the document and then refresh the supporting docs array
-    this.isUploading = true
-    if (this.digest !== '') {
-      clearInterval(this.interval)
-      const that = this
-      if (this.buffer !== null) {
-        let url = ''
-        if (this.publication.IsNato === 'Yes') {
-          url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('NATOPublications')/RootFolder/Files/Add"
-        } else {
-          url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
-        }
-        url += "(url='"
-        url += this.file?.name
-        url += "',overwrite=true)"
-        let headers = {
-          Accept: 'application/json;odata=verbose',
-          'X-RequestDigest': this.digest
-        }
-        try {
-          let response = await axios({
-            url: url,
-            method: 'POST',
-            data: this.buffer,
-            headers: headers
-          })
-          // get the id and process the form data into the new document
-          console.log('UPLOAD RESPONSE: ' + response)
-          let itemlink = response.data.d.ListItemAllFields.__deferred.uri
-          response = await axios({
-            method: 'GET',
-            url: itemlink,
-            headers: {
-              Accept: 'application/json;odata=verbose'
-            }
-          })
-          let metadata = response.data.d.__metadata
-          let id = response.data.d.Id
-          console.log('RESPONSE METADATA: ' + metadata)
-          // set the fields for updating
-          let itemprops = {
-            __metadata: { type: metadata.type },
-            DocID: this.publication.DocID
-          }
-          const uheaders = {
-            'Content-Type': 'application/json;odata=verbose',
-            Accept: 'application/json;odata=verbose',
-            'X-RequestDigest': this.digest,
-            'X-HTTP-Method': 'MERGE',
-            'If-Match': '*'
-          }
-          const config = {
-            headers: uheaders
-          }
-          response = await axios.post(metadata.uri, itemprops, config)
-          console.log('UPDATE RESPONSE: ' + response)
-          this.fileUploaded = true
-        } catch (error) {
-          console.log('Error Adding Document: ' + error)
-        }
-      }
-    }
-  }
-
-  public getFileBuffer(file) {
-    let p = new Promise(function(resolve, reject) {
-      var reader = new FileReader()
-      reader.onloadend = function(e) {
-        resolve(e?.target?.result)
-      }
-      reader.onerror = function(e) {
-        reject(e?.target?.error)
-      }
-      reader.readAsArrayBuffer(file)
-    })
-    return p
   }
 
   /* public onReltoSearch() {
