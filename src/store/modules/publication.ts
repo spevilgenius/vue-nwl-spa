@@ -3,10 +3,8 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
-// import { EventBus } from '../../main'
 import axios from 'axios'
 import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
-import Support from './support'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -96,7 +94,6 @@ function isJson(item: any, type: string) {
       ij = false
     }
   } else {
-    // console.log('ITEM is not a string: ' + typeof item)
     if (typeof item === 'object') {
       obj = true
       try {
@@ -123,14 +120,6 @@ function FormatAD(ad: any, id: any, nato: any): any {
     // this item may already an object
     if (test.obj === true) {
       return ad
-      /* console.log('ITEM ID: ' + id + ', NATO: ' + nato + ' is an Object so convert and test.')
-      try {
-        let item = JSON.stringify(ad)
-        item = JSON.parse(item)
-        return item
-      } catch (e) {
-        return additionalData
-      } */
     }
   }
 }
@@ -541,9 +530,6 @@ class Publication extends VuexModule {
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
-    /* p.value = j[0]['Title']
-    p.text = j[0]['Title']
-    p.selected = false */
     p.Name = j[0]['Name']
     p.RelativeURL = j[0]['File']['ServerRelativeUrl']
     p.IsNato = data.nato
@@ -602,8 +588,8 @@ class Publication extends VuexModule {
     const config = {
       headers: headers
     }
-    // update the fields with the passed in data
 
+    // update the fields with the passed in data
     let itemprops = {
       __metadata: { type: data.type },
       Title: data.Title,
