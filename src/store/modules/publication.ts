@@ -117,7 +117,7 @@ function FormatAD(ad: any, id: any, nato: any): any {
     ad = JSON.parse(ad)
     return ad
   } else {
-    // this item may already an object
+    // this item may already be an object
     if (test.obj === true) {
       return ad
     }
