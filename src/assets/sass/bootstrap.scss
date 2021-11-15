@@ -221,6 +221,15 @@ input[type=button], input[type=reset], input[type=submit], button {
   color: $dark
 }
 
+.app-search a.advanced {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  color: $white;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
 .app-search .form-control, .app-search .form-control:focus {
   border: none;
   font-size: 13px;
@@ -234,7 +243,7 @@ input[type=button], input[type=reset], input[type=submit], button {
   width: 180px;
   display: inline-block;
   line-height: 30px;
-  margin-top: 18px;
+  margin-top: 10px;
   /* border-radius: 40px; */
   transition: .5s ease-out
 }

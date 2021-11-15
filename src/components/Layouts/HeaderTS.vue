@@ -23,9 +23,16 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end">
         <b-navbar-nav class="ml-auto hidden-xs">
-          <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
-            <input type="text" placeholder="Search..." class="form-control" />
-            <a href=""><i class="fa fa-search"></i></a>
+          <form role="search" class="app-search hidden-sm hidden-xs">
+            <b-container fluid class="p-0">
+              <b-row no-gutters>
+                <input type="text" placeholder="Search..." class="form-control" />
+                <a href=""><i class="fa fa-search"></i></a>
+              </b-row>
+              <b-row no-gutters>
+                <b-link class="advanced" :to="{ name: 'Search' }">Advanced Search</b-link>
+              </b-row>
+            </b-container>
           </form>
           <b-nav-item-dropdown id="SettingsMenu" right no-caret menu-class="animated bounceInDown">
             <template slot="button-content">

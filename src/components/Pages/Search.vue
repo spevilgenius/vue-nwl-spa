@@ -43,11 +43,7 @@
         </b-row>
 
         <b-container fluid>
-          <b-row v-for="row in rows" :key="row"> {{ rows.pickpropfields }}{{ rows.containsfields }}{{ rows.searchrestrictiontext }}{{ rows.andorfields }} </b-row>
-        </b-container>
-
-        <!-- <b-container fluid class="m-0 p-0" id="propertyrestrictions">
-          <b-row no-gutters>
+          <b-row v-for="row in rows" :key="row">
             <b-col cols="2" class="m-0 p-0 searchprops">Where the Property...</b-col>
             <b-col cols="2" class="m-0 pl-1"><b-form-select :options="pickpropfields" size="sm"></b-form-select></b-col>
             <b-col cols="2" class="m-0 pl-1"><b-form-select :options="containsfields" size="sm"></b-form-select></b-col>
@@ -74,7 +70,7 @@
                 <img :src="baseImageUrl + '/advminus.png'" /> </a
             ></b-col>
           </b-row>
-        </b-container> -->
+        </b-container>
         <b-row no-gutters>
           <b-col cols="10"></b-col>
           <b-col cols="2" style="margin-top:15px; margin-bottom 15px;"><b-button @click="startSearch" variant="outline-primary" size="sm" class="">Search</b-button></b-col>
@@ -126,7 +122,7 @@ export default class Search extends Vue {
     { value: 'Or', text: 'Or' }
   ]
 
-  rows = [this.pickpropfields, this.containsfields, this.searchrestrictiontext, this.andorfields]
+  rows = []
 
   public startSearch() {
     alert('Searching!')
