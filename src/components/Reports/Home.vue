@@ -8,13 +8,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({
   name: 'AO'
 })
-export default class AO extends Vue {
+export default class Reports extends Vue {
   @Prop() readonly mode!: string
 
   /** @method - lifecycle hook */
   mounted() {
-    if (this.mode == 'aoadministration') {
-      this.$router.push({ name: 'AO Administration' })
+    if (this.mode == 'fiscalyearreport') {
+      this.$router.push({ name: 'Fiscal Year Report' })
     }
   }
 }

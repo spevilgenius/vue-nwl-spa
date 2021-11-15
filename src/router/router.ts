@@ -6,9 +6,13 @@ import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
+import ManageTerms from '@/components/Pages/ManageTerms.vue'
+import AoAdministration from '@/components/AO/AOAdministration.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
+import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
+import Search from '@/components/Pages/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -108,6 +112,46 @@ const pubsDevMenu = {
   ]
 }
 
+const aoMenu = {
+  path: '/ao',
+  component: Layout,
+  redirect: '/ao/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'AO Actions',
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/aoadministration',
+      name: 'AO Administration',
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdministration.vue'),
+      props: true
+    }
+  ]
+}
+
+const reportsMenu = {
+  path: '/reports',
+  component: Layout,
+  redirect: '/reports/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'Reports',
+      component: () => import(/* webpackChunkName: "reports" */ '../components/Reports/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/fiscalyearreport',
+      name: 'Fiscal Year Report',
+      component: () => import(/* webpackChunkName: "reports" */ '../components/Reports/FiscalYearReport.vue'),
+      props: true
+    }
+  ]
+}
+
 const termsMenu = {
   path: '/terminology',
   component: Layout,
@@ -117,6 +161,12 @@ const termsMenu = {
       path: 'home',
       name: 'Terminology',
       component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/Terminology.vue'),
+      props: true
+    },
+    {
+      path: 'home/manageterms',
+      name: 'Manage Terms',
+      component: () => import(/* webpackChunkName: "terminology" */ '../components/Pages/ManageTerms.vue'),
       props: true
     }
   ]
@@ -130,7 +180,9 @@ const routes = [
   pubsMenu,
   pubsDevMenu,
   termsMenu,
+  aoMenu,
   librarianMenu,
+  reportsMenu,
   /* adminMenu,
   taskMenu,
   msrMenu,
@@ -179,6 +231,11 @@ const routes = [
         path: 'POCs',
         name: 'POCs',
         component: POCs
+      },
+      {
+        path: 'Search',
+        name: 'Search',
+        component: Search
       }
     ]
   }

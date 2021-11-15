@@ -67,6 +67,7 @@ interface PublicationItem {
     FirstDraft: string
     FunctionalField: string
     FunctionalSeries: string
+    LastPublished?: string
     Hidden: string
     LastPublished?: string
     NewPub: string

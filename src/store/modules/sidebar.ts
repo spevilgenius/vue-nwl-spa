@@ -170,7 +170,7 @@ class Sidebar extends VuexModule {
         {
           id: 302,
           name: 'Manage Terminology',
-          path: '/terminology/home/ManageTerms',
+          path: '/terminology/home/manageterms',
           library: 'fas',
           icon: 'plus',
           permission: 'isTerminologist',
@@ -361,11 +361,11 @@ class Sidebar extends VuexModule {
         {
           id: 951,
           name: 'AO Administration',
-          path: '/ao/home/admin',
+          path: '/ao/home/aoadministration',
           library: 'fas',
           icon: 'tools'
-        },
-        {
+        }
+        /* {
           id: 952,
           name: 'Pubs in Development(By PRA)',
           path: '/pubs/development/pra',
@@ -405,7 +405,7 @@ class Sidebar extends VuexModule {
           path: '/ao/home/requestit',
           library: 'fas',
           icon: 'archive'
-        }
+        } */
       ],
       library: 'fas',
       icon: 'question'
@@ -415,9 +415,28 @@ class Sidebar extends VuexModule {
       isMenu: false,
       children: [],
       name: 'Search',
-      path: '/search/home',
+      path: '/Pages/Search',
       library: 'fas',
       icon: 'search-plus'
+    }
+    /* {
+      id: 1100,
+      isMenu: true,
+      name: 'Reports',
+      path: '/reports/home',
+      permission: 'islibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 1101,
+          name: 'Fiscal Year Report',
+          path: '/reports/home/fiscalyearreport',
+          library: 'fas',
+          icon: 'chart-bar'
+        }
+      ],
+      library: 'fas',
+      icon: 'chart-pie'
     },
     {
       id: 1500,
@@ -429,7 +448,7 @@ class Sidebar extends VuexModule {
       icon: 'user-shield',
       permission: 'isDeveloper',
       permissionvalue: true
-    }
+    } */
   ]
 
   public navigationloaded = false
