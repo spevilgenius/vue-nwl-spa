@@ -77,8 +77,8 @@
         </b-row>
         <b-row>&nbsp;</b-row>
       </b-container>
-      <b-card-footer
-        ><b-row no-gutters>Improve your searches with&nbsp;<a href='javascript:HelpWindowKey("WSSEndUser_SearchTips")'> search tips </a></b-row></b-card-footer
+      <b-card-footer>
+        <b-row no-gutters>Improve your searches with&nbsp;<a href='javascript:HelpWindowKey("WSSEndUser_SearchTips")'> search tips </a></b-row></b-card-footer
       >
     </b-card-body>
   </b-card>
