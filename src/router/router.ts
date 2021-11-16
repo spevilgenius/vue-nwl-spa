@@ -7,7 +7,7 @@ import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
 import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
-import AoAdministration from '@/components/AO/AOAdministration.vue'
+import AoAdministration from '@/components/AO/AOAdmin.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
 import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
@@ -126,7 +126,7 @@ const aoMenu = {
     {
       path: 'home/aoadministration',
       name: 'AO Administration',
-      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdministration.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdmin.vue'),
       props: true
     }
   ]
@@ -183,20 +183,6 @@ const routes = [
   aoMenu,
   librarianMenu,
   reportsMenu,
-  /* adminMenu,
-  taskMenu,
-  msrMenu,
-  financialMenu,
-  calendarMenu,
-  travelMenu,
-  featureMenu,
-  featuresMenu,
-  bugsMenu,
-  personnelMenu,
-  trainingMenu,
-  securityMenu,
-  workplanMenu,
-  refreshMenu, */
   {
     path: '/pages',
     component: Layout,

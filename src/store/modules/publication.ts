@@ -527,12 +527,14 @@ class Publication extends VuexModule {
     let j = response.data.d.results
     let p = {} as PublicationItem
     let ad = FormatAD(j[0]['AdditionalData'], j[0]['Id'], data.Nato)
+    let rurl = String(j[0]['File']['ServerRelativeUrl'])
+    let nato = rurl.indexOf('NATO') >= 0 ? 'Yes' : 'No'
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
     p.Name = j[0]['Name']
-    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = data.nato
+    p.RelativeURL = rurl
+    p.IsNato = nato
     p.Availability = j[0]['Availability']
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
@@ -573,7 +575,7 @@ class Publication extends VuexModule {
   public async updatePublicationById(data: any): Promise<boolean> {
     // update the publication data
     let url = ''
-    if (data.IsNato) {
+    if (data.IsNato === 'Yes') {
       url = this.updateNatoPubUrl + data.Id + ')'
     } else {
       url = this.updatePubUrl + data.Id + ')'

@@ -6,7 +6,7 @@
       </b-row>
     </b-card-header>
     <b-card-body class="m-0 p-0">
-      <b-container fluid class="mt-100px p-0">
+      <b-container fluid class="p-0">
         <b-row>
           <b-col cols="2"></b-col>
           <b-col cols="10" class="mb-1 p-0" style="font-size:large; text-align:left">
@@ -75,13 +75,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import crono from 'vue-crono'
-import { namespace } from 'vuex-class'
-//import { UserInt } from '../../../interfaces/User'
-//import { PublicationItem } from '../../../interfaces/PublicationItem'
-//import { SupportingDocItem } from '../../../interfaces/SupportingDocItem'
-import axios from 'axios'
-//import Searchts from 'searchts'
 
 @Component
 export default class Search extends Vue {
@@ -96,8 +89,7 @@ export default class Search extends Vue {
     { value: 'Description', text: 'Description' },
     { value: 'Name', text: 'Name' },
     { value: 'URL', text: 'URL' },
-    { value: 'Last Modified Date', text: 'Last Modified Date' },
-    { value: 'AdditionalData.LastPublished', text: 'Last Published' }
+    { value: 'Last Modified Date', text: 'Last Modified Date' }
   ]
 
   containsfields = [
