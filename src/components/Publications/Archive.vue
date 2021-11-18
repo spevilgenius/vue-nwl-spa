@@ -4,6 +4,7 @@
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
           v-if="viewReady"
+          :kind="archive"
           :user="currentUser"
           :table="{
             id: tblId,
@@ -11,9 +12,6 @@
             buttons: buttons,
             fields: fields,
             items: filteredpubs,
-            filterField: filterField,
-            filterValue: filterValue,
-            filterType: filterType,
             overlayText: overlayText,
             overlayVariant: overlayVariant
           }"
@@ -29,12 +27,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '../../interfaces/PublicationItem'
+import { NotificationItem } from '../../interfaces/NotificationItem'
 import DynamicTable from '../Custom/DynamicTable2.vue'
 import { EventBus } from '../../main'
-import { concat } from 'lodash'
 
 const users = namespace('users')
 const publication = namespace('publication')
+const notify = namespace('notify')
 
 @Component({
   name: 'Archive',
@@ -72,41 +71,51 @@ export default class Archive extends Vue {
   @publication.State
   public allarchivepubsloaded!: boolean
 
-  @publication.Action
-  public getAllArchivePublications!: () => Promise<boolean>
+  @notify.Action
+  public add!: (notification: NotificationItem) => void
 
   @publication.Action
-  public getAllNatoArchivePublications!: () => Promise<boolean>
+  public getArchivePublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getNatoArchivePublications!: () => Promise<boolean>
 
   @publication.Action
   public createAllArchivePubs!: () => Promise<boolean>
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', id: 0 },
-    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
-    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
-    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 2 },
-    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', id: 3 },
-    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px300', id: 11 },
-    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 6 },
-    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 10 }
+    { key: 'Prfx', field: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1, model: '', ops: [] },
+    { key: 'PubID', field: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px90', id: 2, model: '', ops: [] },
+    { key: 'Name', field: 'Name', label: 'Name', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 3, model: '', ops: [] },
+    { key: 'LongTitle', field: 'LongTitle', label: 'Long Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 4, model: '', ops: [] },
+    { key: 'AdditionalData.Status', field: 'Status', label: 'Status', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 5, model: '', ops: [] },
+    { key: 'AdditionalData.Edition', field: 'Edition', label: 'Edition', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px110', id: 6, model: '', ops: [] },
+    { key: 'AdditionalData.PRAAbbrev', field: 'PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 7, model: '', ops: [] },
+    /* { key: 'Remarks', label: 'Remarks', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 8, model: '', ops: [] }, */
+    { key: 'Resourced', field: 'Resourced', label: 'Resourced', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px130', id: 9, model: '', ops: [] },
+    { key: 'DTIC', field: 'DTIC', label: 'DTIC', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 10, model: '', ops: [] },
+    { key: 'AdditionalData.GeneralStatus', field: 'GeneralStatus', label: 'GeneralStatus', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px140', id: 11, model: '', ops: [] },
+    { key: 'NWDCAO.Title', field: 'Title', label: 'NWDC AO', sortable: true, type: 'NWDCAO', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12, model: '', ops: [] },
+    { key: 'Class', field: 'GeneralStatus', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 13, model: '', ops: [] }
   ]
 
   created() {
     EventBus.$on('viewItem', args => {
       this.viewPub(args)
     })
-    EventBus.$on('editItem', args => {
-      this.editPub(args)
-    })
   }
 
   /** @method - lifecycle hook */
 
   mounted() {
-    this.getAllNatoArchivePublications()
-    this.getAllArchivePublications()
+    this.add({
+      id: 'loadingarchives',
+      type: 'success',
+      title: 'Loading',
+      message: 'Loading all archived pubs.'
+    })
+    this.getNatoArchivePublications()
+    this.getArchivePublications()
     this.interval = setInterval(this.waitForIt, 500)
   }
 
@@ -121,38 +130,19 @@ export default class Archive extends Vue {
   public waitForPubs() {
     if (this.allarchivepubsloaded) {
       clearInterval(this.interval)
-      if (this.$route) {
-        this.filterField = this.$route.query.Field
-        this.filterValue = this.$route.query.Value
-        this.filterType = this.$route.query.Type
-        console.log('filterField=' + this.filterField)
-        console.log('filterValue=' + this.filterValue)
-        console.log('filterType=' + this.filterType)
-        this.filteredpubs = this.allarchivepublications
-        if (this.filterType === 'complex') {
-          // filter pubs and send these pubs instead
-          let fields: any = String(this.filterField)
-          fields = fields.split(',')
-          let vals: any = String(this.filterValue)
-          vals = vals.split(',')
-          let p = this.allarchivepublications
-          for (let i = 0; i < fields.length; i++) {
-            let field = fields[i]
-            p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
-          }
-          this.filteredpubs = p
-        }
-
-        this.viewReady = true
-      }
+      this.add({
+        id: 'loadedarchives',
+        type: 'success',
+        title: 'Loaded',
+        message: 'All archived pubs loaded.'
+      })
+      this.filteredpubs = this.allarchivepublications
+      this.viewReady = true
     }
   }
 
   viewPub(args: any) {
     this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
-  }
-  editPub(args: any) {
-    this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato }, params: { Id: args.id } })
   }
 }
 </script>

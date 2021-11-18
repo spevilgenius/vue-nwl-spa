@@ -161,6 +161,7 @@ class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
+  public allarchivepublications: Array<PublicationItem> = []
   public alldevpublications: Array<PublicationItem> = []
   public devpublications: Array<PublicationItem> = []
   public natodevpublications: Array<PublicationItem> = []
@@ -173,6 +174,7 @@ class Publication extends VuexModule {
   public natodevpubsloaded?: boolean = false
   public archivepubsloaded?: boolean = false
   public natoarchivepubsloaded?: boolean = false
+  public allarchivepubsloaded?: boolean = false
   public allpubsloaded?: boolean = false
   public alldevpubsloaded?: boolean = false
   public publication?: any //PublicationItem
@@ -277,8 +279,8 @@ class Publication extends VuexModule {
   public createAllArchivePublications(): void {
     let p: Array<PublicationItem>
     p = this.archivepublications.concat(this.natoarchivepublications)
-    this.allpublications = p
-    this.allpubsloaded = true
+    this.allarchivepublications = p
+    this.allarchivepubsloaded = true
   }
 
   @Mutation
@@ -728,16 +730,16 @@ class Publication extends VuexModule {
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
-        that.context.commit('createPublications', p)
+        that.context.commit('createArchivePublications', p)
       }
     }
-    let turl = tp1 + slash + slash + tp2 + this.pubsUrl
+    let turl = tp1 + slash + slash + tp2 + this.pubsArchiveUrl
     getArchivePubs(turl)
     return true
   }
 
   @Action
-  public async getAllNatoArchivePublications(): Promise<boolean> {
+  public async getNatoArchivePublications(): Promise<boolean> {
     let j: any[] = []
     let p: Array<PublicationItem> = []
     const that = this
@@ -798,7 +800,7 @@ class Publication extends VuexModule {
         that.context.commit('createNatoArchivePublications', p)
       }
     }
-    let turl = tp1 + slash + slash + tp2 + this.natoUrl
+    let turl = tp1 + slash + slash + tp2 + this.natoArchiveUrl
     getAllNatoArchivePubs(turl)
     return true
   }
@@ -874,6 +876,7 @@ class Publication extends VuexModule {
 
   @Action
   public async getFunctionalSeriesByBranch(branch: string): Promise<boolean> {
+    console.log('getFunctionalSeriesByBranch ' + branch)
     let j: any[] = []
     let p: Array<ObjectItem> = []
     const that = this
@@ -907,6 +910,7 @@ class Publication extends VuexModule {
 
   @Action
   public async getFunctionalFieldByFunctionalSeries(series: string): Promise<boolean> {
+    console.log('getFunctionalFieldByFunctionalSeries ' + series)
     let j: any[] = []
     let p: Array<ObjectItem> = []
     const that = this

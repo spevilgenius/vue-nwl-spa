@@ -46,12 +46,11 @@
                   @filtered="onFiltered"
                 >
                   <template #head()="data">
-                    <!-- <b-dropdown split split-variant="light" variant="light" size="sm" :text="data.field.label" toggle-class="text-decoration-none" @show="drawFilterData(data.field.key)"></b-dropdown> -->
                     <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" :type="data.field.type" :ops="data.field.ops" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
                   </template>
-                  <!-- <template #head(actions)="data">
+                  <template #head(actions)>
                     Actions
-                  </template> -->
+                  </template>
                   <template #cell(actions)="data">
                     <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
                       <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
@@ -131,6 +130,9 @@ let that: any
     },
     user: {
       type: Object
+    },
+    kind: {
+      type: String
     },
     ready: {
       type: Boolean,

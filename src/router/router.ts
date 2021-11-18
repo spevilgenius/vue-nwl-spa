@@ -4,7 +4,6 @@ import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
-import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
 import AoAdministration from '@/components/AO/AOAdmin.vue'
@@ -34,12 +33,6 @@ const pubsMenu = {
       props: true
     },
     {
-      path: 'pubs/archive',
-      name: 'Archive Publications',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
-      props: true
-    },
-    {
       path: 'pubs/Allied',
       name: 'Allied Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Pages/Allied.vue'),
@@ -49,6 +42,26 @@ const pubsMenu = {
       path: 'pubs/view',
       name: 'View Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const archiveMenu = {
+  path: '/archived',
+  component: Layout,
+  redirect: '/archived/pubs',
+  children: [
+    {
+      path: 'pubs/:mode',
+      name: 'Archived Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/all',
+      name: 'All Archived Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
       props: true
     }
   ]
@@ -178,6 +191,7 @@ const routes = [
     redirect: '/pages/Home'
   },
   pubsMenu,
+  archiveMenu,
   pubsDevMenu,
   termsMenu,
   aoMenu,

@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { NotificationItem } from '../../interfaces/NotificationItem'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '../../interfaces/PublicationItem'
@@ -55,6 +56,7 @@ import { EventBus } from '../../main'
 
 const users = namespace('users')
 const publication = namespace('publication')
+const notify = namespace('notify')
 
 @Component({
   name: 'All',
@@ -122,6 +124,9 @@ export default class All extends Vue {
   @publication.State
   public allpubsloaded!: boolean
 
+  @notify.Action
+  public add!: (notification: NotificationItem) => void
+
   @publication.Action
   public getDigest!: () => Promise<boolean>
 
@@ -182,6 +187,13 @@ export default class All extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
+    /* console.log('All.vue MOUNTED') */
+    this.add({
+      id: 'All_vue',
+      type: 'success',
+      title: 'Loading',
+      message: 'Loading all pubs.'
+    })
     this.setPubLoaded(false)
     this.getAllNatoPublications()
     this.getAllPublications()

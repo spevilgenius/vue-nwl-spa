@@ -74,7 +74,8 @@
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
                             <b-form-group label="Librarian Remarks" label-for="txtLibrarianRemarks">
-                              <vue-editor id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments"></vue-editor>
+                              <!-- <vue-editor id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments"></vue-editor> -->
+                              <b-form-input class="form-control" size="sm" id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments" placeholder="Enter Remarks" ref="libremarks"></b-form-input>
                             </b-form-group>
                           </b-col>
                         </b-form-row>
@@ -551,6 +552,7 @@ export default class EditPub extends Vue {
         that.completedcalls += 1
       })
       // is the branch available to get the prefixes and other items
+      console.log('Calling Branch Based Functions with Branch: ' + this.publication.Branch)
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
         this.totalcalls += 3
         this.getPrefixesByBranch(String(this.publication.Branch)).then(function() {
