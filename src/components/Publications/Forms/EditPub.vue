@@ -75,7 +75,7 @@
                           <b-col cols="6" class="text-center text-dark p-1">
                             <b-form-group label="Librarian Remarks" label-for="txtLibrarianRemarks">
                               <!-- <vue-editor id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments"></vue-editor> -->
-                              <b-form-input class="form-control" size="sm" id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments" placeholder="Enter Remarks" ref="libremarks"></b-form-input>
+                              <b-form-input class="form-control" size="sm" id="txtLibrarianRemarks" v-model="publication.LibrarianRemarks" placeholder="Enter Remarks" ref="libremarks"></b-form-input>
                             </b-form-group>
                           </b-col>
                         </b-form-row>
