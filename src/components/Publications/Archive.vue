@@ -4,7 +4,8 @@
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
           v-if="viewReady"
-          :kind="archive"
+          :ready="true"
+          kind="Archive"
           :user="currentUser"
           :table="{
             id: tblId,
@@ -137,8 +138,46 @@ export default class Archive extends Vue {
         message: 'All archived pubs loaded.'
       })
       this.filteredpubs = this.allarchivepublications
+      this.buildFilters()
       this.viewReady = true
     }
+  }
+
+  buildFilters() {
+    // build the filters for all of the fields except actions
+    for (let j = 1; j < this.fields.length; j++) {
+      let p: any = []
+      for (let i = 0; i < this.filteredpubs.length; i++) {
+        // get the current value in this iteration based on the field. Then test if it is already in the array and add it if not
+        let val = ''
+        let pub: PublicationItem = this.filteredpubs[i]
+        if (this.fields[j].type === 'AD') {
+          try {
+            let fld = String(this.fields[j].field)
+            val = this.filteredpubs[i]['AdditionalData'][fld]
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        if (this.fields[j].type === 'NWDCAO') {
+          if (this.filteredpubs[i] !== null) {
+            let ao: any = pub.NWDCAO
+            let t: any = ao.Title
+            val = t
+          }
+        }
+        if (this.fields[j].type === 'default') {
+          val = this.filteredpubs[i][this.fields[j].field]
+        }
+        if (p.indexOf(val) < 0) {
+          p.push(val)
+        }
+      }
+      // sort vals. TODO: build a more comprehensive sort if needed
+      p.sort()
+      this.fields[j].ops = p
+    }
+    this.viewReady = true
   }
 
   viewPub(args: any) {

@@ -47,6 +47,7 @@
                 >
                   <template #head()="data">
                     <dynamic-filter-select :id="'dfs_' + data.field.label" :ready="ready" :type="data.field.type" :ops="data.field.ops" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select>
+                    <!-- <dynamic-filter-select v-if="this.kind === 'Active'" :id="'dfs_' + data.field.label" :ready="ready" :type="data.field.type" :ops="data.field.ops" :name="data.field.label" :label="data.field.label" :key="data.field.key" :ad="data.field.key.indexOf('Additional') > 0"></dynamic-filter-select> -->
                   </template>
                   <template #head(actions)>
                     Actions
@@ -132,7 +133,8 @@ let that: any
       type: Object
     },
     kind: {
-      type: String
+      type: String,
+      default: 'Active'
     },
     ready: {
       type: Boolean,
