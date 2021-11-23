@@ -10,7 +10,9 @@ import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
 import Faq from '@/components/NWLSupport/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
 import ReqNatoAccess from '@/components/NWLSupport/ReqNatoAccess.vue'
-import ReqNWLSpt from '@/components/NWLSupport/ReqNWLSpt.vue'
+import RequestNWLSpt from '@/components/NWLSupport/RequestNWLSpt.vue'
+import Support from '@/store/modules/support'
+import ReqSupport from '@/store/modules/reqsupport'
 
 Vue.use(VueRouter)
 
@@ -136,9 +138,9 @@ const nwlsupportMenu = {
       props: true
     },
     {
-      path: 'home/reqnwlsupport',
+      path: 'home/requestnwl',
       name: 'Request NWL Support',
-      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/RequestNWLSpt.vue'),
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNWLSpt.vue'),
       props: true
     },
     {
@@ -212,6 +214,11 @@ const routes = [
         path: 'ReqNatoAccess',
         name: 'ReqNatoAccess',
         component: ReqNatoAccess
+      },
+      {
+        path: 'RequestNWLSpt',
+        name: 'RequestNWLSpt',
+        component: RequestNWLSpt
       }
     ]
   }

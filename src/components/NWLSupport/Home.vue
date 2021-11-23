@@ -22,10 +22,10 @@ export default class NWLSupport extends Vue {
     if (this.mode == 'requestnwl') {
       this.$router.push({ name: 'Request NWL Support' })
     }
-    /*if (this.mode == 'refreshjoint') {
-      this.$router.push({ name: 'All Publications', query: { Type: 'Joint' } })
+    if (this.mode == 'newsptrequest') {
+      this.$router.push({ name: 'NWL Support Request' })
     }
-    if (this.mode == 'refreshmulti') {
+    /*if (this.mode == 'refreshmulti') {
       this.$router.push({ name: 'All Publications', query: { Type: 'Multinational' } })
     }
     if (this.mode == 'refreshother') {
