@@ -7,21 +7,21 @@
             <b-col cols="4" class="float-left">
               <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" class="my-0"></b-pagination>
             </b-col>
-            <b-col cols="4">
+            <b-col v-if="currentUser.isTerminologist" cols="4">
               <b-button v-if="currentUser.isTerminologist" @click="$bvModal.show('bv-modal-addTerm')" style="height: 35px;">New Term/Acronym</b-button>
-              <b-modal id="bv-modal-addTerm" :no-close-on-backdrop="true">
-                <template #addNewTerm>
-                  Add New Term/Acronym
-                </template>
-                <b-row>
-                  <!-- stuff -->
-                </b-row>
-                <b-row> </b-row>
+              <b-modal size="xl" id="bv-modal-addTerm" :no-close-on-backdrop="true" hide-footer scrollable title="Add New Term/Acronym">
+                <b-container fluid class="m-0 p-0" :style="getStyle('modalheight', null)">
+                  <b-row no-gutters>
+                    <b-col cols="12" class="m-0 p-1">
+                      <iframe type="iframe" :style="getStyle('iframeheight', null)" width="100%" src="/terminology/Lists/Terminology/NewTerm.aspx?IsDlg=1"></iframe>
+                    </b-col>
+                  </b-row>
+                </b-container>
               </b-modal>
             </b-col>
             <b-col cols="4" class="mt-1 pr-3">
               <b-input-group class="float-right">
-                <b-form-input v-model="filter" placeholder="Filter..." type="search"></b-form-input>
+                <b-form-input v-model="filter" placeholder="Search Terminology..." type="search"></b-form-input>
                 <b-input-group-append>
                   <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
                 </b-input-group-append>
@@ -55,7 +55,7 @@
         </b-container>
         <template #overlay>
           <div class="text-center">
-            <p id="busy-label">Loading...</p>
+            <p id="busy-label">{{ overlayText }}</p>
           </div>
         </template>
       </b-col>
@@ -69,6 +69,7 @@ import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
 import { UserInt } from '../../interfaces/User'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import axios from 'axios'
 
 const support = namespace('support')
 const users = namespace('users')
@@ -125,6 +126,17 @@ export default class DynamicTable extends Vue {
   PubID!: any
   Title!: any
   Bookshelf!: any
+  overlayText = 'Loading New Publication Form.'
+  totalcalls = 0
+  completedcalls = 0
+  formReady = false
+  branch = ''
+  prfx = ''
+  pubid = ''
+  ltitle = ''
+  nato = false
+  saveReady = false
+  formfields = ['branch', 'prfx', 'pubid', 'ltitle']
 
   @users.State
   public currentUser!: UserInt
@@ -140,6 +152,9 @@ export default class DynamicTable extends Vue {
 
   @publication.Action
   public getPrefixesByBranch!: (branch: string) => Promise<boolean>
+
+  @publication.Action
+  public getDigest!: () => Promise<boolean>
 
   @support.State
   public bookshelves!: Array<ObjectItem>
@@ -274,6 +289,14 @@ export default class DynamicTable extends Vue {
       case 'pagingrow':
         style.height = '50px'
         style.width = that.contentwidth + 'px'
+        break
+
+      case 'modalheight':
+        style.height = that.contentheight - 100 + 'px'
+        break
+
+      case 'iframeheight':
+        style.height = that.contentheight - 100 + 'px'
         break
     }
     return style

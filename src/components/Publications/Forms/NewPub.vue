@@ -22,9 +22,14 @@
                       <b-form-input class="form-control" size="sm" id="txtPubID" v-model="pubid" placeholder="Enter Pub ID" ref="pubid" :state="ValidateMe('PubID')"></b-form-input>
                     </b-form-group>
                   </b-col>
-                  <b-col cols="6" class="text-center text-dark p-1">
+                  <b-col cols="4" class="text-center text-dark p-1">
                     <b-form-group label="Long Title" label-for="txtLongTitle" invalid-feedback="Please enter a Title" :state="ValidateMe('LongTitle')">
                       <b-form-input class="form-control" size="sm" id="txtLongTitle" v-model="ltitle" placeholder="Enter Long Title" ref="ltitle" :state="ValidateMe('LongTitle')"></b-form-input>
+                    </b-form-group>
+                  </b-col>
+                  <b-col cols="2" class="text-center text-dark p-1">
+                    <b-form-group label="Is NATO" label-for="ddNATO" invalid-feedback="Please select a NATO option" :state="ValidateMe('NATO')">
+                      <b-form-select class="form-control" size="sm" id="ddNATO" v-model="nato" :options="yesno" :state="ValidateMe('NATO')" ref="nato"></b-form-select>
                     </b-form-group>
                   </b-col>
                 </b-form-row>
@@ -67,6 +72,71 @@ var slash = '/'
 var tp1 = String(window.location.protocol)
 var tp2 = String(window.location.host)
 
+let additionalData: any = {
+  AdminComments: '',
+  Archived: '',
+  ArchivedRemarks: '',
+  Cancel: '',
+  CancelDate: '',
+  CancelRemarks: '',
+  Change: '',
+  CoordinatingRAPLA: '',
+  CreatedRemarks: '',
+  CurrentPhase: '',
+  DateofIssue: '',
+  Description: '',
+  Dissemination: '',
+  DisseminationAbbrev: '',
+  DraftDate: '',
+  Edition: '',
+  EditionDate: '',
+  EnterpriseKeywords: '',
+  FinalDraft: '',
+  FinalManuscript: '',
+  FirstDraft: '',
+  FunctionalField: '',
+  FunctionalSeries: '',
+  Hidden: '',
+  LastPublished: '',
+  NewPub: '',
+  NWDCSignature: '',
+  OldShortTitles: '',
+  ParentWDC: '',
+  PDDTG: '',
+  PhaseFinish: '',
+  PhaseStart: '',
+  PRAAbbrev: '',
+  PRAApproval: '',
+  PRAID: '',
+  PRAPLA: '',
+  ProgramDirective: '',
+  ProjectFinish: '',
+  ProjectStatus: '',
+  PubCategory: '',
+  RELTO: '',
+  Remarks: '',
+  Reviewed: '',
+  SignatureDraft: '',
+  Status: '',
+  GeneralStatus: '',
+  SupersededBy: '',
+  Update: ''
+}
+
+let development: any = {
+  Phase: '',
+  ProjectStart: '',
+  ProgramDirective: '',
+  FirstDraft: '',
+  FinalDraft: '',
+  FinalManuscript: '',
+  SignatureDraft: '',
+  PRAApproval: '',
+  NWDCSignature: '',
+  PhaseFinish: '',
+  ProjectFinish: ''
+}
+
 @Component
 export default class NewPub extends Vue {
   interval!: any
@@ -80,9 +150,9 @@ export default class NewPub extends Vue {
   prfx = ''
   pubid = ''
   ltitle = ''
-  nato = false
+  nato = 'Please Select...'
   saveReady = false
-  formfields = ['branch', 'prfx', 'pubid', 'ltitle']
+  formfields = ['branch', 'prfx', 'pubid', 'ltitle', 'nato']
 
   @users.State
   public currentUser!: UserInt
@@ -110,6 +180,12 @@ export default class NewPub extends Vue {
     { value: 'Joint', text: 'Joint' },
     { value: 'Other', text: 'Other' },
     { value: 'Multinational', text: 'Multinational' }
+  ]
+
+  yesno = [
+    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'Yes', text: 'Yes' },
+    { value: 'No', text: 'No' }
   ]
 
   public onBranchSelect() {
@@ -142,6 +218,10 @@ export default class NewPub extends Vue {
 
         case 'PubID':
           ret = this.pubid === '' ? false : true
+          break
+
+        case 'NATO':
+          ret = this.nato === '' || this.nato === 'Please Select...' ? false : true
           break
       }
       return ret
@@ -179,10 +259,9 @@ export default class NewPub extends Vue {
     // the return of the call will return the id of the new document which we will use to update the data
     // the library is determined by the current user. If they are NATO, then the document is a Nato document
     clearInterval(this.interval)
-    let nato: any = this.currentUser.isNATOLibrarian
-    this.nato = nato
+    /* let nato: any = this.currentUser.isNATOLibrarian
+    this.nato = nato */
     let url = ''
-    let turl = ''
     let getfileUrl = tp1 + slash + slash + tp2 + "/_api/web/GetFileByServerRelativeUrl('/Documents/NewPublicationTemplate.pdf')/OpenBinaryStream"
     const response = await axios.get(getfileUrl, {
       responseType: 'blob',
@@ -193,13 +272,11 @@ export default class NewPub extends Vue {
     })
     let name = this.prfx + ' ' + this.pubid + ' ' + this.ltitle + '.pdf'
     let responsedata = response.data
-    if (this.nato) {
+    if (this.nato === 'Yes') {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('NATOPublications')/RootFolder/Files/Add"
     } else {
       url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('ActivePublications')/RootFolder/Files/Add"
     }
-    // TODO: For testing we are using a different library with versioning turned on.
-    url = tp1 + slash + slash + tp2 + "/_api/lists/getbytitle('AAAPubs')/RootFolder/Files/Add"
     url += "(url='"
     url += name
     url += "',overwrite=true)"
@@ -235,6 +312,8 @@ export default class NewPub extends Vue {
         Prfx: this.prfx,
         PubID: this.pubid,
         LongTitle: this.ltitle,
+        AdditionalData: JSON.stringify(additionalData),
+        Development: JSON.stringify(development),
         DocID: this.makeGuid()
       }
       const uheaders = {
@@ -250,7 +329,7 @@ export default class NewPub extends Vue {
       response = await axios.post(metadata.uri, itemprops, config)
       console.log('UPDATE RESPONSE: ' + response)
       // navigate to the edit form for this item
-      this.$router.push({ name: 'Edit Publication', params: { Id: id, Nato: nato } })
+      this.$router.push({ name: 'Edit Publication', query: { Id: id, Nato: this.nato } })
     } catch (error) {
       console.log('Error Adding Document: ' + error)
     }

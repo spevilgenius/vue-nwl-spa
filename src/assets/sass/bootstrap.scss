@@ -148,29 +148,6 @@ input[type=button], input[type=reset], input[type=submit], button {
   width: 100%;
 }
 
-#ContactsMenu .dropdown-menu {
-  position: absolute !important;
-  top: 62px !important;
-  left: auto !important;
-  right: 0 !important;
-  width: 300px;
-  border: 1px solid black !important;
-  min-height: 700px;
-  overflow-y: scroll;
-}
-
-#ContactsTable {
-  table-layout: fixed;
-  font-size: .8rem;
-  margin-bottom: .3rem;
-  border-collapse: unset;
-  border-top: 1px solid black !important;
-}
-
-#ContactsTable td {
-  border: none;
-}
-
 #SettingsMenu .dropdown-menu {
   position: absolute !important;
   top: 62px !important;
@@ -239,9 +216,18 @@ input[type=button], input[type=reset], input[type=submit], button {
 
 .app-search a {
   position: absolute;
-  top: 20px;
+  top: 12px;
   right: 10px;
   color: $dark
+}
+
+.app-search a.advanced {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  color: $white;
+  font-size: 12px;
+  text-decoration: underline;
 }
 
 .app-search .form-control, .app-search .form-control:focus {
@@ -257,7 +243,7 @@ input[type=button], input[type=reset], input[type=submit], button {
   width: 180px;
   display: inline-block;
   line-height: 30px;
-  margin-top: 18px;
+  margin-top: 10px;
   /* border-radius: 40px; */
   transition: .5s ease-out
 }
@@ -288,65 +274,6 @@ input[type=button], input[type=reset], input[type=submit], button {
   border: none;
 }
 
-/* #region Travel Status Colors */
-
-.travel-Completed {
-  background-color: #026f1a !important;
-  color: #fff !important;
-}
-
-.travel-Cancelled {
-  background-color: #6f5e59 !important;
-  color: #fff !important;
-}
-
-.travel-Postponed {
-  background-color: #8f9296 !important;
-  color: #fff !important;
-}
-
-.travel-Approved {
-  background-color: #45b85e !important;
-  color: #fff !important;
-}
-
-.travel-ReportDue {
-  background-color: #d95648 !important;
-  color: #fff !important;
-}
-
-.travel-ReportLate {
-  background-color: #970000 !important;
-  color: #fff !important;
-}
-
-.travel-WPMReview {
-  background-color: #053a7e !important;
-  color: #fff !important;
-}
-
-.travel-AFRLReview {
-  background-color: #17a2b8 !important;
-  color: #fff !important;
-}
-
-.travel-TripReportReview {
-  background-color: #20c997 !important;
-  color: #fff !important;
-}
-
-.travel-TripReportRejected {
-  background-color: #c94d20 !important;
-  color: #fff !important;
-}
-
-.travel-RejectedByWPM {
-  background-color: #ff00ff;
-  color: #fff;
-}
-
-/* #endregion */
-
   /*============================================================================================= CUSTOM BOOTSTRAP OVERRIDES ====================================================================================*/
 
 .smallbutton {
@@ -360,6 +287,15 @@ input[type=button], input[type=reset], input[type=submit], button {
   padding: 0.1rem !important;
   line-height: 1;
   min-width: 1em;
+  font-size: .75rem !important;
+  border: none;
+}
+
+.filterbutton {
+  padding: 0.1rem !important;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
   font-size: .75rem !important;
   border: none;
 }
