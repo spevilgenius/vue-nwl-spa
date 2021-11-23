@@ -70,6 +70,12 @@ const librarianMenu = {
       name: 'NWL Administration',
       component: () => import(/* webpackChunkName: "librarian" */ '../components/Librarian/LibrarianAdmin.vue'),
       props: true
+    },
+    {
+      path: 'home/announcements',
+      name: 'Announcements',
+      component: () => import(/* webpackChunkName: "librarian" */ '../components/Librarian/Announcements.vue'),
+      props: true
     }
   ]
 }

@@ -42,9 +42,9 @@
           <b-row cols="10" class="mt-3 mb-1 p-0" style="font-size:large">Add Property Restrictions...</b-row>
         </b-row>
 
-        <b-container fluid>
+        <!-- <b-container fluid>
           <b-row v-for="row in rows" :key="row"> {{ rows.pickpropfields }}{{ rows.containsfields }}{{ rows.searchrestrictiontext }}{{ rows.andorfields }} </b-row>
-        </b-container>
+        </b-container> -->
 
         <!-- <b-container fluid class="m-0 p-0" id="propertyrestrictions">
           <b-row no-gutters>

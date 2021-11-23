@@ -345,6 +345,13 @@ class Sidebar extends VuexModule {
           path: '/librarian/home/refreshadmin',
           library: 'fas',
           icon: 'tools'
+        },
+        {
+          id: 902,
+          name: 'Announcements',
+          path: '/librarian/home/refreshannouncements',
+          library: 'fas',
+          icon: 'bullhorn'
         }
       ],
       library: 'fas',
