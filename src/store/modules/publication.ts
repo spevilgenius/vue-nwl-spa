@@ -3,10 +3,8 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
-// import { EventBus } from '../../main'
 import axios from 'axios'
 import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
-import Support from './support'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -44,6 +42,7 @@ let additionalData: any = {
   FunctionalField: '',
   FunctionalSeries: '',
   Hidden: '',
+  LastPublished: '',
   NewPub: '',
   NWDCSignature: '',
   OldShortTitles: '',
@@ -95,7 +94,6 @@ function isJson(item: any, type: string) {
       ij = false
     }
   } else {
-    // console.log('ITEM is not a string: ' + typeof item)
     if (typeof item === 'object') {
       obj = true
       try {
@@ -119,17 +117,9 @@ function FormatAD(ad: any, id: any, nato: any): any {
     ad = JSON.parse(ad)
     return ad
   } else {
-    // this item may already an object
+    // this item may already be an object
     if (test.obj === true) {
       return ad
-      /* console.log('ITEM ID: ' + id + ', NATO: ' + nato + ' is an Object so convert and test.')
-      try {
-        let item = JSON.stringify(ad)
-        item = JSON.parse(item)
-        return item
-      } catch (e) {
-        return additionalData
-      } */
     }
   }
 }
@@ -171,6 +161,7 @@ class Publication extends VuexModule {
   public publications: Array<PublicationItem> = []
   public natopublications: Array<PublicationItem> = []
   public allpublications: Array<PublicationItem> = []
+  public allarchivepublications: Array<PublicationItem> = []
   public alldevpublications: Array<PublicationItem> = []
   public devpublications: Array<PublicationItem> = []
   public natodevpublications: Array<PublicationItem> = []
@@ -183,6 +174,7 @@ class Publication extends VuexModule {
   public natodevpubsloaded?: boolean = false
   public archivepubsloaded?: boolean = false
   public natoarchivepubsloaded?: boolean = false
+  public allarchivepubsloaded?: boolean = false
   public allpubsloaded?: boolean = false
   public alldevpubsloaded?: boolean = false
   public publication?: any //PublicationItem
@@ -217,6 +209,7 @@ class Publication extends VuexModule {
   getfileUrl = "/_api/web/GetFileByServerRelativeUrl('"
   rapocUrl = "/_api/lists/getbytitle('poc')/items?$select=*,Command/Title&$expand=Command&$filter=(Command/Title eq '"
   updatePubUrl = "/_api/lists/getbytitle('ActivePublications')/items("
+  updateNatoPubUrl = "/_api/lists/getbytitle('NATOPublications')/items("
   sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
   sdNatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
 
@@ -286,8 +279,8 @@ class Publication extends VuexModule {
   public createAllArchivePublications(): void {
     let p: Array<PublicationItem>
     p = this.archivepublications.concat(this.natoarchivepublications)
-    this.allpublications = p
-    this.allpubsloaded = true
+    this.allarchivepublications = p
+    this.allarchivepubsloaded = true
   }
 
   @Mutation
@@ -437,7 +430,8 @@ class Publication extends VuexModule {
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
             Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'No'),
-            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No'),
+            type: j[i]['__metadata']['type']
           })
         }
         that.context.commit('createPublications', p)
@@ -504,7 +498,8 @@ class Publication extends VuexModule {
             Replaces: j[i]['Replaces'],
             Bookshelf: j[i]['Bookshelf'],
             Development: j[i]['Development'] === null ? development : FormatDevelopment(j[i]['Development'], j[i]['Id'], 'Yes'),
-            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes')
+            AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'Yes'),
+            type: j[i]['__metadata']['type']
           })
         }
         that.context.commit('createNatoPublications', p)
@@ -534,15 +529,14 @@ class Publication extends VuexModule {
     let j = response.data.d.results
     let p = {} as PublicationItem
     let ad = FormatAD(j[0]['AdditionalData'], j[0]['Id'], data.Nato)
+    let rurl = String(j[0]['File']['ServerRelativeUrl'])
+    let nato = rurl.indexOf('NATO') >= 0 ? 'Yes' : 'No'
     p.Id = j[0]['Id']
     p.DocID = j[0]['DocID']
     p.Title = j[0]['Title']
-    /* p.value = j[0]['Title']
-    p.text = j[0]['Title']
-    p.selected = false */
     p.Name = j[0]['Name']
-    p.RelativeURL = j[0]['File']['ServerRelativeUrl']
-    p.IsNato = data.nato
+    p.RelativeURL = rurl
+    p.IsNato = nato
     p.Availability = j[0]['Availability']
     p.Branch = j[0]['BranchTitle'] === null || j[0]['BranchTitle'] === '' || j[0]['BranchTitle'] === undefined ? 'Please Select...' : j[0]['BranchTitle']
     p.Class = j[0]['Class']
@@ -582,7 +576,12 @@ class Publication extends VuexModule {
   @Action
   public async updatePublicationById(data: any): Promise<boolean> {
     // update the publication data
-    const url = this.updatePubUrl + data.Id + ')'
+    let url = ''
+    if (data.IsNato === 'Yes') {
+      url = this.updateNatoPubUrl + data.Id + ')'
+    } else {
+      url = this.updatePubUrl + data.Id + ')'
+    }
     const headers = {
       'Content-Type': 'application/json;odata=verbose',
       Accept: 'application/json;odata=verbose',
@@ -593,8 +592,8 @@ class Publication extends VuexModule {
     const config = {
       headers: headers
     }
-    // update the fields with the passed in data
 
+    // update the fields with the passed in data
     let itemprops = {
       __metadata: { type: data.type },
       Title: data.Title,
@@ -731,16 +730,16 @@ class Publication extends VuexModule {
             AdditionalData: FormatAD(j[i]['AdditionalData'], j[i]['Id'], 'No')
           })
         }
-        that.context.commit('createPublications', p)
+        that.context.commit('createArchivePublications', p)
       }
     }
-    let turl = tp1 + slash + slash + tp2 + this.pubsUrl
+    let turl = tp1 + slash + slash + tp2 + this.pubsArchiveUrl
     getArchivePubs(turl)
     return true
   }
 
   @Action
-  public async getAllNatoArchivePublications(): Promise<boolean> {
+  public async getNatoArchivePublications(): Promise<boolean> {
     let j: any[] = []
     let p: Array<PublicationItem> = []
     const that = this
@@ -801,7 +800,7 @@ class Publication extends VuexModule {
         that.context.commit('createNatoArchivePublications', p)
       }
     }
-    let turl = tp1 + slash + slash + tp2 + this.natoUrl
+    let turl = tp1 + slash + slash + tp2 + this.natoArchiveUrl
     getAllNatoArchivePubs(turl)
     return true
   }
@@ -877,6 +876,7 @@ class Publication extends VuexModule {
 
   @Action
   public async getFunctionalSeriesByBranch(branch: string): Promise<boolean> {
+    console.log('getFunctionalSeriesByBranch ' + branch)
     let j: any[] = []
     let p: Array<ObjectItem> = []
     const that = this
@@ -910,6 +910,7 @@ class Publication extends VuexModule {
 
   @Action
   public async getFunctionalFieldByFunctionalSeries(series: string): Promise<boolean> {
+    console.log('getFunctionalFieldByFunctionalSeries ' + series)
     let j: any[] = []
     let p: Array<ObjectItem> = []
     const that = this
@@ -1246,10 +1247,49 @@ class Publication extends VuexModule {
     const config = {
       headers: headers
     }
+    let itemprops = {
+      __metadata: { type: data.type },
+      AdditionalData: JSON.stringify(data.AdditionalData)
+    }
     try {
-      await axios.post(url, null, config)
+      await axios.post(url, itemprops, config)
     } catch (e) {
       // don't care yet
+    }
+    return true
+  }
+
+  @Action
+  public async archivePublication(data: any): Promise<boolean> {
+    // build url to post and update. return true to resolve the promise
+    console.log('archivePublication passed superseded by: ' + data.item.AdditionalData.SupersededBy)
+    let url = ''
+    if (data.nato === 'Yes') {
+      url = this.updateNatoPubUrl + data.id + ')'
+    } else {
+      url = this.updatePubUrl + data.id + ')'
+    }
+    console.log('ARCHIVE URL: ' + url + ', type: ' + data.type)
+    const headers = {
+      'Content-Type': 'application/json;odata=verbose',
+      Accept: 'application/json;odata=verbose',
+      'X-RequestDigest': this.digest,
+      'X-HTTP-Method': 'MERGE',
+      'If-Match': '*'
+    }
+    const config = {
+      headers: headers
+    }
+    let itemprops = {
+      __metadata: { type: data.item.type },
+      Archive: data.type,
+      AdditionalData: JSON.stringify(data.item.AdditionalData)
+    }
+    try {
+      await axios.post(url, itemprops, config)
+    } catch (e) {
+      // don't care yet
+      console.log('ERROR ARCHIVING: ' + e)
     }
     return true
   }

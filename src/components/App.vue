@@ -21,6 +21,9 @@ export default class App extends Vue {
   public isVisible = true
   interval!: any
 
+  /* @notify.Action
+  public add!: (notification: NotificationItem) => void */
+
   @publication.State
   public allpubsloaded!: boolean
 
@@ -29,9 +32,6 @@ export default class App extends Vue {
 
   @publication.State
   public pubsloaded!: boolean
-
-  /* @notify.Action
-  public add!: (notification: NotificationItem) => void */
 
   @users.Action
   public getUserId!: () => Promise<UserInt>

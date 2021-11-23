@@ -11,9 +11,9 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row v-if="superceded" no-gutters>
+          <b-row v-if="superseded" no-gutters>
             <b-col cols="12">
-              <dynamic-modal-select id="dmsSuperceded" v-model="supercededby" :items="allpublications" :fields="pubsfields" :filter="pubsfilter" title="Select Superceding Publication" label="Superceded By"></dynamic-modal-select>
+              <dynamic-modal-select id="dmsSuperseded" v-model="supersededby" :items="allpublications" :fields="pubsfields" :filter="pubsfilter" title="Select Superceding Publication" label="Superseded By"></dynamic-modal-select>
             </b-col>
           </b-row>
         </b-form>
@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { NotificationItem } from '../../interfaces/NotificationItem'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '../../interfaces/PublicationItem'
@@ -55,6 +56,7 @@ import { EventBus } from '../../main'
 
 const users = namespace('users')
 const publication = namespace('publication')
+const notify = namespace('notify')
 
 @Component({
   name: 'All',
@@ -79,12 +81,14 @@ export default class All extends Vue {
   Prfx: any
   viewReady?: boolean = false
   archive: any = {
+    item: {},
     type: '',
     id: 0,
-    nato: ''
+    nato: '',
+    supersededby: ''
   }
-  superceded?: boolean = false
-  supercededby = null
+  superseded?: boolean = false
+  supersededby = ''
   pubsfilter = ''
 
   pubsfields = [
@@ -93,10 +97,10 @@ export default class All extends Vue {
   ]
 
   archives = [
-    { value: 'Please Select...', text: 'Please Select...' },
+    { value: 'None', text: 'None' },
     { value: 'Rescinded', text: 'Rescinded' },
     { value: 'Cancelled', text: 'Cancelled' },
-    { value: 'Superceded', text: 'Superceded' }
+    { value: 'Superseded', text: 'Superseded' }
   ]
 
   @users.State
@@ -120,6 +124,12 @@ export default class All extends Vue {
   @publication.State
   public allpubsloaded!: boolean
 
+  @notify.Action
+  public add!: (notification: NotificationItem) => void
+
+  @publication.Action
+  public getDigest!: () => Promise<boolean>
+
   @publication.Action
   public setPubLoaded!: (loaded: boolean) => void
 
@@ -141,17 +151,8 @@ export default class All extends Vue {
   @publication.Action
   public createAllDevPubs!: () => Promise<boolean>
 
-  /* fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 0 },
-    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
-    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
-    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 2 },
-    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', id: 3 },
-    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px300', id: 11 },
-    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 6 },
-    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 10 }
-  ] */
+  @publication.Action
+  public archivePublication!: (data: any) => Promise<boolean>
 
   fields: any = [
     { key: 'actions', field: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 0, model: '', ops: [] },
@@ -182,13 +183,17 @@ export default class All extends Vue {
     EventBus.$on('archiveItem', args => {
       this.archivePub(args)
     })
-    /* EventBus.$on('filterView', args => {
-      this.filterView(args)
-    }) */
   }
 
   /** @method - lifecycle hook */
   mounted() {
+    /* console.log('All.vue MOUNTED') */
+    this.add({
+      id: 'All_vue',
+      type: 'success',
+      title: 'Loading',
+      message: 'Loading all pubs.'
+    })
     this.setPubLoaded(false)
     this.getAllNatoPublications()
     this.getAllPublications()
@@ -594,19 +599,6 @@ export default class All extends Vue {
     this.viewReady = true
   }
 
-  /* filterView(args: any) {
-    console.log('FILTERVIEW: ' + args.selected)
-    let a = this.allpublications
-    this.filterField = args.key
-    if (args.selected === 'clear') {
-      this.filteredpubs = this.allpublications
-    } else {
-      this.filterValue = args.selected
-    }
-    a = a.filter(search => Vue._.isEqual(search[args.key], args.selected))
-    this.filteredpubs = a
-  } */
-
   viewPub(args: any) {
     this.$router.push({ name: 'View Publication', query: { Id: args.id, Nato: args.nato } })
   }
@@ -617,14 +609,15 @@ export default class All extends Vue {
 
   archivePub(args: any) {
     // console.log('Archive Pub')
+    this.archive.item = args.item
     this.archive.id = args.id
     this.archive.nato = args.nato
     this.$bvModal.show('ArchiveModal')
   }
 
   onArchiveSelected() {
-    if (this.archive.type === 'Superceded') {
-      this.superceded = true
+    if (this.archive.type === 'Superseded') {
+      this.superseded = true
     }
   }
 
@@ -635,15 +628,52 @@ export default class All extends Vue {
     switch (this.archive.type) {
       case 'Cancelled':
         // copy to archive library setting general status to obsolete and status to cancelled. Then delete this document.
+        this.getDigest().then(response => {
+          if (response) {
+            this.archivePublication(this.archive).then(function() {
+              console.log('ARCHIVE PUBLICATION')
+            })
+          }
+        })
         break
 
       case 'Rescinded':
         // copy to archive library setting general status to obsolete and status to rescinded. Then delete this document.
+        this.getDigest().then(response => {
+          if (response) {
+            this.archivePublication(this.archive).then(function() {
+              console.log('ARCHIVE PUBLICATION')
+            })
+          }
+        })
         break
 
-      case 'Superceded':
-        // copy to archive library setting general status to obsolete, status to rescinded, and SupercededBy to the selected document. Then delete this document.
+      case 'Superseded':
+        // copy to archive library setting general status to obsolete, status to superseded, and SupersededBy to the selected document. Then delete this document.
+        this.archive.item.AdditionalData.SupersededBy = this.supersededby
+        // console.log('Superseded By: ' + this.supersededby + ', item superceded by: ' + this.archive.item.AdditionalData.SupersededBy)
+        this.getDigest().then(response => {
+          if (response) {
+            this.archivePublication(this.archive).then(function() {
+              console.log('ARCHIVE PUBLICATION')
+            })
+          }
+        })
         break
+    }
+    // remove the archived item from the array
+    for (let i = 0; i < this.allpublications.length; i++) {
+      if (this.allpublications[i].Id === this.archive.id) {
+        // is it nato
+        if (this.allpublications[i].IsNato === 'Yes') {
+          if (this.archive.nato === 'Yes') {
+            this.allpublications.splice(i, 1)
+          }
+        } else {
+          // not nato
+          this.allpublications.splice(i, 1)
+        }
+      }
     }
   }
 

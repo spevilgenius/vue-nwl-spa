@@ -128,6 +128,23 @@ class Sidebar extends VuexModule {
       icon: 'file-alt'
     },
     {
+      id: 150,
+      isMenu: true,
+      name: 'Archived Publications',
+      path: '/archived/pubs',
+      children: [
+        {
+          id: 151,
+          name: 'All Archived Publications',
+          path: '/archived/pubs/refresharchived',
+          library: 'fas',
+          icon: 'newspaper'
+        }
+      ],
+      library: 'fas',
+      icon: 'file-archive'
+    },
+    {
       id: 200,
       isMenu: true,
       name: 'Pubs In Development',
@@ -220,13 +237,6 @@ class Sidebar extends VuexModule {
           path: '/docs/home/refreshoptasks',
           library: 'fas',
           icon: 'tasks'
-        },
-        {
-          id: 505,
-          name: 'Archived Documents',
-          path: '/docs/home/refresharchived',
-          library: 'fas',
-          icon: 'archive'
         },
         {
           id: 506,
@@ -372,47 +382,6 @@ class Sidebar extends VuexModule {
           library: 'fas',
           icon: 'tools'
         }
-        /* {
-          id: 952,
-          name: 'Pubs in Development(By PRA)',
-          path: '/pubs/development/pra',
-          library: 'fas',
-          icon: 'file-signature',
-          props: {
-            groupBy: 'PRA'
-          }
-        },
-        {
-          id: 953,
-          name: 'Pubs in Development(By Project Status)',
-          path: '/pubs/development/status',
-          library: 'fas',
-          icon: 'file-signature',
-          props: {
-            groupBy: 'Status'
-          }
-        },
-        {
-          id: 954,
-          name: 'Pubs in Development(Archived)',
-          path: '/pubs/development/archive',
-          library: 'fas',
-          icon: 'file-signature'
-        },
-        {
-          id: 955,
-          name: 'Create New Draft Publication',
-          path: '/pubs/forms/new',
-          library: 'fas',
-          icon: 'edit'
-        },
-        {
-          id: 956,
-          name: 'Combined APP & PID Pubs View',
-          path: '/ao/home/requestit',
-          library: 'fas',
-          icon: 'archive'
-        } */
       ],
       library: 'fas',
       icon: 'question'

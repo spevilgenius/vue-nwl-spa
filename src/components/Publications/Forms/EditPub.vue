@@ -74,7 +74,8 @@
                           </b-col>
                           <b-col cols="6" class="text-center text-dark p-1">
                             <b-form-group label="Librarian Remarks" label-for="txtLibrarianRemarks">
-                              <vue-editor id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments"></vue-editor>
+                              <!-- <vue-editor id="txtLibrarianRemarks" v-model="publication.AdditionalData.AdminComments"></vue-editor> -->
+                              <b-form-input class="form-control" size="sm" id="txtLibrarianRemarks" v-model="publication.LibrarianRemarks" placeholder="Enter Remarks" ref="libremarks"></b-form-input>
                             </b-form-group>
                           </b-col>
                         </b-form-row>
@@ -288,6 +289,7 @@ import { PublicationItem } from '../../../interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import DynamicModalSelect from '../../Custom/DynamicModalSelect.vue'
 import DynamicCheckboxSelect from '../../Custom/DynamicCheckboxSelect.vue'
+import axios from 'axios'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -350,6 +352,9 @@ export default class EditPub extends Vue {
 
   @publication.State
   public digestloaded!: boolean
+
+  @publication.State
+  public digest!: string
 
   @publication.State
   public publoaded!: boolean
@@ -547,6 +552,7 @@ export default class EditPub extends Vue {
         that.completedcalls += 1
       })
       // is the branch available to get the prefixes and other items
+      console.log('Calling Branch Based Functions with Branch: ' + this.publication.Branch)
       if (this.publication.Branch !== null && this.publication.Branch !== 'Please Select...') {
         this.totalcalls += 3
         this.getPrefixesByBranch(String(this.publication.Branch)).then(function() {
@@ -681,10 +687,33 @@ export default class EditPub extends Vue {
         .then(value => {
           if (value === true) {
             // user wants to publish
-            that.approvePublication(that.publication).then(function() {
-              // route the user back to the view form
-              that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
-            })
+            // validate if the user wants to upload a new version of the document
+            this.$bvModal
+              .msgBoxConfirm('Are you ready to publish a new document?', {
+                title: 'Please Confirm',
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'danger',
+                okTitle: 'Yes',
+                cancelTitle: 'No',
+                footerClass: 'p-2',
+                hideHeaderClose: false,
+                centered: true
+              })
+              .then(value => {
+                if (value === true) {
+                  that.publication.AdditionalData.LastPublished = new Date().toDateString()
+                  // that.$bvModal.show('UploadModal')
+                  that.approvePublication(that.publication).then(function() {
+                    that.$router.push({ name: 'Upload Publication', query: { Id: that.data.id, Nato: that.data.nato } })
+                  })
+                } else {
+                  that.publication.AdditionalData.LastPublished = new Date().toDateString()
+                  that.approvePublication(that.publication).then(function() {
+                    that.$router.push({ name: 'View Publication', query: { Id: that.data.id, Nato: that.data.nato } })
+                  })
+                }
+              })
           }
         })
         .catch(err => {
@@ -693,11 +722,11 @@ export default class EditPub extends Vue {
     }
   }
 
-  public onReltoSearch() {
+  /* public onReltoSearch() {
     this.$bvModal.show('modalRelto')
     let modal = document.getElementById('modalRelto___BV_modal_outer_')
     modal?.classList.add('zModal')
-  }
+  } */
 
   public getStyle(element) {
     let style: any = {}

@@ -5,9 +5,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-@Component({
-  name: 'Publications'
-})
+@Component({})
 export default class Librarian extends Vue {
   @Prop() readonly mode!: string
 

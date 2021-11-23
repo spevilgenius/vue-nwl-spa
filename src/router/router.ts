@@ -4,10 +4,9 @@ import Layout from '@/components/Layouts/LayoutTS.vue'
 import Home from '@/components/Pages/HomeTS.vue'
 import Developer from '@/components/Pages/Developer.vue'
 import NavyDoctrine from '@/components/Pages/NavyDoctrine.vue'
-import Archive from '@/components/Pages/Archive.vue'
 import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
-import AoAdministration from '@/components/AO/AOAdministration.vue'
+import AoAdministration from '@/components/AO/AOAdmin.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
 import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
@@ -34,12 +33,6 @@ const pubsMenu = {
       props: true
     },
     {
-      path: 'pubs/archive',
-      name: 'Archive Publications',
-      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
-      props: true
-    },
-    {
       path: 'pubs/Allied',
       name: 'Allied Publications',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Pages/Allied.vue'),
@@ -49,6 +42,26 @@ const pubsMenu = {
       path: 'pubs/view',
       name: 'View Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const archiveMenu = {
+  path: '/archived',
+  component: Layout,
+  redirect: '/archived/pubs',
+  children: [
+    {
+      path: 'pubs/:mode',
+      name: 'Archived Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/all',
+      name: 'All Archived Publications',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Archive.vue'),
       props: true
     }
   ]
@@ -108,6 +121,12 @@ const pubsDevMenu = {
       name: 'Add New Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/NewPub.vue'),
       props: true
+    },
+    {
+      path: 'pubs/forms/upload',
+      name: 'Upload Publication',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/UploadPub.vue'),
+      props: true
     }
   ]
 }
@@ -126,7 +145,7 @@ const aoMenu = {
     {
       path: 'home/aoadministration',
       name: 'AO Administration',
-      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdministration.vue'),
+      component: () => import(/* webpackChunkName: "ao" */ '../components/AO/AOAdmin.vue'),
       props: true
     }
   ]
@@ -178,25 +197,12 @@ const routes = [
     redirect: '/pages/Home'
   },
   pubsMenu,
+  archiveMenu,
   pubsDevMenu,
   termsMenu,
   aoMenu,
   librarianMenu,
   reportsMenu,
-  /* adminMenu,
-  taskMenu,
-  msrMenu,
-  financialMenu,
-  calendarMenu,
-  travelMenu,
-  featureMenu,
-  featuresMenu,
-  bugsMenu,
-  personnelMenu,
-  trainingMenu,
-  securityMenu,
-  workplanMenu,
-  refreshMenu, */
   {
     path: '/pages',
     component: Layout,

@@ -34,6 +34,9 @@ export default class Publications extends Vue {
     if (this.mode == 'refreshall') {
       this.$router.push({ name: 'All Publications' })
     }
+    if (this.mode == 'refresharchived') {
+      this.$router.push({ name: 'All Archived Publications' })
+    }
     if (this.mode == 'refreshdevelopment') {
       this.$router.push({ name: 'Pubs In Development' })
     }
