@@ -1,5 +1,6 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
+    I am text
     <b-modal id="ArchiveModal" size="lg" centered header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk()" @show="onShow()">
       <template v-slot:modal-title>Archive reqsupport</template>
       <b-container class="p-0">
@@ -20,6 +21,7 @@
       </b-container>
     </b-modal>
     <b-row no-gutters class="contentHeight">
+      I am text
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
           v-if="viewReady"

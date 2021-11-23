@@ -121,13 +121,13 @@ const termsMenu = {
 }
 
 const nwlsupportMenu = {
-  path: '/support',
+  path: '/nwlsupport',
   component: Layout,
-  redirect: '/support/home',
+  redirect: '/nwlsupport/home',
   children: [
     {
       path: 'home/:mode',
-      name: 'Support',
+      name: 'NWL Support',
       component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/Home.vue'),
       props: true
     },
@@ -140,7 +140,7 @@ const nwlsupportMenu = {
     {
       path: 'home/requestnwl',
       name: 'Request NWL Support',
-      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNWLSpt.vue'),
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqSupport.vue'),
       props: true
     },
     {
