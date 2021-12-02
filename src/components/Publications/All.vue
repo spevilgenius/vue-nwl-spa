@@ -24,7 +24,7 @@
         <dynamic-table
           v-if="viewReady"
           :user="currentUser"
-          :ready="true"
+          :ready="allpubsloaded"
           :table="{
             id: tblId,
             primaryKey: primaryKey,
@@ -284,7 +284,17 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'OPTASK'))
+          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalField'], 'Navy Wide OPTASKs'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'TACMEMO') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'NavyConceptPubs') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalField'], 'Navy Concept Pubs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {

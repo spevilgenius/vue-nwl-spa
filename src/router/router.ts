@@ -93,6 +93,38 @@ const librarianMenu = {
   ]
 }
 
+const libraryInformationMenu = {
+  path: '/library',
+  component: Layout,
+  redirect: '/librarian/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'Libraryinformation',
+      component: () => import(/* webpackChunkName: "libraryinformation" */ '../components/LibraryInformation/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/commandlist',
+      name: 'Command List',
+      component: () => import(/* webpackChunkName: "libraryinformation" */ '../components/LibraryInformation/CommandList.vue'),
+      props: true
+    },
+    {
+      path: 'home/doctrinepoc',
+      name: 'NWL Administration',
+      component: () => import(/* webpackChunkName: "libraryinformation" */ '../components/LibraryInformation/DoctrinePOCs.vue'),
+      props: true
+    },
+    {
+      path: 'home/links',
+      name: 'Doctrine Links',
+      component: () => import(/* webpackChunkName: "libraryinformation" */ '../components/LibraryInformation/DoctrineLinks.vue'),
+      props: true
+    }
+  ]
+}
+
 const pubsDevMenu = {
   path: '/development',
   component: Layout,
@@ -126,6 +158,44 @@ const pubsDevMenu = {
       path: 'pubs/forms/upload',
       name: 'Upload Publication',
       component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/UploadPub.vue'),
+      props: true
+    }
+  ]
+}
+
+const documentsMenu = {
+  path: '/approved',
+  component: Layout,
+  redirect: '/approved/pubs',
+  children: [
+    {
+      path: 'pubs/:mode',
+      name: 'Documents',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Home.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/TACMEMOS',
+      name: 'TACMEMOS',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/All.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/fleet',
+      name: 'Fleet Conops',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Pages/Allied.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/concept',
+      name: 'Navy Concept Pubs',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
+      props: true
+    },
+    {
+      path: 'pubs/optasks',
+      name: 'Navy-Wide Optasks',
+      component: () => import(/* webpackChunkName: "publications" */ '../components/Publications/Forms/ViewPub.vue'),
       props: true
     }
   ]
@@ -202,7 +272,9 @@ const routes = [
   termsMenu,
   aoMenu,
   librarianMenu,
+  libraryInformationMenu,
   reportsMenu,
+  documentsMenu,
   {
     path: '/pages',
     component: Layout,

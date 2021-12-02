@@ -81,7 +81,7 @@ const search = namespace('search')
 const publication = namespace('publication')
 
 @Component
-export default class Search extends Vue {
+export default class Results extends Vue {
   @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL })
   readonly baseImageUrl!: string
 
