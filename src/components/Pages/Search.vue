@@ -1,5 +1,5 @@
 <template>
-  <b-card no-gutters fluid class="contentHeight" style="min-width: 1000px">
+  <b-card no-gutters fluid class="contentHeight" style="min-width: 1200px">
     <b-card-header>
       <b-row style="padding-left:15px;">
         Search
@@ -16,50 +16,50 @@
         <b-row class="searchprops">
           <b-col cols="1" class="m-0 p-0"></b-col>
           <b-col cols="4" class="mt-1 p-0 font-size-large">All of these words:</b-col>
-          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="text" size="sm"></b-form-input></b-col>
+          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="allwords" size="sm"></b-form-input></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
         <b-row class="searchprops">
           <b-col cols="1" class="m-0 p-0"></b-col>
           <b-col cols="4" class="mt-1 p-0">The exact phrase:</b-col>
-          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="text" size="sm"></b-form-input></b-col>
+          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="exactwords" size="sm"></b-form-input></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
         <b-row class="searchprops">
           <b-col cols="1" class="m-0 p-0"></b-col>
           <b-col cols="4" class="mt-1 p-0">Any of these words:</b-col>
-          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="text" size="sm"></b-form-input></b-col>
+          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="anywords" size="sm"></b-form-input></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
         <b-row class="searchprops">
           <b-col cols="1" class="m-0 p-0"></b-col>
           <b-col cols="4" class="mt-1 p-0">None of these words:</b-col>
-          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="text" size="sm"></b-form-input></b-col>
+          <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="nowords" size="sm"></b-form-input></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
-        <b-row no-gutters>
+        <!-- <b-row no-gutters>
           <b-col cols="2" class="m-0 p-0"></b-col>
           <b-row cols="10" class="mt-3 mb-1 p-0" style="font-size:large">Add Property Restrictions...</b-row>
-        </b-row>
+        </b-row> -->
 
-        <b-container fluid>
+        <!-- <b-container fluid>
           <b-row v-for="(row, index) in rows" :key="row" :id="'row_' + index">
-            <b-col cols="2" class="m-0 p-0 searchprops">Where the Property...</b-col>
-            <b-col cols="3" class="m-0 pl-1"><b-form-select v-model="row.propert" :options="pickpropfields" size="sm"></b-form-select></b-col>
-            <b-col cols="2" class="m-0 pl-1"><b-form-select v-model="row.type" :options="containsfields" size="sm"></b-form-select></b-col>
-            <b-col cols="3" class="m-0 pl-1"><b-form-input v-model="row.value" size="sm"></b-form-input></b-col>
-            <b-col cols="1" class="m-0 pl-1"><b-form-select v-model="row.andor" :options="andorfields" size="sm"></b-form-select></b-col>
-            <b-col cols="1" class="m-0 pl-1">
+            <b-col cols="2" class="p-0 searchprops">Where the Property...</b-col>
+            <b-col cols="3" class="p-0"><b-form-select v-model="row.property" :options="pickpropfields" size="sm"></b-form-select></b-col>
+            <b-col cols="2" class="p-0"><b-form-select v-model="row.type" :options="containsfields" size="sm"></b-form-select></b-col>
+            <b-col cols="2" class="p-0"><b-form-input v-model="row.value" size="sm"></b-form-input></b-col>
+            <b-col cols="2" class="p-0"><b-form-select v-model="row.andor" :options="andorfields" size="sm"></b-form-select></b-col>
+            <b-col cols="1">
               <a href="#" @click="addSearchPropRow()">
                 <img :src="baseImageUrl + '/advadd.png'" />
               </a>
               &nbsp;
-              <a href="#" @click="removeSearchPropRow(index)">
+              <a v-if="rows.length > 1" href="#" @click="removeSearchPropRow(index)">
                 <img :src="baseImageUrl + '/advminus.png'" />
               </a>
             </b-col>
           </b-row>
-        </b-container>
+        </b-container> -->
         <b-row no-gutters>
           <b-col cols="10"></b-col>
           <b-col cols="2" style="margin-top:15px; margin-bottom 15px;"><b-button @click="startSearch" variant="outline-primary" size="sm" class="">Search</b-button></b-col>
@@ -83,8 +83,12 @@ export default class Search extends Vue {
 
   searchrestrictiontext?: any
   idx = 0
+  allwords?: any
+  exactwords?: any
+  anywords?: any
+  nowords?: any
 
-  pickpropfields = [
+  /* pickpropfields = [
     { value: null, text: '(Pick Property)' },
     { value: 'Description', text: 'Description' },
     { value: 'Name', text: 'Name' },
@@ -104,23 +108,26 @@ export default class Search extends Vue {
     { value: 'Or', text: 'Or' }
   ]
 
-  rows: any = []
+  rows: any = [] */
 
   mounted() {
-    this.rows.push({
+    /* this.rows.push({
       property: '',
       type: '',
       value: '',
       andor: ''
     })
-    this.idx += 1
+    this.idx += 1 */
   }
 
   public startSearch() {
-    alert('Searching!')
+    // alert('Searching!')
+    if (this.allwords.length > 0) {
+      this.$router.push({ name: 'Search Results', query: { k: 'ALL(' + this.allwords + ')' } })
+    }
   }
 
-  public addSearchPropRow() {
+  /* public addSearchPropRow() {
     this.rows.push({
       property: '',
       type: '',
@@ -133,7 +140,7 @@ export default class Search extends Vue {
   public removeSearchPropRow(index: number) {
     this.rows.splice(index, 1)
     this.idx -= 1
-  }
+  } */
 }
 </script>
 
