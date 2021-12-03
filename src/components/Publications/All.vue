@@ -561,6 +561,12 @@ export default class All extends Vue {
           a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
           this.filteredpubs = a
         }
+        if (this.filterType === 'TACMEMO') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
+          a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
+          this.filteredpubs = a
+        }
         if (this.filterType === 'Development') {
           let a = this.alldevpublications
           this.filteredpubs = a
