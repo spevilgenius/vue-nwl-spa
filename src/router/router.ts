@@ -12,6 +12,7 @@ import Reports from '@/components/Reports/FiscalYearReport.vue'
 import Faq from '@/components/Pages/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
 import Search from '@/components/Pages/Search.vue'
+import Results from '@/components/Pages/Results.vue'
 
 Vue.use(VueRouter)
 
@@ -314,6 +315,11 @@ const routes = [
         path: 'Search',
         name: 'Search',
         component: Search
+      },
+      {
+        path: 'Results',
+        name: 'Search Results',
+        component: Results
       }
     ]
   }
