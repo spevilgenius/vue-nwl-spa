@@ -296,7 +296,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'NavyConceptPubs') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.includes(search['AdditionalData'], 'Navy Concept Pubs'))
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Navy Concept Pubs' } })
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
