@@ -79,6 +79,7 @@ export default class All extends Vue {
   filteredpubs: Array<PublicationItem> = []
   pubs: Array<PublicationItem> = []
   Prfx: any
+  FunctionalSeries: any
   viewReady?: boolean = false
   archive: any = {
     item: {},
@@ -284,7 +285,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalField'], 'Navy Wide OPTASKs'))
+          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'TACMEMO') {
@@ -294,7 +295,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'NavyConceptPubs') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalField'], 'Navy Concept Pubs'))
+          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Concept Pubs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
