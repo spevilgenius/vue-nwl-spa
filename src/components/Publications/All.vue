@@ -285,6 +285,8 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
+          console.log('first = ' + a)
+          console.log('second ' + JSON.stringify(a))
           a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
           this.filteredpubs = a
         }
@@ -295,7 +297,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'NavyConceptPubs') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Concept Pubs'))
+          a = a.filter(search => Vue._.includes(search['AdditionalData.FunctionalSeries'], 'Navy Concept Pubs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
