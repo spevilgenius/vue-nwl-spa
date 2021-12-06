@@ -53,6 +53,7 @@ import { PublicationItem } from '../../interfaces/PublicationItem'
 import DynamicTable from '../Custom/DynamicTable2.vue'
 import DynamicModalSelect from '../Custom/DynamicModalSelect.vue'
 import { EventBus } from '../../main'
+import { get } from 'jquery'
 
 const users = namespace('users')
 const publication = namespace('publication')
@@ -285,9 +286,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          console.log('first = ' + a)
-          console.log('second ' + JSON.stringify(a))
-          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
+          a = a.filter(search => Vue._.includes(search['AdditionalData'], 'Navy Wide OPTASKs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'TACMEMO') {
@@ -297,7 +296,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'NavyConceptPubs') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.includes(search['AdditionalData.FunctionalSeries'], 'Navy Concept Pubs'))
+          a = a.filter(search => Vue._.includes(search['AdditionalData'], 'Navy Concept Pubs'))
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
@@ -572,6 +571,29 @@ export default class All extends Vue {
         }
         if (this.filterType === 'Development') {
           let a = this.alldevpublications
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'WhatsNew') {
+          function getCurrentFinancialYear() {
+            let fiscalyear1: number
+            let fiscalyear2: number
+            let fromDate: any
+            let toDate: any
+            let today = new Date()
+            if (today.getMonth() + 1 <= 3) {
+              fiscalyear1 = today.getFullYear() - 1
+              fiscalyear2 = today.getFullYear()
+            } else {
+              fiscalyear1 = today.getFullYear()
+              fiscalyear2 = today.getFullYear() + 1
+            }
+          }
+          getCurrentFinancialYear()
+          let a = this.allpublications
+          /* let ad = a.AdditionalData
+          a.ad.EditionDate = a.ad.EditionDate.filter((item: any) => {
+            return item.date.getTime() >= fromDate.getTime() && item.date.getTime() <= toDate.getTime()
+          }) */
           this.filteredpubs = a
         }
         // #endregion

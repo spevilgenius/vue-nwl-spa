@@ -1,12 +1,10 @@
 <template>
-  <div>WHATS NEW John</div>
+  <div>Whats New</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class WhatsNew extends Vue {
-  nothing = null
-}
+export default class WhatsNew extends Vue {}
 </script>
