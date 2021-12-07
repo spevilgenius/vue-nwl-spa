@@ -1,47 +1,54 @@
 <template>
   <b-container fluid class="contentHeight m-0 p-0">
-    I am text
-    <b-modal id="ArchiveModal" size="lg" centered header-bg-variant="blue-500" header-text-variant="light" modal-class="zModal" @ok="onOk()" @show="onShow()">
-      <template v-slot:modal-title>Archive reqsupport</template>
-      <b-container class="p-0">
-        <b-form>
-          <b-row no-gutters>
-            <b-col cols="4">
-              <b-form-group label="Archive Type">
-                <b-form-select class="form-control" v-model="archive.type" size="sm" id="ddArchive" :options="archives" ref="Archive" @change="onArchiveSelected"></b-form-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row v-if="superceded" no-gutters>
-            <b-col cols="12">
-              <dynamic-modal-select id="dmsSuperceded" v-model="supercededby" :items="allreqsupports" :fields="pubsfields" :filter="pubsfilter" title="Select Superceding reqsupport" label="Superceded By"></dynamic-modal-select>
-            </b-col>
-          </b-row>
-        </b-form>
+    <b-overlay :show="!formReady" :variant="success" class="contentHeight m-0 p-0">
+      <b-container v-if="formReady" fluid class="contentHeight m-0 p-0">
+        <b-row no-gutters class="contentHeight">
+          <b-col cols="6" class="m-0 p-1">
+            <b-card no-body>
+              <b-form class="mt-0">
+                <b-form-row>
+                  <b-col cols="2" class="text-center text-dark p-1"></b-col>
+                  <b-col cols="12"> <label>Subject:</label> <input type="subject" required v-model="subject" /> </b-col>
+                </b-form-row>
+                <p></p>
+                <b-form-row>
+                  <b-col cols="12">
+                    <b-form-group class="add-style" v-slot="{ ariaDescribedby }">
+                      <b-col cols="2" class="text-center text-dark p-1"></b-col>
+                      <label style="color: black; background-color: white;">Request Type: </label>
+                      <!-- edit background and text color in _forms.scss reference class "requesttype"-->
+                      <b-form-checkbox-group id="checkbox-group-1" v-model="selected" :options="options" :aria-describedby="ariaDescribedby" name="flavour-1" class="requesttype"> </b-form-checkbox-group>
+                    </b-form-group>
+                  </b-col>
+                </b-form-row>
+                <b-form-row>
+                  <b-col cols="12">
+                    <b-col cols="2" class="text-center text-dark p-1"></b-col>
+                    <label>Details:</label>
+                    <b-form-textarea id="textarea" variant="dark" v-model="text" placeholder="Enter details..." rows="3" max-rows="6"> </b-form-textarea>
+                  </b-col>
+                </b-form-row>
+                <b-form-row>
+                  <b-col cols="10"></b-col>
+                  <b-col cols="2">
+                    <b-button-group>
+                      <b-button size="sm" @click="onCancel">Cancel</b-button>
+                      <b-button :disabled="!saveReady" size="sm" @click="onSave" variant="success">Save</b-button>
+                    </b-button-group>
+                  </b-col>
+                </b-form-row>
+              </b-form>
+            </b-card>
+          </b-col>
+          <b-col cols="6"></b-col>
+        </b-row>
       </b-container>
-    </b-modal>
-    <b-row no-gutters class="contentHeight">
-      I am text
-      <b-col cols="12" class="m-0 p-0">
-        <dynamic-table
-          v-if="viewReady"
-          :user="currentUser"
-          :table="{
-            id: tblId,
-            primaryKey: primaryKey,
-            buttons: buttons,
-            fields: fields,
-            items: filteredpubs,
-            filterField: filterField,
-            filterValue: filterValue,
-            filterType: filterType,
-            overlayText: overlayText,
-            overlayVariant: overlayVariant
-          }"
-          :searchEnabled="true"
-        ></dynamic-table>
-      </b-col>
-    </b-row>
+      <template #overlay>
+        <div class="text-center">
+          <p id="busy-label">{{ overlayText }}</p>
+        </div>
+      </template>
+    </b-overlay>
   </b-container>
 </template>
 
@@ -53,9 +60,15 @@ import DynamicTable from '../Custom/DynamicTable2.vue'
 import DynamicModalSelect from '../Custom/DynamicModalSelect.vue'
 import { EventBus } from '../../main'
 import { ReqSupportItem } from '../../interfaces/ReqSupportItem'
+/* import { ObjectItem } from '@/interfaces/ObjectItem' */
+import axios from 'axios'
 
 const users = namespace('users')
 const reqsupport = namespace('reqsupport')
+
+var slash = '/'
+var tp1 = String(window.location.protocol)
+var tp2 = String(window.location.host)
 
 @Component({
   name: 'All',
@@ -65,40 +78,34 @@ const reqsupport = namespace('reqsupport')
   }
 })
 export default class All extends Vue {
-  tblId = 'AllPubs'
-  primaryKey = 'docid'
+  tblId = 'AllRequests'
+  primaryKey = 'subject'
   overlayText = 'Getting Support Requests. Please wait...'
   overlayVariant = 'danger'
-  rowHeight = 0
-  pageSize = 20
-  filterField: any
-  filterValue: any
-  filterType: any
   interval!: any
-  filteredpubs: Array<ReqSupportItem> = []
-  pubs: Array<ReqSupportItem> = []
-  Prfx: any
+  formReady = false
+  saveReady = true
+  subject = ''
+  text = ''
+  selected = []
+  filteredrequests: Array<ReqSupportItem> = []
+  requests: Array<ReqSupportItem> = []
   viewReady?: boolean = false
-  /* archive: any = {
-    type: '',
-    id: 0,
-    nato: ''
-  }
-  superceded?: boolean = false
-  supercededby = null */
-  pubsfilter = ''
-
-  pubsfields = [
-    { key: 'actions', label: 'Select' },
-    { key: 'Title', label: 'Title', sortable: true }
+  formfields = ['subject', 'prfx', 'details']
+  options?: any = [
+    { text: 'Technical Issue', value: 'tech' },
+    { text: 'Library Content', value: 'libcnt' },
+    { text: 'Document Content', value: 'doccnt' },
+    { text: 'Enhancement', value: 'enhance' },
+    { text: 'Training', value: 'trng' }
   ]
 
-  /*   archives = [
-    { value: 'Please Select...', text: 'Please Select...' },
-    { value: 'Rescinded', text: 'Rescinded' },
-    { value: 'Cancelled', text: 'Cancelled' },
-    { value: 'Superceded', text: 'Superceded' }
-  ] */
+  requestsfilter = ''
+  requestsfields = [
+    { key: 'Rtype', label: 'Request Type' },
+    { key: 'Title', label: 'Subject' },
+    { key: 'Details', label: 'Details' }
+  ]
 
   @users.State
   public currentUser!: UserInt
@@ -106,139 +113,48 @@ export default class All extends Vue {
   @reqsupport.State
   public allreqsupports!: Array<ReqSupportItem>
 
-  /* @reqsupport.State
-  public alldevreqsupports!: Array<ReqSupportItem> */
-
-  /*  @reqsupport.State
-  public natopubsloaded!: boolean */
+  @reqsupport.State
+  public statuses!: Array<ReqSupportItem>
 
   @reqsupport.State
-  public pubsloaded!: boolean
-
-  /* @reqsupport.State
-  public devpubsloaded!: boolean */
+  public requestsloaded!: boolean
 
   @reqsupport.State
-  public allpubsloaded!: boolean
+  public allrequestsloaded!: boolean
 
   @reqsupport.Action
-  public setPubLoaded!: (loaded: boolean) => void
+  public setRequestLoaded!: (loaded: boolean) => void
 
   @reqsupport.Action
   public getAllreqsupports!: () => Promise<boolean>
 
-  /*  @reqsupport.Action
-  public getAllNatoreqsupports!: () => Promise<boolean> */
-
-  /* @reqsupport.Action
-  public getAllDevreqsupports!: () => Promise<boolean> */
-
-  /* @reqsupport.Action
-  public getAllNatoDevreqsupports!: () => Promise<boolean> */
-
   @reqsupport.Action
-  public createAllPubs!: () => Promise<boolean>
-
-  /* @reqsupport.Action
-  public createAllDevPubs!: () => Promise<boolean> */
+  public createAllRequests!: () => Promise<boolean>
 
   fields: any = [
-    { key: 'actions', label: 'Actions', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 0 },
-    { key: 'Branch', label: 'Branch', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 20 },
-    { key: 'Prfx', label: 'Prefix', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 },
-    { key: 'PubID', label: 'PubID', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 2 },
-    { key: 'Title', label: 'Title', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', id: 3 },
-    { key: 'Bookshelf', label: 'Bookshelf', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px300', id: 11 },
-    { key: 'Resourced', label: 'Resourced', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 6 },
-    { key: 'AdditionalData.PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 12 },
-    { key: 'Class', label: 'Classification', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px200', id: 10 }
+    { key: 'Title', label: 'Subject', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px300', id: 20 },
+    { key: 'RType', label: 'Request Type', actions: ['View', 'Edit'], thClass: 'tbl-dynamic-header', tdClass: 'px80', id: 0 },
+    { key: 'Details', label: 'Details', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 1 }
   ]
-
-  created() {
-    EventBus.$on('viewItem', args => {
-      this.setPubLoaded(false)
-      this.viewPub(args)
-    })
-    EventBus.$on('editItem', args => {
-      this.setPubLoaded(false)
-      this.editPub(args)
-    })
-    EventBus.$on('archiveItem', args => {
-      this.archivePub(args)
-    })
-  }
 
   /** @method - lifecycle hook */
   mounted() {
-    this.setPubLoaded(false)
-    /* this.getAllNatoreqsupports() */
     this.getAllreqsupports()
-    /*  this.getAllDevreqsupports() */
     this.interval = setInterval(this.waitForIt, 500)
+  }
+  setallrequestsupports(arg0: boolean) {
+    throw new Error('Method not implemented.')
   }
 
   public waitForIt() {
-    if (this.pubsloaded /* && this.natopubsloaded */) {
-      clearInterval(this.interval)
-      this.createAllPubs()
-      /* this.createAllDevPubs() */
-      this.interval = setInterval(this.waitForPubs, 500)
-    }
+    clearInterval(this.interval)
+    this.formReady = true
   }
-
-  public waitForPubs() {
-    if (this.allpubsloaded) {
-      clearInterval(this.interval)
-      if (this.$route) {
-        this.filterField = this.$route.query.Field
-        this.filterValue = this.$route.query.Value
-        this.filterType = this.$route.query.Type
-        this.filteredpubs = this.allreqsupports
-        if (this.filterType === 'complex') {
-          // filter pubs and send these pubs instead
-          let fields: any = String(this.filterField)
-          fields = fields.split(',')
-          let vals: any = String(this.filterValue)
-          vals = vals.split(',')
-          let p = this.allreqsupports
-          for (let i = 0; i < fields.length; i++) {
-            let field = fields[i]
-            p = p.filter(search => Vue._.isEqual(search[fields[i]], vals[i]))
-          }
-          this.filteredpubs = p
-        }
-        this.viewReady = true
-      }
-    }
+  public onCancel() {
+    // placeholder
   }
-
-  viewPub(args: any) {
-    this.$router.push({ name: 'View reqsupport', query: { Id: args.id /* Nato: args.nato */ } })
+  public onSave() {
+    alert('Saving')
   }
-
-  editPub(args: any) {
-    this.$router.push({ name: 'Edit reqsupport', query: { Id: args.id /* Nato: args.nato  */ } })
-  }
-
-  archivePub(args: any) {
-    // console.log('Archive Pub')
-    /*  this.archive.id = args.id */
-    /*   this.archive.nato = args.nato
-    this.$bvModal.show('ArchiveModal') */
-  }
-  /* 
-  onArchiveSelected() {
-    if (this.archive.type === 'Superceded') {
-      this.superceded = true
-    } */
-  /* }
-
-  onOk() {
-    console.log('reqsupport selected for archive: ' + this.archive.type + ', id: ' + this.archive.id)
-  }
-
-  onShow() {
-    console.log('Showing modal')
-  } */
 }
 </script>

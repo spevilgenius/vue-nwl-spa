@@ -17,6 +17,9 @@ export default class Librarian extends Vue {
     if (this.mode == 'refreshannouncements') {
       this.$router.push({ name: 'Announcements' })
     }
+    if (this.mode == 'refreshpocs') {
+      this.$router.push({ name: 'Doctrine POCs' })
+    }
   }
 }
 </script>

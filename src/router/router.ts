@@ -291,9 +291,9 @@ const routes = [
         component: ReqNatoAccess
       },
       {
-        path: 'RequestNWLSpt',
-        name: 'RequestNWLSpt',
-        component: RequestNWLSpt
+        path: 'ReqSupport',
+        name: 'ReqSupport',
+        component: ReqSupport
       }
     ]
   }

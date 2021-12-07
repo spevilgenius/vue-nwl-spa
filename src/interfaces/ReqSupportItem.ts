@@ -21,5 +21,8 @@ interface ReqSupportItem {
   Created: string
   Author: string
   Editor: string
+  etag?: string
+  uri?: string
+  type?: string
 }
 export { ReqSupportItem }
