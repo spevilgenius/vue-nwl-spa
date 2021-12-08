@@ -51,10 +51,16 @@ export default class Results extends Vue {
   results: Array<PublicationItem> = []
   viewReady?: boolean = false
 
+  @publication.Action
+  public searchAllPublications!: (data: any) => Promise<boolean>
+
   mounted() {
     const that = this
     this.$nextTick(function() {
-      alert(this.$route.query.k)
+      // alert(this.$route.query.k)
+      let data: any = {}
+      data.k = this.$route.query.k
+      this.searchAllPublications(data)
     })
   }
 }

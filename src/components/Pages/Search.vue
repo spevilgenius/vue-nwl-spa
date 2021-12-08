@@ -37,11 +37,11 @@
           <b-col cols="4" class="mb-1 p-0"><b-form-input v-model="nowords" size="sm"></b-form-input></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
-        <b-row no-gutters>
+
+        <!-- <b-row no-gutters>
           <b-col cols="2" class="m-0 p-0"></b-col>
           <b-row cols="10" class="mt-3 mb-1 p-0" style="font-size:large">Add Property Restrictions...</b-row>
         </b-row>
-
         <b-container fluid>
           <b-row v-for="(row, index) in rows" :key="row" :id="'row_' + index">
             <b-col cols="2" class="p-0 searchprops">Where the Property...</b-col>
@@ -59,7 +59,7 @@
               </a>
             </b-col>
           </b-row>
-        </b-container>
+        </b-container> -->
         <b-row no-gutters>
           <b-col cols="10"></b-col>
           <b-col cols="2" style="margin-top:15px; margin-bottom 15px;"><b-button @click="startSearch" variant="outline-primary" size="sm" class="">Search</b-button></b-col>
@@ -138,23 +138,31 @@ export default class Search extends Vue {
       e = ''
     if (this.allwords && this.allwords.length > 0) {
       a = 'ALL(' + this.allwords + ')'
+      k = 'ALL(' + this.allwords + ') '
     }
     if (this.anywords && this.anywords.length > 0) {
       b = 'ANY(' + this.anywords + ')'
+      k += 'ANY(' + this.anywords + ')'
     }
     if (this.nowords && this.nowords.length > 0) {
       a = 'NONE(' + this.nowords + ')'
+      k += 'NONE(' + this.nowords + ')'
     }
     if (this.exactwords && this.exactwords.length > 0) {
       d = this.exactwords
+      k += this.exactwords
     }
-    if (this.rows.length >= 1) {
+    /* if (this.rows.length >= 1) {
       // loop through all the rows to see if the user selected filters
       for (let i = 0; i < this.rows.length; i++) {
         console.log('ROW: ' + this.rows[i])
       }
-    }
-    // this.$router.push({ name: 'Search Results', query: { k:  } })
+    } */
+    /* k += a === '' ? a : a + ' '
+    k += b === '' ? b : b + ' '
+    k += c === '' ? c : c + ' '
+    k += d === '' ? d : d */
+    this.$router.push({ name: 'Search Results', query: { k: k } })
   }
 
   public addSearchPropRow() {
