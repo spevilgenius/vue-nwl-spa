@@ -17,7 +17,7 @@
         <b-row></b-row>
         <b-row class="searchprops">
           <b-col cols="1" class="m-0 p-0"></b-col>
-          <b-col cols="4" class="mt-1 p-0"></b-col><b-button variant="success" href="mailto:jeangrunwald@nexagen.com?subject=Request NWL Support&cc=jeangrunwald@nexagen.com&body=I am requesting NWL support for the following:">Send Email</b-button>
+          <b-col cols="4" class="mt-1 p-0"></b-col><b-button variant="success" href="mailto:nwdc_nrfk_fleet_pubs@navy.mil?subject=Request NWL Support&body=I am requesting NWL support for the following:">Send Email</b-button>
           <b-col cols="4" class="mb-1 p-0"></b-col>
           <b-col cols="3" class="m-0 p-0"></b-col>
         </b-row>
