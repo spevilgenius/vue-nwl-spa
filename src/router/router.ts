@@ -14,6 +14,7 @@ import ReqNatoAccess from '@/components/NWLSupport/ReqNatoAccess.vue'
 import RequestNWLSpt from '@/components/NWLSupport/RequestNWLSpt.vue'
 import Support from '@/store/modules/support'
 import ReqSupport from '@/store/modules/reqsupport'
+import { component } from 'vue/types/umd'
 
 Vue.use(VueRouter)
 
@@ -211,15 +212,21 @@ const nwlsupportMenu = {
       props: true
     },
     {
-      path: 'home/requestnwl',
-      name: 'Request NWL Support',
-      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqSupport.vue'),
-      props: true
-    },
-    {
       path: 'home/reqnatoaccess',
       name: 'Request NATO Access',
       component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNatoAccess.vue'),
+      props: true
+    },
+    {
+      path: 'home/requestnwl',
+      name: 'Request NWL Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNWLSupport.vue'),
+      props: true
+    },
+    {
+      path: 'home/requestit',
+      name: 'Request IT Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqITSupport.vue'),
       props: true
     }
   ]

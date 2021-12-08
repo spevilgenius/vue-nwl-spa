@@ -25,6 +25,9 @@ export default class NWLSupport extends Vue {
     if (this.mode == 'newsptrequest') {
       this.$router.push({ name: 'NWL Support Request' })
     }
+    if (this.mode == 'requestit') {
+      this.$router.push({ name: 'Request IT Support' })
+    }
     /*if (this.mode == 'refreshmulti') {
       this.$router.push({ name: 'All Publications', query: { Type: 'Multinational' } })
     }
