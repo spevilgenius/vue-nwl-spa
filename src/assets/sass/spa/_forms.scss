@@ -175,6 +175,17 @@ textarea.form-control {
 
 .form-group {
   margin-bottom: $form-group-margin-bottom;
+  // DRW: 9/25/2021
+  label {
+    background-color: $label-background-color;
+    color: $label-color;
+  }
+  .dcbs {
+    label {
+      background-color: $white !important;
+      color: $black !important;
+    }
+  }
 }
 
 .form-text {

@@ -33,7 +33,9 @@ function formatNavigation(j: any): Array<SidebarItem> {
         path: j[i]['path'],
         children: [],
         library: j[i]['library'],
-        icon: j[i]['icon']
+        icon: j[i]['icon'],
+        permission: j[i]['permission'],
+        permissionvalue: j[i]['permissionvalue']
       })
     }
   }
@@ -52,7 +54,9 @@ function formatNavigation(j: any): Array<SidebarItem> {
             path: j[i]['path'],
             library: j[i]['library'],
             icon: j[i]['icon'],
-            filtertype: j[i]['filtertype']
+            filtertype: j[i]['filtertype'],
+            permission: j[i]['permission'],
+            permissionvalue: j[i]['permissionvalue']
           })
         }
       }
@@ -68,47 +72,54 @@ class Sidebar extends VuexModule {
       id: 100,
       isMenu: true,
       name: 'Approved Publications',
-      path: '/pubs/home',
+      path: '/approved/pubs',
       children: [
         {
           id: 101,
           name: 'Whats New',
-          path: '/pubs/home/refreshnew',
+          path: '/approved/pubs/refreshnew',
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 102,
           name: 'Navy',
-          path: '/pubs/home/refreshnavy',
+          path: '/approved/pubs/refreshnavy',
           library: 'fas',
           icon: 'anchor'
         },
         {
           id: 103,
           name: 'Allied',
-          path: '/pubs/home/refreshallied',
+          path: '/approved/pubs/refreshallied',
           library: 'fas',
           icon: 'users'
         },
         {
           id: 104,
           name: 'Joint',
-          path: '/pubs/home/refreshjoint',
+          path: '/approved/pubs/refreshjoint',
           library: 'fas',
           icon: 'user-friends'
         },
         {
           id: 105,
           name: 'MultiNational',
-          path: '/pubs/home/refreshmulti',
+          path: '/approved/pubs/refreshmulti',
           library: 'fas',
           icon: 'user-tie'
         },
         {
           id: 106,
+          name: 'Other Publications',
+          path: '/approved/pubs/refreshother',
+          library: 'fas',
+          icon: 'user-tie'
+        },
+        {
+          id: 107,
           name: 'All Publications',
-          path: '/pubs/home/refreshall',
+          path: '/approved/pubs/refreshall',
           library: 'fas',
           icon: 'user-shield'
         }
@@ -117,22 +128,72 @@ class Sidebar extends VuexModule {
       icon: 'file-alt'
     },
     {
-      id: 200,
-      isMenu: false,
-      children: [],
-      name: 'Pubs In Development',
+      id: 150,
+      isMenu: true,
+      name: 'Archived Publications',
+      path: '/archived/pubs',
+      children: [
+        {
+          id: 151,
+          name: 'All Archived Publications',
+          path: '/archived/pubs/refresharchived',
+          library: 'fas',
+          icon: 'newspaper'
+        }
+      ],
       library: 'fas',
-      icon: 'user-edit',
-      path: '/pubs/home/refreshdevelopment'
+      icon: 'file-archive'
+    },
+    {
+      id: 200,
+      isMenu: true,
+      name: 'Pubs In Development',
+      path: '/development/pubs',
+      children: [
+        {
+          id: 201,
+          name: 'Add New Publication',
+          path: '/development/pubs/new',
+          library: 'fas',
+          icon: 'plus',
+          permission: 'isActionOfficer',
+          permissionvalue: true
+        },
+        {
+          id: 202,
+          name: 'All Publications In Dev',
+          path: '/development/pubs/refreshall',
+          library: 'fas',
+          icon: 'user-shield'
+        }
+      ],
+      library: 'fas',
+      icon: 'user-edit'
     },
     {
       id: 300,
-      isMenu: false,
-      children: [],
+      isMenu: true,
       name: 'Naval Terminology',
       library: 'fas',
       icon: 'spell-check',
-      path: '/terminology/home'
+      children: [
+        {
+          id: 301,
+          name: 'View Terminology',
+          path: '/terminology/home',
+          library: 'fas',
+          icon: 'plus'
+        },
+        {
+          id: 302,
+          name: 'Manage Terminology',
+          path: '/terminology/home/manageterms',
+          library: 'fas',
+          icon: 'plus',
+          permission: 'isTerminologist',
+          permissionvalue: true
+        }
+      ]
     },
     {
       id: 400,
@@ -141,53 +202,46 @@ class Sidebar extends VuexModule {
       name: 'PleaseReview',
       library: 'fas',
       icon: 'folder-open',
-      path: '/review/home'
+      path: '/pages/pleasereview'
     },
     {
       id: 500,
       isMenu: true,
       name: 'Documents',
-      path: '/docs/home',
+      path: '/approved/pubs',
       children: [
         {
           id: 501,
           name: 'TACMEMOS',
-          path: '/docs/home/refreshtacmemos',
+          path: '/approved/pubs/refreshtacmemos',
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 502,
           name: 'Fleet CONOPS',
-          path: '/docs/home/refreshfleet',
+          path: '/approved/pubs/refreshfleet',
           library: 'fas',
           icon: 'file-signature'
         },
         {
           id: 503,
           name: 'Navy Concept Pubs',
-          path: '/docs/home/refreshconcept',
+          path: '/approved/pubs/refreshconcept',
           library: 'fas',
           icon: 'passport'
         },
         {
           id: 504,
           name: 'Navy-Wide OPTASKs',
-          path: '/docs/home/refreshoptasks',
+          path: '/approved/pubs/refreshoptasks',
           library: 'fas',
           icon: 'tasks'
         },
         {
           id: 505,
-          name: 'Archived Documents',
-          path: '/docs/home/refresharchived',
-          library: 'fas',
-          icon: 'archive'
-        },
-        {
-          id: 506,
           name: 'Other',
-          path: '/docs/home/refreshother',
+          path: '/approved/pubs/refreshother',
           library: 'fas',
           icon: 'folder'
         }
@@ -202,28 +256,14 @@ class Sidebar extends VuexModule {
       path: '/library/home',
       children: [
         {
-          id: 601,
-          name: 'Bookshelves',
-          path: '/library/home/refreshshelves',
-          library: 'fas',
-          icon: 'newspaper'
-        },
-        {
           id: 602,
-          name: 'Announcements',
-          path: '/library/home/refreshfleet',
-          library: 'fas',
-          icon: 'file-signature'
-        },
-        {
-          id: 603,
           name: 'Command List',
-          path: '/library/home/refreshlist',
+          path: '/library/home/refreshcommandlist',
           library: 'fas',
           icon: 'passport'
         },
         {
-          id: 604,
+          id: 603,
           name: 'Doctrine POCs',
           path: '/library/home/refreshpocs',
           library: 'fas',
@@ -240,7 +280,7 @@ class Sidebar extends VuexModule {
       name: 'Doctrine Links',
       library: 'fas',
       icon: 'link',
-      path: '/links/home'
+      path: '/library/home/refreshlinks'
     },
     {
       id: 800,
@@ -288,14 +328,89 @@ class Sidebar extends VuexModule {
       icon: 'question'
     },
     {
+      id: 900,
+      isMenu: true,
+      name: 'Librarian Actions',
+      path: '/librarian/home',
+      permission: 'isLibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 901,
+          name: 'NWL Administration',
+          path: '/librarian/home/refreshadmin',
+          library: 'fas',
+          icon: 'tools'
+        },
+        {
+          id: 902,
+          name: 'Announcements',
+          path: '/librarian/home/refreshannouncements',
+          library: 'fas',
+          icon: 'bullhorn'
+        }
+      ],
+      library: 'fas',
+      icon: 'question'
+    },
+    {
+      id: 950,
+      isMenu: true,
+      name: 'AO Actions',
+      path: '/ao/home',
+      permission: 'isActionOfficer',
+      permissionvalue: true,
+      children: [
+        {
+          id: 951,
+          name: 'AO Administration',
+          path: '/ao/home/aoadministration',
+          library: 'fas',
+          icon: 'tools'
+        }
+      ],
+      library: 'fas',
+      icon: 'question'
+    },
+    {
       id: 1000,
       isMenu: false,
       children: [],
       name: 'Search',
-      path: '/search/home',
+      path: '/Pages/Search',
       library: 'fas',
       icon: 'search-plus'
     }
+    /* {
+      id: 1100,
+      isMenu: true,
+      name: 'Reports',
+      path: '/reports/home',
+      permission: 'islibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 1101,
+          name: 'Fiscal Year Report',
+          path: '/reports/home/fiscalyearreport',
+          library: 'fas',
+          icon: 'chart-bar'
+        }
+      ],
+      library: 'fas',
+      icon: 'chart-pie'
+    },
+    {
+      id: 1500,
+      isMenu: false,
+      children: [],
+      name: 'Developer',
+      path: '/pages/Developer',
+      library: 'fas',
+      icon: 'user-shield',
+      permission: 'isDeveloper',
+      permissionvalue: true
+    } */
   ]
 
   public navigationloaded = false

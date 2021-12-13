@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="isVisible ? 'app' : 'hidden'">
+  <div id="app">
     <router-view></router-view>
   </div>
 </template>
@@ -8,18 +8,30 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { UserInt } from '../interfaces/User'
-import { NotificationItem } from '../interfaces/NotificationItem'
+/* import { NotificationItem } from '../interfaces/NotificationItem' */
 
-const notify = namespace('notify')
+/*  Do not remove notification code. Leave it hidden.  */
+/* const notify = namespace('notify') */
 const users = namespace('users')
+const publication = namespace('publication')
 
 @Component
 export default class App extends Vue {
   public userid = 0
-  public isVisible = false
+  public isVisible = true
+  interval!: any
 
-  @notify.Action
-  public add!: (notification: NotificationItem) => void
+  /* @notify.Action
+  public add!: (notification: NotificationItem) => void */
+
+  @publication.State
+  public allpubsloaded!: boolean
+
+  @publication.State
+  public natopubsloaded!: boolean
+
+  @publication.State
+  public pubsloaded!: boolean
 
   @users.Action
   public getUserId!: () => Promise<UserInt>
@@ -33,11 +45,25 @@ export default class App extends Vue {
   @users.Action
   public getTodosByUser!: () => Promise<boolean>
 
+  @publication.Action
+  public getAllPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public getAllNatoPublications!: () => Promise<boolean>
+
+  @publication.Action
+  public createAllPubs!: () => Promise<boolean>
+
   /** @method - lifecycle hook */
   public created(): void {
     let loc = String(window.location)
     if (loc.indexOf('WSSWebPartPage') >= 0) {
       this.isVisible = false
+      let doc = document?.getElementById('app')
+      if (doc !== null) {
+        doc.style.display = 'none'
+        doc.style.zIndex = '-1000'
+      }
     } else {
       this.isVisible = true
       console.log('APP VISIBLE')
@@ -51,20 +77,20 @@ export default class App extends Vue {
                 this.getTodosByUser().then(response => {
                   if (response) {
                     console.log('App loaded.')
-                    this.add({
+                    /* this.add({
                       id: 'WelcomeMSG',
                       type: 'success',
                       title: 'Welcome',
                       message: 'Welcome'
-                    })
+                    }) */
                   } else {
                     console.log('App loaded. No Todos for current user')
-                    this.add({
+                    /* this.add({
                       id: 'WelcomeMSG',
                       type: 'success',
                       title: 'Welcome',
                       message: 'Welcome'
-                    })
+                    }) */
                   }
                 })
               } else {
@@ -80,28 +106,39 @@ export default class App extends Vue {
   }
 
   /** @method - lifecycle hook */
-  // public mounted(): void {}
+  mounted() {
+    this.getAllNatoPublications()
+    this.getAllPublications()
+    this.interval = setInterval(this.waitForIt, 500)
+  }
+
+  public waitForIt() {
+    if (this.pubsloaded && this.natopubsloaded) {
+      clearInterval(this.interval)
+      this.createAllPubs()
+      let oldbanners = document.getElementsByClassName('classificationbanner')
+      while (oldbanners.length > 0) {
+        let b = oldbanners[0] as HTMLElement
+        b.remove()
+      }
+    }
+  }
 }
 </script>
 
 <style>
-.app {
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #ffffff;
-  background-color: black;
+  color: #000000;
+  background-color: #ffffff;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 10000000 !important;
-}
-
-.hidden {
-  display: none;
-  z-index: -1000;
+  z-index: 100 !important;
 }
 </style>

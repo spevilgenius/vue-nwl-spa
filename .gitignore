@@ -6,6 +6,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
+.env.test
 
 # Log files
 npm-debug.log*
@@ -129,3 +130,7 @@ dist
 .tern-port
 dummy.html
 dummy.html
+*.txt
+additionaltest.json
+additionaltest.json
+additionaldata.json

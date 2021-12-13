@@ -26,14 +26,18 @@ module.exports = {
 
   filenameHashing: true,
   productionSourceMap: false,
-  runtimeCompiler: true
-  /* css: {
+  runtimeCompiler: true,
+  css: {
     loaderOptions: {
       sass: {
         prependData: `
           $BACKGROUNDCOLOR: ${process.env.APP_BACKGROUND};
+          @import "@/assets/sass/spa/_mixins.scss";
+          @import "@/assets/sass/spa/_functions.scss";
+          @import "@/assets/sass/spa/_functions-overrides.scss";
+          @import "@/assets/sass/spa/_variables.scss";
         `
       }
     }
-  } */
+  }
 }

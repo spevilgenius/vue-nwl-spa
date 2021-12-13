@@ -4,6 +4,9 @@ import notify from './modules/notify'
 import support from './modules/support'
 import users from './modules/users'
 import sidebar from './modules/sidebar'
+import publication from './modules/publication'
+import terminology from './modules/terminology'
+import search from './modules/search'
 
 Vue.use(Vuex)
 
@@ -14,6 +17,9 @@ export default new Vuex.Store({
     users,
     support,
     sidebar,
-    notify
+    notify,
+    publication,
+    terminology,
+    search
   }
 })

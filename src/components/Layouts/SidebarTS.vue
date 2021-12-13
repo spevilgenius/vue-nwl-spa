@@ -3,11 +3,13 @@
     <div class="sidebar-wrapper">
       <ul class="nav">
         <li class="nav-item nav-header">
-          <b-link class="nav-link" :href="homepage">
-            <span class="sidebar-icon">
-              <font-awesome-icon fas icon="anchor" class="icon"></font-awesome-icon>
-            </span>
-            <span class="sidebar-text sidebar-header">{{ title }}</span>
+          <b-link class="nav-header-link" href="https://nwdc.navy.mil">
+            <div class="nav-header-logo-container">
+              <div class="nav-header-logo" :style="{ backgroundImage: 'url(' + baseImageUrl + '/NWDCLogo100x100.png)' }"></div>
+            </div>
+          </b-link>
+          <b-link class="nav-header-link-sub" href="https://doctrine.navy.mil/Pages/Home.aspx">
+            <div class="nav-header-title">{{ title }}</div>
           </b-link>
         </li>
       </ul>
@@ -90,6 +92,8 @@ export default class Sidebar extends Vue {
   @users.State
   public currentUser!: UserInt
 
+  @Prop({ default: process.env.VUE_APP_BASE_IMAGE_URL }) readonly baseImageUrl!: string
+
   @Prop({ default: process.env.VUE_APP_HOMEPAGE }) readonly homepage!: string
 
   @Prop({ default: process.env.VUE_APP_TITLE }) readonly title!: string
@@ -108,7 +112,7 @@ export default class Sidebar extends Vue {
 
   /** @method - lifecycle hook */
   public mounted(): void {
-    this.getNavigation()
+    // this.getNavigation()
   }
 }
 </script>

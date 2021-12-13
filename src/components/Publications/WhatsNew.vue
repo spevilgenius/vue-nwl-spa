@@ -1,5 +1,5 @@
 <template>
-  <div>WHATS NEW</div>
+  <div>WHATS NEW John</div>
 </template>
 
 <script lang="ts">

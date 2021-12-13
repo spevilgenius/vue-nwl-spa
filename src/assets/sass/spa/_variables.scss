@@ -6,6 +6,7 @@
 // Color system
 
 $white:    #fff !default;
+$black:    #000 !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
@@ -15,7 +16,16 @@ $gray-600: #6c757d !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
-$black:    #000 !default;
+
+$blue-100: #caf0f8 !default;
+$blue-200: #ade8f4 !default;
+$blue-300: #90e0ef !default;
+$blue-400: #48cae4 !default;
+$blue-500: #00b4d8 !default;
+$blue-600: #0096c7 !default;
+$blue-700: #0077b6 !default;
+$blue-800: #023e8a !default;
+$blue-900: #03045e !default;
 
 $grays: () !default;
 // stylelint-disable-next-line scss/dollar-variable-default
@@ -34,16 +44,33 @@ $grays: map-merge(
   $grays
 );
 
-$blue:    #007bff !default;
+$blues: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$blues: map-merge(
+  (
+    "100": $blue-100,
+    "200": $blue-200,
+    "300": $blue-300,
+    "400": $blue-400,
+    "500": $blue-500,
+    "600": $blue-600,
+    "700": $blue-700,
+    "800": $blue-800,
+    "900": $blue-900
+  ),
+  $blues
+);
+
+$blue:    #0275d8 !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
-$red:     #dc3545 !default;
-$orange:  #fd7e14 !default;
+$red:     #d9534f !default;
+$orange:  #f0ad4e !default;
 $yellow:  #ffc107 !default;
-$green:   #28a745 !default;
+$green:   #5cb85c !default;
 $teal:    #20c997 !default;
-$cyan:    #17a2b8 !default;
+$cyan:    #5bc0de !default;
 $azure:   #45c0fd !default;
 
 $colors: () !default;
@@ -75,7 +102,7 @@ $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $orange !default;
 $danger:        $red !default;
-$light:         $gray-100 !default;
+$light:         $white !default;
 $dark:          $black !default;
 
 $theme-colors: () !default;
@@ -104,7 +131,16 @@ $theme-colors: map-merge(
     "white":      $white,
     "gray":       $gray-600,
     "gray-dark":  $gray-800,
-    "black":      $black
+    "black":      $black,
+    "blue-100":   $blue-100,
+    "blue-200":   $blue-200,
+    "blue-300":   $blue-300,
+    "blue-400":   $blue-400,
+    "blue-500":   $blue-500,
+    "blue-600":   $blue-600,
+    "blue-700":   $blue-700,
+    "blue-800":   $blue-800,
+    "blue-900":   $blue-900
   ),
   $theme-colors
 );
@@ -196,7 +232,7 @@ $enable-grid-classes:                         true !default;
 $enable-pointer-cursor-for-buttons:           true !default;
 $enable-print-styles:                         true !default;
 $enable-responsive-font-sizes:                false !default;
-$enable-validation-icons:                     true !default;
+$enable-validation-icons:                     false !default;
 $enable-deprecation-messages:                 true !default;
 
 
@@ -241,7 +277,7 @@ $sizes: map-merge(
 // Settings for the `<body>` element.
 
 $body-bg:                   $white !default;
-$body-color:                $gray-900 !default;
+$body-color:                $black !default;
 
 
 // Links
@@ -460,7 +496,7 @@ $table-border-level:          -6 !default;
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
 $input-btn-padding-y:         .375rem !default;
-$input-btn-padding-x:         .75rem !default;
+$input-btn-padding-x:         1.75rem !default;
 $input-btn-font-family:       null !default;
 $input-btn-font-size:         $font-size-base !default;
 $input-btn-line-height:       $line-height-base !default;
@@ -526,7 +562,9 @@ $btn-transition:              color .15s ease-in-out, background-color .15s ease
 
 // Forms
 
-$label-margin-bottom:                   .5rem !default;
+$label-margin-bottom:                   0 !default;
+$label-background-color:                $blue-800;
+$label-color:                           $white;
 
 $input-padding-y:                       $input-btn-padding-y !default;
 $input-padding-x:                       $input-btn-padding-x !default;
@@ -659,9 +697,10 @@ $custom-select-bg-size:             8px 10px !default; // In pixels because imag
 $custom-select-indicator-color:     $gray-800 !default;
 $custom-select-indicator:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'><path fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>") !default;
 $custom-select-background:          escape-svg($custom-select-indicator) no-repeat right $custom-select-padding-x center / $custom-select-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
+// $custom-select-background:          escape-svg($custom-select-indicator) no-repeat left $custom-select-padding-x center / $custom-select-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
 
 $custom-select-feedback-icon-padding-right: add(1em * .75, (2 * $custom-select-padding-y * .75) + $custom-select-padding-x + $custom-select-indicator-padding) !default;
-$custom-select-feedback-icon-position:      center right ($custom-select-padding-x + $custom-select-indicator-padding) !default;
+$custom-select-feedback-icon-position:      center left ($custom-select-padding-x + $custom-select-indicator-padding) !default;
 $custom-select-feedback-icon-size:          $input-height-inner-half $input-height-inner-half !default;
 
 $custom-select-border-width:        $input-border-width !default;
@@ -807,7 +846,7 @@ $navbar-toggler-padding-x:          .75rem !default;
 $navbar-toggler-font-size:          $font-size-lg !default;
 $navbar-toggler-border-radius:      $btn-border-radius !default;
 
-$navbar-dark-color:                 rgba($white, .5) !default;
+$navbar-dark-color:                 rgba($blue-800, 1) !default;
 $navbar-dark-hover-color:           rgba($white, .75) !default;
 $navbar-dark-active-color:          $white !default;
 $navbar-dark-disabled-color:        rgba($white, .25) !default;
@@ -900,8 +939,8 @@ $jumbotron-bg:                      $gray-200 !default;
 
 // Cards
 
-$card-spacer-y:                     .75rem !default;
-$card-spacer-x:                     1.25rem !default;
+$card-spacer-y:                     .25rem !default;
+$card-spacer-x:                     .25rem !default;
 $card-border-width:                 $border-width !default;
 $card-border-radius:                $border-radius !default;
 $card-border-color:                 rgba($black, .125) !default;
@@ -1086,26 +1125,26 @@ $progress-bar-transition:           width .6s ease !default;
 
 $list-group-color:                  null !default;
 $list-group-bg:                     $white !default;
-$list-group-border-color:           rgba($black, .125) !default;
+$list-group-border-color:           $blue-800 !default;
 $list-group-border-width:           $border-width !default;
 $list-group-border-radius:          $border-radius !default;
 
 $list-group-item-padding-y:         .75rem !default;
 $list-group-item-padding-x:         1.25rem !default;
 
-$list-group-hover-bg:               $gray-100 !default;
+$list-group-hover-bg:               $blue-800 !default;
 $list-group-active-color:           $component-active-color !default;
 $list-group-active-bg:              $component-active-bg !default;
 $list-group-active-border-color:    $list-group-active-bg !default;
 
-$list-group-disabled-color:         $gray-600 !default;
+$list-group-disabled-color:         $blue-800 !default;
 $list-group-disabled-bg:            $list-group-bg !default;
 
-$list-group-action-color:           $gray-700 !default;
+$list-group-action-color:           $blue-700 !default;
 $list-group-action-hover-color:     $list-group-action-color !default;
 
 $list-group-action-active-color:    $body-color !default;
-$list-group-action-active-bg:       $gray-200 !default;
+$list-group-action-active-bg:       $blue-800 !default;
 
 
 // Image thumbnails
