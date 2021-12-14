@@ -213,7 +213,7 @@ class Publication extends VuexModule {
   sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
   sdNatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
   searchUrlStart = "/_api/search/query?querytext='"
-  searchUrlEnd = "'&properties='SourceName:ResultSourceSearch,SourceLevel:SPSiteCollection'"
+  searchUrlEnd = "'&properties='SourceName:ResultSourceSearch,SourceLevel:SPSiteCollection'&selectproperties='Rank, Title, Name, Id, Prefix, AdditionalData'"
 
   //#region MUTATIONS
   @Mutation updateDigest(digest: string): void {
@@ -390,6 +390,7 @@ class Publication extends VuexModule {
       console.log('SEARCH RESULTS RESPONSE: ' + response)
     }
     let surl = tp1 + slash + slash + tp2 + this.searchUrlStart + data.k + this.searchUrlEnd
+    console.log('SEARCH URL: ' + surl)
     searchAllPubs(surl)
     return true
   }

@@ -131,25 +131,16 @@ export default class Search extends Vue {
   public startSearch() {
     // alert('Searching!')
     let k = ''
-    let a,
-      b,
-      c,
-      d,
-      e = ''
-    if (this.allwords && this.allwords.length > 0) {
-      a = 'ALL(' + this.allwords + ')'
+    if (this.allwords && this.allwords.length > 2) {
       k = 'ALL(' + this.allwords + ') '
     }
-    if (this.anywords && this.anywords.length > 0) {
-      b = 'ANY(' + this.anywords + ')'
-      k += 'ANY(' + this.anywords + ')'
+    if (this.anywords && this.anywords.length > 2) {
+      k += 'ANY(' + this.anywords + ') '
     }
-    if (this.nowords && this.nowords.length > 0) {
-      a = 'NONE(' + this.nowords + ')'
-      k += 'NONE(' + this.nowords + ')'
+    if (this.nowords && this.nowords.length > 2) {
+      k += 'NONE(' + this.nowords + ') '
     }
-    if (this.exactwords && this.exactwords.length > 0) {
-      d = this.exactwords
+    if (this.exactwords && this.exactwords.length > 2) {
       k += this.exactwords
     }
     /* if (this.rows.length >= 1) {
@@ -158,10 +149,6 @@ export default class Search extends Vue {
         console.log('ROW: ' + this.rows[i])
       }
     } */
-    /* k += a === '' ? a : a + ' '
-    k += b === '' ? b : b + ' '
-    k += c === '' ? c : c + ' '
-    k += d === '' ? d : d */
     this.$router.push({ name: 'Search Results', query: { k: k } })
   }
 
