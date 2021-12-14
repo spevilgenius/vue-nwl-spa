@@ -23,7 +23,7 @@ export default class ReqNatoAccess extends Vue {
     const that = this
     window.setInterval(function() {
       that.iframeloaded = true
-    }, 2000)
+    }, 2100)
   }
 }
 </script>
