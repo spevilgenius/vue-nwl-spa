@@ -285,41 +285,41 @@ class Sidebar extends VuexModule {
     {
       id: 800,
       isMenu: true,
-      name: 'Support',
-      path: '/support/home',
+      name: 'NWL Support',
+      path: '/nwlsupport/home',
       children: [
         {
           id: 801,
           name: 'FAQ',
-          path: '/support/home/refreshfaq',
+          path: '/nwlsupport/home/refreshfaq',
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 802,
           name: 'My NATO Status',
-          path: '/support/home/natostatus',
+          path: '/nwlsupport/home/natostatus',
           library: 'fas',
           icon: 'file-signature'
         },
         {
           id: 803,
           name: 'Request NATO Access',
-          path: '/support/home/requestnato',
+          path: '/nwlsupport/home/requestnato',
           library: 'fas',
           icon: 'passport'
         },
         {
           id: 804,
           name: 'Request NWL Support',
-          path: '/support/home/requestnwl',
+          path: '/nwlsupport/home/requestnwl',
           library: 'fas',
           icon: 'tasks'
         },
         {
           id: 805,
           name: 'Request Portal/IT Support',
-          path: '/support/home/requestit',
+          path: '/nwlsupport/home/requestit',
           library: 'fas',
           icon: 'archive'
         }

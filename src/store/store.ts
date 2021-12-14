@@ -7,6 +7,8 @@ import sidebar from './modules/sidebar'
 import publication from './modules/publication'
 import terminology from './modules/terminology'
 import search from './modules/search'
+import poc from './modules/poc'
+import reqsupport from './modules/reqsupport'
 
 Vue.use(Vuex)
 
@@ -20,6 +22,8 @@ export default new Vuex.Store({
     notify,
     publication,
     terminology,
-    search
+    search,
+    poc,
+    reqsupport
   }
 })

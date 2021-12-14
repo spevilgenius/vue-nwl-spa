@@ -8,11 +8,14 @@ import PleaseReview from '@/components/Pages/PleaseReview.vue'
 import ManageTerms from '@/components/Pages/ManageTerms.vue'
 import AoAdministration from '@/components/AO/AOAdmin.vue'
 import LibrarianAdmin from '@/components/Librarian/LibrarianAdmin.vue'
-import Reports from '@/components/Reports/FiscalYearReport.vue'
-import Faq from '@/components/Pages/FAQ.vue'
+import Faq from '@/components/NWLSupport/FAQ.vue'
 import POCs from '@/components/Pages/POCs.vue'
 import Search from '@/components/Pages/Search.vue'
 import Results from '@/components/Pages/Results.vue'
+import ReqNatoAccess from '@/components/NWLSupport/ReqNatoAccess.vue'
+import RequestNWLSpt from '@/components/NWLSupport/RequestNWLSpt.vue'
+import Support from '@/store/modules/support'
+import ReqSupport from '@/store/modules/reqsupport'
 
 Vue.use(VueRouter)
 
@@ -262,6 +265,37 @@ const termsMenu = {
   ]
 }
 
+const nwlsupportMenu = {
+  path: '/nwlsupport',
+  component: Layout,
+  redirect: '/nwlsupport/home',
+  children: [
+    {
+      path: 'home/:mode',
+      name: 'NWL Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/Home.vue'),
+      props: true
+    },
+    {
+      path: 'home/faq',
+      name: 'FAQ',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/FAQ.vue'),
+      props: true
+    },
+    {
+      path: 'home/requestnwl',
+      name: 'Request NWL Support',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqSupport.vue'),
+      props: true
+    },
+    {
+      path: 'home/reqnatoaccess',
+      name: 'Request NATO Access',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNatoAccess.vue'),
+      props: true
+    }
+  ]
+}
 const routes = [
   {
     path: '/',
@@ -276,6 +310,21 @@ const routes = [
   libraryInformationMenu,
   reportsMenu,
   documentsMenu,
+  nwlsupportMenu,
+  /* adminMenu,
+  taskMenu,
+  msrMenu,
+  financialMenu,
+  calendarMenu,
+  travelMenu,
+  featureMenu,
+  featuresMenu,
+  bugsMenu,
+  personnelMenu,
+  trainingMenu,
+  securityMenu,
+  workplanMenu,
+  refreshMenu, */
   {
     path: '/pages',
     component: Layout,
@@ -310,6 +359,16 @@ const routes = [
         path: 'POCs',
         name: 'POCs',
         component: POCs
+      },
+      {
+        path: 'ReqNatoAccess',
+        name: 'ReqNatoAccess',
+        component: ReqNatoAccess
+      },
+      {
+        path: 'ReqSupport',
+        name: 'ReqSupport',
+        component: ReqSupport
       },
       {
         path: 'Search',
