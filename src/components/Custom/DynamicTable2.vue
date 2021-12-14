@@ -2,7 +2,7 @@
   <b-container fluid class="contentHeight m-0 p-0">
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
-        <b-overlay :show="filtereditems.length === 0" :variant="table.overlayVariant" class="contentHeight">
+        <b-overlay :show="!ready" :variant="table.overlayVariant" class="contentHeight">
           <b-container fluid class="contentHeight m-0 p-0">
             <b-row no-gutters :class="table.headerClass" :style="getStyle('buttonrow', null)">
               <b-col cols="8" class="mt-1 p-0"></b-col>

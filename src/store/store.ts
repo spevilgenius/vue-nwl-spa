@@ -6,6 +6,7 @@ import users from './modules/users'
 import sidebar from './modules/sidebar'
 import publication from './modules/publication'
 import terminology from './modules/terminology'
+import search from './modules/search'
 import poc from './modules/poc'
 import reqsupport from './modules/reqsupport'
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     notify,
     publication,
     terminology,
+    search,
     poc,
     reqsupport
   }

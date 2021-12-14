@@ -212,6 +212,8 @@ class Publication extends VuexModule {
   updateNatoPubUrl = "/_api/lists/getbytitle('NATOPublications')/items("
   sdUrl = "/_api/lists/getbytitle('SupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
   sdNatoUrl = "/_api/lists/getbytitle('NATOSupportingDocuments')/items?$select=*,File/Name,File/ServerRelativeUrl&$expand=File"
+  searchUrlStart = "/_api/search/query?querytext='"
+  searchUrlEnd = "'&properties='SourceName:ResultSourceSearch,SourceLevel:SPSiteCollection'&selectproperties='Rank, Title, Name, Id, Prefix, AdditionalData'"
 
   //#region MUTATIONS
   @Mutation updateDigest(digest: string): void {
@@ -372,6 +374,25 @@ class Publication extends VuexModule {
   public setPubLoaded(loaded: boolean): void {
     console.log('ACTION: setPubLoaded: ' + loaded)
     this.context.commit('updatePubLoaded', loaded)
+  }
+
+  @Action
+  public async searchAllPublications(data: any): Promise<boolean> {
+    let j: any[] = []
+    let p: Array<PublicationItem> = []
+    const that = this
+    async function searchAllPubs(url: string): Promise<void> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      console.log('SEARCH RESULTS RESPONSE: ' + response)
+    }
+    let surl = tp1 + slash + slash + tp2 + this.searchUrlStart + data.k + this.searchUrlEnd
+    console.log('SEARCH URL: ' + surl)
+    searchAllPubs(surl)
+    return true
   }
 
   @Action

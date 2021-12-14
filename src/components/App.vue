@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div v-if="isVisible" id="app">
     <router-view></router-view>
   </div>
 </template>

@@ -128,7 +128,7 @@
                         </b-card>
                       </b-link>
                     </b-list-group-item>
-                    <b-list-group-item variant="blue-800" href="#" class="flex-column align-items-start">
+                    <b-list-group-item variant="blue-800" class="flex-column align-items-start">
                       <b-link :to="{ name: 'All Publications', query: { Type: 'TTP' } }">
                         <b-card no-body class="p-1">
                           <b-row no-gutters>

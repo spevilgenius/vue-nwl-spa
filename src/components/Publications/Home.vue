@@ -40,6 +40,18 @@ export default class Publications extends Vue {
     if (this.mode == 'refreshdevelopment') {
       this.$router.push({ name: 'Pubs In Development' })
     }
+    if (this.mode == 'refreshtacmemos') {
+      this.$router.push({ name: 'All Publications', query: { Type: 'TACMEMO' } })
+    }
+    if (this.mode == 'refreshfleet') {
+      this.$router.push({ name: 'All Publications', query: { Type: 'CONOPS' } })
+    }
+    if (this.mode == 'refreshconcept') {
+      this.$router.push({ name: 'All Publications', query: { Type: 'NavyConceptPubs' } })
+    }
+    if (this.mode == 'refreshoptasks') {
+      this.$router.push({ name: 'All Publications', query: { Type: 'OPTASK' } })
+    }
   }
 }
 </script>

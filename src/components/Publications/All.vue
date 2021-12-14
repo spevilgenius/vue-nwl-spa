@@ -24,7 +24,7 @@
         <dynamic-table
           v-if="viewReady"
           :user="currentUser"
-          :ready="true"
+          :ready="allpubsloaded"
           :table="{
             id: tblId,
             primaryKey: primaryKey,
@@ -79,6 +79,7 @@ export default class All extends Vue {
   filteredpubs: Array<PublicationItem> = []
   pubs: Array<PublicationItem> = []
   Prfx: any
+  FunctionalSeries: any
   viewReady?: boolean = false
   archive: any = {
     item: {},
@@ -284,7 +285,19 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'OPTASK'))
+          console.log('first = ' + a)
+          console.log('second ' + JSON.stringify(a))
+          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'TACMEMO') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'NavyConceptPubs') {
+          let a = this.allpublications
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Navy Concept Pubs' } })
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
@@ -548,6 +561,12 @@ export default class All extends Vue {
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACBUL'))
           b = b.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
           a = a.concat(b)
+          a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'TACMEMO') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
           a = a.sort((c, d) => (c.AdditionalData.FunctionalSeries > d.AdditionalData.FunctionalSeries ? 1 : c.AdditionalData.FunctionalSeries === d.AdditionalData.FunctionalSeries ? (c.Title > d.Title ? 1 : -1) : -1))
           this.filteredpubs = a
         }

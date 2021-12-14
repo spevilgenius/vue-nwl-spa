@@ -208,40 +208,40 @@ class Sidebar extends VuexModule {
       id: 500,
       isMenu: true,
       name: 'Documents',
-      path: '/docs/home',
+      path: '/approved/pubs',
       children: [
         {
           id: 501,
           name: 'TACMEMOS',
-          path: '/docs/home/refreshtacmemos',
+          path: '/approved/pubs/refreshtacmemos',
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 502,
           name: 'Fleet CONOPS',
-          path: '/docs/home/refreshfleet',
+          path: '/approved/pubs/refreshfleet',
           library: 'fas',
           icon: 'file-signature'
         },
         {
           id: 503,
           name: 'Navy Concept Pubs',
-          path: '/docs/home/refreshconcept',
+          path: '/approved/pubs/refreshconcept',
           library: 'fas',
           icon: 'passport'
         },
         {
           id: 504,
           name: 'Navy-Wide OPTASKs',
-          path: '/docs/home/refreshoptasks',
+          path: '/approved/pubs/refreshoptasks',
           library: 'fas',
           icon: 'tasks'
         },
         {
-          id: 506,
+          id: 505,
           name: 'Other',
-          path: '/docs/home/refreshother',
+          path: '/approved/pubs/refreshother',
           library: 'fas',
           icon: 'folder'
         }
@@ -256,28 +256,14 @@ class Sidebar extends VuexModule {
       path: '/library/home',
       children: [
         {
-          id: 601,
-          name: 'Bookshelves',
-          path: '/library/home/refreshshelves',
-          library: 'fas',
-          icon: 'newspaper'
-        },
-        {
           id: 602,
-          name: 'Announcements',
-          path: '/library/home/refreshfleet',
-          library: 'fas',
-          icon: 'file-signature'
-        },
-        {
-          id: 603,
           name: 'Command List',
-          path: '/library/home/refreshlist',
+          path: '/library/home/refreshcommandlist',
           library: 'fas',
           icon: 'passport'
         },
         {
-          id: 604,
+          id: 603,
           name: 'Doctrine POCs',
           path: '/library/home/refreshpocs',
           library: 'fas',
@@ -294,7 +280,7 @@ class Sidebar extends VuexModule {
       name: 'Doctrine Links',
       library: 'fas',
       icon: 'link',
-      path: '/links/home'
+      path: '/library/home/refreshlinks'
     },
     {
       id: 800,
