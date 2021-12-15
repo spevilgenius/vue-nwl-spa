@@ -286,7 +286,7 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          a = a.filter(search => Vue._.includes(search['AdditionalData'], 'Navy Wide OPTASKs'))
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Navy Wide OPTASKs' } })
           this.filteredpubs = a
         }
         if (this.filterType === 'TACMEMO') {
@@ -574,26 +574,15 @@ export default class All extends Vue {
           this.filteredpubs = a
         }
         if (this.filterType === 'WhatsNew') {
-          function getCurrentFinancialYear() {
-            let fiscalyear1: number
-            let fiscalyear2: number
-            let fromDate: any
-            let toDate: any
-            let today = new Date()
-            if (today.getMonth() + 1 <= 3) {
-              fiscalyear1 = today.getFullYear() - 1
-              fiscalyear2 = today.getFullYear()
-            } else {
-              fiscalyear1 = today.getFullYear()
-              fiscalyear2 = today.getFullYear() + 1
-            }
-          }
-          getCurrentFinancialYear()
           let a = this.allpublications
-          /* let ad = a.AdditionalData
-          a.ad.EditionDate = a.ad.EditionDate.filter((item: any) => {
+          let ade = a['AdditionalData.EditionDate']
+          let fromDate: any
+          let toDate: any
+          this.getCurrentFiscalYear()
+          ade = ade._.filter((item: any) => {
+            /* ad['EditionDate'] = ad['EditionDate'].filter((item: any) => { */
             return item.date.getTime() >= fromDate.getTime() && item.date.getTime() <= toDate.getTime()
-          }) */
+          })
           this.filteredpubs = a
         }
         // #endregion
@@ -648,6 +637,21 @@ export default class All extends Vue {
     this.$router.push({ name: 'Edit Publication', query: { Id: args.id, Nato: args.nato } })
   }
 
+  getCurrentFiscalYear() {
+    alert('Fiscal year called')
+    let fiscalyear1: number
+    let fiscalyear2: number
+    let today = new Date()
+    if (today.getMonth() + 1 <= 3) {
+      console.log('getMonth + 1 = ' + today.getMonth() + 1)
+      fiscalyear1 = today.getFullYear() - 1
+      console.log('getFullYear =' + today.getFullYear())
+      fiscalyear2 = today.getFullYear()
+    } else {
+      fiscalyear1 = today.getFullYear()
+      fiscalyear2 = today.getFullYear() + 1
+    }
+  }
   archivePub(args: any) {
     // console.log('Archive Pub')
     this.archive.item = args.item
