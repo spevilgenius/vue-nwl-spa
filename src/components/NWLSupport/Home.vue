@@ -28,6 +28,9 @@ export default class NWLSupport extends Vue {
     if (this.mode == 'requestit') {
       this.$router.push({ name: 'Request IT Support' })
     }
+    if (this.mode == 'natostatus') {
+      this.$router.push({ name: 'My NATO Status' })
+    }
     /*if (this.mode == 'refreshmulti') {
       this.$router.push({ name: 'All Publications', query: { Type: 'Multinational' } })
     }
