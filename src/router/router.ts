@@ -284,6 +284,12 @@ const nwlsupportMenu = {
       props: true
     },
     {
+      path: 'home/natostatus',
+      name: 'My NATO Status',
+      component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/MyNatoStatus.vue'),
+      props: true
+    },
+    {
       path: 'home/reqnatoaccess',
       name: 'Request NATO Access',
       component: () => import(/* webpackChunkName: "Support" */ '../components/NWLSupport/ReqNatoAccess.vue'),
