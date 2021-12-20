@@ -175,7 +175,7 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Air NTTP' } }">Air NTTP</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Air NTTP' } }">Air NTTP</b-link>
                     </li>
                     <li>
                       <b-link :to="{ name: 'Allied Publications' }">Allied Publications</b-link>
@@ -187,7 +187,7 @@
                       <b-link :to="{ name: 'All Publications', query: { Type: 'Multinational' } }">Multinational Publications</b-link>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Navy Concept Pubs' } }">Navy Concepts</b-link>
                     </li>
                     <li><b-link :to="{ name: 'All Publications', query: { Type: 'CONOPS' } }">Fleet CONOPS</b-link></li>
                     <li>
@@ -214,15 +214,15 @@
                 <b-card-body body-class="card-body-left p-1">
                   <ul>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Strategy Documents' } }">Strategy Documents</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Strategy Documents' } }">Strategy Documents</b-link>
                     </li>
                     <li>
                       <a href="/pubs/Forms/Archived%20Documents%20Broken.aspx">Archived Documents</a>
                     </li>
                     <li>
-                      <b-link :to="{ name: 'All Publications', query: { Value: 'Commander Handbook' } }">Commander’s Handbooks</b-link>
+                      <b-link :to="{ name: 'All Publications', query: { Type: 'Commander Handbooks' } }">Commander’s Handbooks</b-link>
                     </li>
-                    <li><b-link :to="{ name: 'All Publications', query: { Value: 'Writing Guidance' } }">Writing Guidance</b-link></li>
+                    <li><b-link :to="{ name: 'All Publications', query: { Type: 'Writing Guidance' } }">Writing Guidance</b-link></li>
                     <li title="Coming soon!">
                       <a href="#">Selected Instructions</a>
                     </li>

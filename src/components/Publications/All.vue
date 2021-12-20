@@ -278,6 +278,11 @@ export default class All extends Vue {
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'NTTP'))
           this.filteredpubs = a
         }
+        if (this.filterType === 'Air NTTP') {
+          let a = this.allpublications
+          a = a.filter(search => Vue._.isEqual(search['Prfx'], 'Air NTTP'))
+          this.filteredpubs = a
+        }
         if (this.filterType === 'CONOPS') {
           let a = this.allpublications
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'CONOPS'))
@@ -285,9 +290,8 @@ export default class All extends Vue {
         }
         if (this.filterType === 'OPTASK') {
           let a = this.allpublications
-          console.log('first = ' + a)
-          console.log('second ' + JSON.stringify(a))
-          a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
+          // a = a.filter(search => Vue._.isEqual(search['AdditionalData.FunctionalSeries'], 'Navy Wide OPTASKs'))
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Navy Wide OPTASKs' } })
           this.filteredpubs = a
         }
         if (this.filterType === 'TACMEMO') {
@@ -295,9 +299,24 @@ export default class All extends Vue {
           a = a.filter(search => Vue._.isEqual(search['Prfx'], 'TACMEMO'))
           this.filteredpubs = a
         }
-        if (this.filterType === 'NavyConceptPubs') {
+        if (this.filterType === 'Navy Concept Pubs') {
           let a = this.allpublications
           a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Navy Concept Pubs' } })
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Strategy Documents') {
+          let a = this.allpublications
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Strategy Documents' } })
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Writing Guidance') {
+          let a = this.allpublications
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: 'Writing Guidance' } })
+          this.filteredpubs = a
+        }
+        if (this.filterType === 'Commander Handbooks') {
+          let a = this.allpublications
+          a = Vue._.filter(a, { AdditionalData: { FunctionalSeries: "Commander's Handbooks" } })
           this.filteredpubs = a
         }
         if (this.filterType === 'ATP') {
