@@ -14,7 +14,8 @@ export default class Publications extends Vue {
   /** @method - lifecycle hook */
   mounted() {
     if (this.mode == 'refreshnew') {
-      this.$router.push({ name: 'Whats New' })
+      // this.$router.push({ name: 'Whats New' })
+      this.$router.push({ name: 'All Publications', query: { Type: 'New' } })
     }
     if (this.mode == 'refreshnavy') {
       this.$router.push({ name: 'All Publications', query: { Type: 'Navy' } })

@@ -117,7 +117,7 @@ const libraryInformationMenu = {
     },
     {
       path: 'home/doctrinepoc',
-      name: 'NWL Administration',
+      name: 'Doctrine POCs',
       component: () => import(/* webpackChunkName: "libraryinformation" */ '../components/LibraryInformation/DoctrinePOCs.vue'),
       props: true
     },

@@ -22,7 +22,7 @@ const tp2 = String(window.location.host)
 export default class Commandlist extends Vue {
   isIframeloaded?: boolean = false
   baseUrl = tp1 + slash + slash + tp2
-  commandListUrl = this.baseUrl + 'Lists/lu_pra/AllItems.aspx?IsDlg=1'
+  commandListUrl = this.baseUrl + '/Lists/poc/POC.aspx?IsDlg=1'
 
   public iframeloaded() {
     console.log('IFRAME LOADED')

@@ -240,6 +240,24 @@ export default class All extends Vue {
           a = a.filter(search => Vue._.isEqual(search['Branch'], 'Multinational'))
           this.filteredpubs = a
         }
+        if (this.filterType === 'New') {
+          let a = this.allpublications
+          let b = new Date()
+          let c = b.getMonth() + 1 // get current month
+          let d = c >= 10 ? b.getFullYear() + 1 : b.getFullYear()
+          let start = new Date(d - 1, 9, 1)
+          let end = new Date(d, 8, 30)
+          console.log('START: ' + start.toString() + ', END: ' + end.toString())
+          a = a.filter(search => {
+            let e = String(search['Modified'])
+            let f = new Date(e)
+            return f >= start && f <= end
+          })
+          // moderation status-- 0 = Approved 3 = Draft
+          a = a.filter(search => Vue._.isEqual(search['ModerationStatus'], 0))
+          // a = a.filter(search => Vue._.isEqual(search['ModerationStatus'], 3))
+          this.filteredpubs = a
+        }
         if (this.filterType === 'Other') {
           let a = this.allpublications
           a = a.filter(search => Vue._.isEqual(search['Branch'], 'Other'))

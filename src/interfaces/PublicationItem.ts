@@ -17,6 +17,7 @@ interface PublicationItem {
   LibrarianRemarks?: string
   LongTitle?: string
   Media?: any
+  ModerationStatus?: string
   Modified?: string
   MA?: string
   NSN?: string

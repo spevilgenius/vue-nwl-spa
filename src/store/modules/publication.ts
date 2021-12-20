@@ -434,6 +434,7 @@ class Publication extends VuexModule {
             LongTitle: j[i]['LongTitle'],
             Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '',
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
+            ModerationStatus: j[i]['OData__ModerationStatus'],
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
             NWDCAO: {
@@ -455,6 +456,7 @@ class Publication extends VuexModule {
             type: j[i]['__metadata']['type']
           })
         }
+        console.log('GET PUBS RESPONSE: ' + j)
         that.context.commit('createPublications', p)
       }
     }
@@ -501,6 +503,7 @@ class Publication extends VuexModule {
             LibrarianRemarks: j[i]['LibrarianRemarks'],
             LongTitle: j[i]['LongTitle'],
             Media: j[i]['Media'] !== null ? j[i]['Media']['results'] : '', // returns array of multiple choices
+            ModerationStatus: j[i]['OData__ModerationStatus'],
             Modified: new Date(j[i]['Modified']).toLocaleDateString(),
             MA: j[i]['MA'],
             NSN: j[i]['NSN'],
@@ -1268,12 +1271,8 @@ class Publication extends VuexModule {
     const config = {
       headers: headers
     }
-    let itemprops = {
-      __metadata: { type: data.type },
-      AdditionalData: JSON.stringify(data.AdditionalData)
-    }
     try {
-      await axios.post(url, itemprops, config)
+      await axios.post(url, null, config)
     } catch (e) {
       // don't care yet
     }

@@ -641,6 +641,7 @@ export default class EditPub extends Vue {
 
   public publishForm() {
     if (this.currentUser.isActionOfficer === true) {
+      console.log('ACTION OFFICER PUBLISH.')
       clearInterval(this.interval)
       // action officer so set request for approval and assign a task to the librarians.
       const that = this
@@ -670,6 +671,7 @@ export default class EditPub extends Vue {
         })
     } else {
       // librarian so really publish an approved version
+      console.log('ACTION OFFICER PUBLISH.')
       clearInterval(this.interval)
       const that = this
       this.$bvModal

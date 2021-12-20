@@ -14,7 +14,7 @@ export default class Libraryinformation extends Vue {
     if (this.mode == 'refreshcommandlist') {
       this.$router.push({ name: 'Command List' })
     }
-    if (this.mode == 'refreshdoctrinepocs') {
+    if (this.mode == 'refreshpocs') {
       this.$router.push({ name: 'Doctrine POCs' })
     }
     if (this.mode == 'refreshlinks') {
