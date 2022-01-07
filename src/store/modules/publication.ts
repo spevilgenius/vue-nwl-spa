@@ -181,6 +181,7 @@ class Publication extends VuexModule {
   public publoaded?: boolean = false // single publication
   public prefixes: Array<ObjectItem> = []
   public statuses: Array<ObjectItem> = []
+  public branches: Array<ObjectItem> = []
   public functionalseries: Array<ObjectItem> = []
   public functionalfields: Array<ObjectItem> = []
   public relto: Array<ObjectItem> = []
@@ -202,6 +203,7 @@ class Publication extends VuexModule {
   natoArchiveUrl = "/_api/lists/getbytitle('NATOArchive')/items?$select=*,File/Name,File/ServerRelativeUrl,NWDCAO/Title,NWDCAO/Id,NWDCAO/EMail&$expand=File,NWDCAO&$orderby=Title"
   prefixUrl = "/_api/lists/getbytitle('lu_prefix')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   statusUrl = "/_api/lists/getbytitle('lu_status')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
+  branchUrl = "/_api/lists/getbytitle('lu_branch')/items?$select=*"
   functionalseriesUrl = "/_api/lists/getbytitle('lu_funcseries')/items?$select=*,Family/Title&$expand=Family&$filter=(Family/Title eq '"
   functionalfieldsUrl = "/_api/lists/getbytitle('lu_librarytree')/items?$select=*,funcSeries/Title&$expand=funcSeries&$filter=(funcSeries/Title eq '"
   reltoUrl = "/_api/lists/getbytitle('lu_relto')/items?$select=*"
@@ -215,7 +217,7 @@ class Publication extends VuexModule {
   searchUrlStart = "/_api/search/query?querytext='"
   searchUrlEnd = "'&properties='SourceName:ResultSourceSearch,SourceLevel:SPSiteCollection'&selectproperties='Rank, Title, Name, Id, Prefix, AdditionalData'"
 
-  //#region MUTATIONS
+  // MUTATIONS
   @Mutation updateDigest(digest: string): void {
     this.digest = digest
     this.digestloaded = true
@@ -316,6 +318,11 @@ class Publication extends VuexModule {
   }
 
   @Mutation
+  public createBranches(items: Array<ObjectItem>): void {
+    this.branches = items
+  }
+
+  @Mutation
   public createFunctionalSeries(items: Array<ObjectItem>): void {
     this.functionalseries = items
   }
@@ -358,7 +365,7 @@ class Publication extends VuexModule {
   }
   //#endregion
 
-  //#region Actions
+  // Actions
   @Action
   public async getDigest(): Promise<boolean> {
     const response = await axios.request({
@@ -830,6 +837,30 @@ class Publication extends VuexModule {
   }
 
   @Action
+  public async getBranches(): Promise<boolean> {
+    const url = tp1 + slash + slash + tp2 + this.branchUrl
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json;odata=verbose'
+      }
+    })
+    let j = response.data.d.results
+    let p: Array<ObjectItem> = []
+    for (let i = 0; i < j.length; i++) {
+      p.push({
+        text: j[i]['Title'],
+        value: j[i]['Title'],
+        _showDetails: false,
+        props: {
+          count: 0
+        }
+      })
+    }
+    this.context.commit('createBranches', p)
+    return true
+  }
+
+  @Action
   public async getPrefixesByBranch(branch: string): Promise<boolean> {
     let j: any[] = []
     let p: Array<ObjectItem> = []
@@ -919,7 +950,8 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['Title'],
-            text: j[i]['Title']
+            text: j[i]['Title'],
+            _showDetails: false
           })
         }
         that.context.commit('createFunctionalSeries', p)
@@ -953,7 +985,8 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             value: j[i]['funcField'],
-            text: j[i]['funcField']
+            text: j[i]['funcField'],
+            _showDetails: false
           })
         }
         that.context.commit('createFunctionalField', p)

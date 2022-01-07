@@ -76,6 +76,7 @@ export default class All extends Vue {
   filterValue: any
   filterType: any
   interval!: any
+  branch = 'Navy'
   filteredpubs: Array<PublicationItem> = []
   pubs: Array<PublicationItem> = []
   Prfx: any
@@ -164,7 +165,6 @@ export default class All extends Vue {
     { key: 'AdditionalData.Status', field: 'Status', label: 'Status', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px100', id: 5, model: '', ops: [] },
     { key: 'AdditionalData.Edition', field: 'Edition', label: 'Edition', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px110', id: 6, model: '', ops: [] },
     { key: 'AdditionalData.PRAAbbrev', field: 'PRAAbbrev', label: 'PRAAbbrev', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px150', id: 7, model: '', ops: [] },
-    /* { key: 'Remarks', label: 'Remarks', sortable: false, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 8, model: '', ops: [] }, */
     { key: 'Resourced', field: 'Resourced', label: 'Resourced', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px130', id: 9, model: '', ops: [] },
     { key: 'DTIC', field: 'DTIC', label: 'DTIC', sortable: true, type: 'default', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px120', id: 10, model: '', ops: [] },
     { key: 'AdditionalData.GeneralStatus', field: 'GeneralStatus', label: 'GeneralStatus', sortable: true, type: 'AD', format: 'text', thClass: 'tbl-dynamic-header', tdClass: 'px140', id: 11, model: '', ops: [] },
@@ -219,7 +219,7 @@ export default class All extends Vue {
         this.filterValue = this.$route.query.Value
         this.filterType = this.$route.query.Type
         this.filteredpubs = this.allpublications
-        // #region filters
+        // filters
         if (this.filterType === 'Navy') {
           let a = this.allpublications
           a = a.filter(search => Vue._.isEqual(search['Branch'], 'Navy'))
@@ -611,7 +611,7 @@ export default class All extends Vue {
           let a = this.alldevpublications
           this.filteredpubs = a
         }
-        // #endregion
+        // end filters
         this.buildFilters()
         // this.viewReady = true
       }
