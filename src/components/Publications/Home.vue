@@ -33,7 +33,7 @@ export default class Publications extends Vue {
       this.$router.push({ name: 'All Publications', query: { Type: 'Other' } })
     }
     if (this.mode == 'refreshall') {
-      this.$router.push({ name: 'All Publications' })
+      this.$router.push({ name: 'All Publications', query: { Type: 'All' } })
     }
     if (this.mode == 'refresharchived') {
       this.$router.push({ name: 'All Archived Publications' })

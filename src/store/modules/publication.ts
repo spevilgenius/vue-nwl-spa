@@ -965,6 +965,13 @@ class Publication extends VuexModule {
   }
 
   @Action
+  public clearFunctionalSeries(): void {
+    // clear it!
+    let p: Array<ObjectItem> = []
+    this.context.commit('createFunctionalSeries', p)
+  }
+
+  @Action
   public async getFunctionalFieldByFunctionalSeries(series: string): Promise<boolean> {
     console.log('getFunctionalFieldByFunctionalSeries ' + series)
     let j: any[] = []

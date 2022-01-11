@@ -142,6 +142,7 @@ import { namespace } from 'vuex-class'
 import { EventBus } from '../../main'
 import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '@/interfaces/PublicationItem'
+import { GroupItem } from '@/interfaces/GroupItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 
 const support = namespace('support')
@@ -194,7 +195,7 @@ let that: any
           id: 'DynamicTable',
           list: 'ActivePublications',
           primaryKey: 'id',
-          buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
+          // buttons: ['Add', 'Edit', 'Export', 'Delete'] /* Add, Edit, Export, Delete, Search */,
           fields: [],
           items: [],
           filterField: {
@@ -259,6 +260,9 @@ export default class DynamicTable extends Vue {
   public getFunctionalSeriesByBranch!: (branch: string) => Promise<boolean>
 
   @publication.Action
+  public clearFunctionalSeries!: () => void
+
+  @publication.Action
   public getFunctionalFieldByFunctionalSeries!: (series: string) => Promise<boolean>
 
   @support.State
@@ -269,6 +273,7 @@ export default class DynamicTable extends Vue {
 
   interval!: any
   filtereditems: Array<PublicationItem> = []
+  groupeditems: Array<GroupItem> = [] // will be created from the filtered items
   currentPage = 1
   totalRows = 0
   perPage = 30 // default
@@ -301,6 +306,7 @@ export default class DynamicTable extends Vue {
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
+      this.buildGroupedItems()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
       // Calculate perPage based on counting the number of rows that will fit in the available space
@@ -329,6 +335,50 @@ export default class DynamicTable extends Vue {
   public toggleRow() {
     // show or hide details for row.
     // supports only showing one at a time for performance
+  }
+
+  public buildGroupedItems() {
+    // will loop through filtered items and create groupeditems array
+    // empty the array first then fill it back as filters/data changes
+    this.groupeditems = []
+    let a = this.filtereditems
+    // if the filter type is set to All we will start at the branch level but if not we will start at the series level
+    if (this.$props.table.filterType === 'All') {
+      // start at branches first
+      // We can assume based on data and earlier versions that every branch has at least 1 or more items
+      for (let i = 0; i < this.branches.length; i++) {
+        let p: any = {}
+        p.type = 'Branch'
+        p.text = this.branches[i].text
+        let b = a.filter(search => Vue._.isEqual(search['Branch'], p.text))
+        p.count = b.length
+        p.children = []
+        this.groupeditems.push(p)
+      }
+      for (let i = 0; i < this.groupeditems.length; i++) {
+        // get the series and fields based on each branch
+        // get series for this branch
+        this.clearFunctionalSeries()
+        // let p: any = {}
+        let branch = this.groupeditems[i].text
+        let that = this
+        // get series by branch so that we have the list
+        this.getFunctionalSeriesByBranch(branch).then(response => {
+          // the values will be in this.functionalseries but it might take a moment for them to return so lets wait for them
+          // TODO: first validate the need to wait so just do it for now
+          let q: any = {}
+          q.count = this.functionalseries.length
+          for (let j = 0; j < this.functionalseries.length; j++) {
+            q.text = this.functionalseries[j].text
+            q.children = []
+            q.type = 'Series'
+          }
+          this.groupeditems[i].children?.push(q)
+        })
+      }
+    } else {
+      // start at series first
+    }
   }
 
   public getCount(type: string, branch: string | null, fSeries: string | null, fField: string | null) {
