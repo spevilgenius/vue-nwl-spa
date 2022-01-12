@@ -107,15 +107,20 @@ export default class App extends Vue {
 
   /** @method - lifecycle hook */
   mounted() {
-    this.getAllNatoPublications()
-    this.getAllPublications()
+    // this.getAllNatoPublications()
+    // this.getAllPublications()
     this.interval = setInterval(this.waitForIt, 500)
+    /* let oldbanners = document.getElementsByClassName('classificationbanner')
+    while (oldbanners.length > 0) {
+      let b = oldbanners[0] as HTMLElement
+      b.remove()
+    } */
   }
 
   public waitForIt() {
     if (this.pubsloaded && this.natopubsloaded) {
       clearInterval(this.interval)
-      this.createAllPubs()
+      // this.createAllPubs()
       let oldbanners = document.getElementsByClassName('classificationbanner')
       while (oldbanners.length > 0) {
         let b = oldbanners[0] as HTMLElement

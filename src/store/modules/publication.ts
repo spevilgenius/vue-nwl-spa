@@ -5,6 +5,7 @@ import { PublicationItem } from '@/interfaces/PublicationItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
 import axios from 'axios'
 import { SupportingDocItem } from '@/interfaces/SupportingDocItem'
+import { GroupItem } from '@/interfaces/GroupItem'
 
 // are we on a localhost demo?
 let loc = String(window.location)
@@ -324,6 +325,7 @@ class Publication extends VuexModule {
 
   @Mutation
   public createFunctionalSeries(items: Array<ObjectItem>): void {
+    console.log('[MUTATION: createFunctionalSeries length: ' + items.length)
     this.functionalseries = items
   }
 
@@ -965,10 +967,42 @@ class Publication extends VuexModule {
   }
 
   @Action
-  public clearFunctionalSeries(): void {
-    // clear it!
-    let p: Array<ObjectItem> = []
-    this.context.commit('createFunctionalSeries', p)
+  public async returnFunctionalSeriesByBranch(branch: string): Promise<GroupItem> {
+    console.log('getFunctionalSeriesByBranch ' + branch)
+    let j: any[] = []
+    const that = this
+    async function getAllSeries(url: string, branch: string): Promise<GroupItem> {
+      let p: Array<GroupItem> = []
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllSeries(url, branch)
+      } else {
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            type: 'Series',
+            text: j[i]['Title'],
+            children: []
+          })
+        }
+        let results: GroupItem = {}
+        results.text = branch
+        results.type = 'Series'
+        results.children = p
+        return results
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.functionalseriesUrl
+    turl += branch
+    turl += "')&$orderby=Title"
+    let response = await getAllSeries(turl, branch)
+    return response
   }
 
   @Action
@@ -1004,6 +1038,44 @@ class Publication extends VuexModule {
     turl += "')"
     getAllStatuses(turl)
     return true
+  }
+
+  @Action
+  public async returnFunctionalFieldByFunctionalSeries(series: string): Promise<GroupItem> {
+    console.log('getFunctionalFieldByFunctionalSeries ' + series)
+    let j: any[] = []
+    let p: Array<GroupItem> = []
+    const that = this
+    async function getAllFields(url: string, series: string): Promise<GroupItem> {
+      const response = await axios.get(url, {
+        headers: {
+          accept: 'application/json;odata=verbose'
+        }
+      })
+      j = j.concat(response.data.d.results)
+      // recursively load items if there is a next result
+      if (response.data.d.__next) {
+        url = response.data.d.__next
+        return getAllFields(url, series)
+      } else {
+        for (let i = 0; i < j.length; i++) {
+          p.push({
+            type: 'Field',
+            text: j[i]['funcField']
+          })
+        }
+        let results: GroupItem = {}
+        results.text = series
+        results.type = 'Series'
+        results.children = p
+        return results
+      }
+    }
+    let turl = tp1 + slash + slash + tp2 + this.functionalfieldsUrl
+    turl += series
+    turl += "')"
+    let response = await getAllFields(turl, series)
+    return response
   }
 
   @Action

@@ -1,9 +1,9 @@
 import { PublicationItem } from './PublicationItem'
 
 interface GroupItem {
-  text: string
+  text?: string
   type?: string
-  count: number
+  count?: number
   items?: Array<PublicationItem>
   children?: Array<GroupItem>
   props?: {}

@@ -203,9 +203,7 @@ let that: any
             default: ''
           },
           filterValue: '',
-          filterType: '',
-          overlayText: 'Loading. Please Wait...',
-          overlayVariant: 'success'
+          filterType: ''
         }
       }
     },
@@ -216,6 +214,9 @@ let that: any
   }
 })
 export default class DynamicTable extends Vue {
+  overlayText = 'Loading. Please Wait...'
+  overlayVariant = 'success'
+  ready = false
   filter = ''
   filterOn: Array<any> = []
   checkBoxes: Array<any> = ['Prfx', 'Branch']
@@ -260,6 +261,12 @@ export default class DynamicTable extends Vue {
   public getFunctionalSeriesByBranch!: (branch: string) => Promise<boolean>
 
   @publication.Action
+  public returnFunctionalSeriesByBranch!: (branch: string) => Promise<GroupItem>
+
+  @publication.Action
+  public returnFunctionalFieldByFunctionalSeries!: (series: string) => Promise<GroupItem>
+
+  @publication.Action
   public clearFunctionalSeries!: () => void
 
   @publication.Action
@@ -297,7 +304,6 @@ export default class DynamicTable extends Vue {
     this.getBranches().then(response => {
       this.interval = setInterval(this.waitForIt, 500)
     })
-    // this.interval = setInterval(this.waitForIt, 500)
   }
 
   public waitForIt() {
@@ -306,9 +312,9 @@ export default class DynamicTable extends Vue {
       console.log('got props items ' + this.$props.table.items.length)
       clearInterval(that.interval)
       this.getBS()
-      this.buildGroupedItems()
       this.totalRows = this.$props.table.items.length
       this.filtereditems = this.$props.table.items // set initially to all items
+      this.buildGroupedItems()
       // Calculate perPage based on counting the number of rows that will fit in the available space
       /* let available = this.contentheight - 130
       let amount = Math.floor(available / 29) // 29 is based on the height of the rows used by the 'small' attribute on the b-table component
@@ -337,9 +343,10 @@ export default class DynamicTable extends Vue {
     // supports only showing one at a time for performance
   }
 
-  public buildGroupedItems() {
+  public async buildGroupedItems() {
     // will loop through filtered items and create groupeditems array
     // empty the array first then fill it back as filters/data changes
+    console.log('[BUILDING GROUPED ITEMS ARRAY]')
     this.groupeditems = []
     let a = this.filtereditems
     // if the filter type is set to All we will start at the branch level but if not we will start at the series level
@@ -347,38 +354,44 @@ export default class DynamicTable extends Vue {
       // start at branches first
       // We can assume based on data and earlier versions that every branch has at least 1 or more items
       for (let i = 0; i < this.branches.length; i++) {
-        let p: any = {}
+        let p: GroupItem = {}
         p.type = 'Branch'
         p.text = this.branches[i].text
         let b = a.filter(search => Vue._.isEqual(search['Branch'], p.text))
         p.count = b.length
         p.children = []
+        p.items = b
         this.groupeditems.push(p)
       }
       for (let i = 0; i < this.groupeditems.length; i++) {
         // get the series and fields based on each branch
         // get series for this branch
-        this.clearFunctionalSeries()
-        // let p: any = {}
         let branch = this.groupeditems[i].text
-        let that = this
-        // get series by branch so that we have the list
-        this.getFunctionalSeriesByBranch(branch).then(response => {
-          // the values will be in this.functionalseries but it might take a moment for them to return so lets wait for them
-          // TODO: first validate the need to wait so just do it for now
-          let q: any = {}
-          q.count = this.functionalseries.length
-          for (let j = 0; j < this.functionalseries.length; j++) {
-            q.text = this.functionalseries[j].text
-            q.children = []
-            q.type = 'Series'
+        if (branch) {
+          let response = await this.returnFunctionalSeriesByBranch(branch)
+          this.groupeditems[i].children = response.children
+        }
+      }
+      for (let i = 0; i < this.groupeditems.length; i++) {
+        // get the fields now
+        // only branch Navy has fields
+        if (this.groupeditems[i].text === 'Navy') {
+          let children = this.groupeditems[i].children
+          if (children && children.length > 0) {
+            for (let j = 0; j < children.length; j++) {
+              let series = children[j].text
+              if (series) {
+                let response = await this.returnFunctionalFieldByFunctionalSeries(series)
+                children[j].children = response.children
+              }
+            }
           }
-          this.groupeditems[i].children?.push(q)
-        })
+        }
       }
     } else {
       // start at series first
     }
+    this.ready = true
   }
 
   public getCount(type: string, branch: string | null, fSeries: string | null, fField: string | null) {
