@@ -988,7 +988,8 @@ class Publication extends VuexModule {
           p.push({
             type: 'Series',
             text: j[i]['Title'],
-            children: []
+            children: [],
+            items: []
           })
         }
         let results: GroupItem = {}

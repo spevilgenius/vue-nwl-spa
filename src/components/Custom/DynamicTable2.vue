@@ -360,16 +360,26 @@ export default class DynamicTable extends Vue {
         let b = a.filter(search => Vue._.isEqual(search['Branch'], p.text))
         p.count = b.length
         p.children = []
-        p.items = b
+        // p.items = b
         this.groupeditems.push(p)
       }
       for (let i = 0; i < this.groupeditems.length; i++) {
-        // get the series and fields based on each branch
         // get series for this branch
         let branch = this.groupeditems[i].text
         if (branch) {
           let response = await this.returnFunctionalSeriesByBranch(branch)
+          let children = response.children
           this.groupeditems[i].children = response.children
+          if (children && children.length > 0) {
+            for (let j = 0; j < children.length; j++) {
+              let series = children[j].text
+              if (series) {
+                let b = Vue._.filter(a, { AdditionalData: { FunctionalSeries: series } })
+                children[j].count = b.length
+                children[j].items = b
+              }
+            }
+          }
         }
       }
       for (let i = 0; i < this.groupeditems.length; i++) {
@@ -388,6 +398,44 @@ export default class DynamicTable extends Vue {
           }
         }
       }
+      for (let i = 0; i < this.groupeditems.length; i++) {
+        // get the fields now
+        // only branch Navy has fields
+        if (this.groupeditems[i].text === 'Navy') {
+          let functionalseries = this.groupeditems[i].children
+          if (functionalseries && functionalseries.length > 0) {
+            for (let j = 0; j < functionalseries.length; j++) {
+              let functionalfields = functionalseries[j].children
+              if (functionalfields) {
+                for (let k = 0; k < functionalfields.length; k++) {
+                  let field = functionalfields[k].text
+                  if (field) {
+                    let b = Vue._.filter(a, { AdditionalData: { FunctionalField: field } })
+                    functionalfields[k].count = b.length
+                    functionalfields[k].items = b
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      /* for (let i = 0; i < this.groupeditems.length; i++) {
+        // get the fields now
+        // only branch Navy has fields
+        if (this.groupeditems[i].text === 'Navy') {
+          let children = this.groupeditems[i].children
+          if (children && children.length > 0) {
+            for (let j = 0; j < children.length; j++) {
+              let series = children[j].text
+              if (series) {
+                let response = await this.returnFunctionalFieldByFunctionalSeries(series)
+                children[j].children = response.children
+              }
+            }
+          }
+        }
+      } */
     } else {
       // start at series first
     }
