@@ -992,7 +992,7 @@ class Publication extends VuexModule {
             items: []
           })
         }
-        let results: GroupItem = {}
+        let results: any = {}
         results.text = branch
         results.type = 'Series'
         results.children = p
@@ -1062,10 +1062,12 @@ class Publication extends VuexModule {
         for (let i = 0; i < j.length; i++) {
           p.push({
             type: 'Field',
-            text: j[i]['funcField']
+            text: j[i]['funcField'],
+            children: [],
+            items: []
           })
         }
-        let results: GroupItem = {}
+        let results: any = {}
         results.text = series
         results.type = 'Series'
         results.children = p

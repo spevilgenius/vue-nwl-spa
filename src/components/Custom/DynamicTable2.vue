@@ -11,27 +11,373 @@
                     <font-awesome-icon fas icon="layer-group" class="icon"></font-awesome-icon>
                     Grouped
                   </template>
-                  <b-row>
-                    <b-table :items="branches" :fields="branchfields" ref="tableGroupBranch">
-                      <template #cell(actions)="row">
-                        <b-button size="sm" variant="outline" class="actionbutton" @click="toggleBranchDetails(row)">
-                          <font-awesome-icon v-if="row.detailsShowing" far class="ml-1" icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
-                          <font-awesome-icon v-else far class="ml-1" icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
-                        </b-button>
-                      </template>
-                      <template #cell(title)="row"> {{ row.item.value }} (<span v-html="getCount('branch', row.item.value, null, null)"></span>) </template>
-                      <template #row-details="row">
-                        <b-table :items="getSeries(row.item.value)" :fields="viewfields">
-                          <template #cell(actions)="row">
-                            <b-button size="sm" variant="outline" class="actionbutton" @click="toggleSeriesDetails">
-                              <font-awesome-icon v-if="row.detailsShowing" far class="ml-1" icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
-                              <font-awesome-icon v-else far class="ml-1" icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
-                            </b-button>
-                          </template>
-                          <template #cell(title)="row"> {{ row.item.value }} (<span v-html="getCount('branch', row.item.value, null, null)"></span>) </template>
-                        </b-table>
-                      </template>
-                    </b-table>
+                  <b-row v-if="groupeditems.length > 1">
+                    <div class="accordion m-1" role="tablist" :style="getStyle('branchaccordion', null)">
+                      <b-card no-body class="m-1" v-for="(item, index) in groupeditems" :key="item">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-container fluid class="m-0 p-0 px300">
+                            <b-row no-gutters class="">
+                              <b-col cols="1">
+                                <b-button v-b-toggle="'collapse-' + index" size="sm" variant="outline" class="actionbutton">
+                                  <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                  <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                </b-button>
+                              </b-col>
+                              <b-col cols="9" class="text-left pl-2">
+                                <span>{{ item.text }}</span>
+                              </b-col>
+                              <b-col cols="2">
+                                <span class="count-label">({{ item.count }})</span>
+                              </b-col>
+                            </b-row>
+                          </b-container>
+                        </b-card-header>
+                        <b-collapse :id="'collapse-' + index" accordion="branch-accordion" role="tabpanel">
+                          <b-card-body v-if="item.text == 'Navy'">
+                            <div class="accordion m-1" role="tablist">
+                              <b-card no-body class="m-1" v-for="(child, childindex) in item.children" :key="child">
+                                <b-card-header header-tag="header" class="p-1" role="tab">
+                                  <b-container fluid class="m-0 p-0 px400">
+                                    <b-row no-gutters class="">
+                                      <b-col cols="1">
+                                        <b-button v-b-toggle="'childcollapse-' + childindex" size="sm" variant="outline" class="actionbutton">
+                                          <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                          <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                        </b-button>
+                                      </b-col>
+                                      <b-col cols="9" class="text-left pl-2">
+                                        <span>{{ child.text }}</span>
+                                      </b-col>
+                                      <b-col cols="2">
+                                        <span class="count-label">({{ child.count }})</span>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                </b-card-header>
+                                <b-collapse :id="'childcollapse-' + childindex" accordion="series-accordion" role="tabpanel">
+                                  <b-card-body v-if="childindex < 7">
+                                    <div class="accordion m-1" role="tablist">
+                                      <b-card no-body class="m-1" v-for="(grandchild, grandchildindex) in child.children" :key="grandchild">
+                                        <b-card-header header-tag="header" class="p-1" role="tab">
+                                          <b-container fluid class="m-0 p-0 px500">
+                                            <b-row no-gutters class="">
+                                              <b-col cols="1">
+                                                <b-button v-b-toggle="'grandchildcollapse-' + grandchildindex" size="sm" variant="outline" class="actionbutton">
+                                                  <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                                  <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                                </b-button>
+                                              </b-col>
+                                              <b-col cols="9" class="text-left pl-2">
+                                                <span>{{ grandchild.text }}</span>
+                                              </b-col>
+                                              <b-col cols="2">
+                                                <span class="count-label">({{ grandchild.count }})</span>
+                                              </b-col>
+                                            </b-row>
+                                          </b-container>
+                                        </b-card-header>
+                                        <b-collapse :id="'grandchildcollapse-' + grandchildindex" accordion="field-accordion" role="tabpanel">
+                                          <b-card-body>
+                                            <b-table striped hover :items="grandchild.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                                              <template #head()="data">
+                                                <span class="text-center">{{ data.field.label }}</span>
+                                              </template>
+                                              <template #head(actions)>
+                                                Actions
+                                              </template>
+                                              <template #cell(actions)="data">
+                                                <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                                  <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                                </b-button>
+                                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                                  <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                                </b-button>
+                                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                                  <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                                </b-button>
+                                              </template>
+                                              <template #cell(Name)="data">
+                                                <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                                              </template>
+                                              <template #cell()="data">
+                                                <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                                              </template>
+                                            </b-table>
+                                          </b-card-body>
+                                        </b-collapse>
+                                      </b-card>
+                                    </div>
+                                  </b-card-body>
+                                  <b-card-body v-else>
+                                    <b-table striped hover :items="child.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                                      <template #head()="data">
+                                        <span class="text-center">{{ data.field.label }}</span>
+                                      </template>
+                                      <template #head(actions)>
+                                        Actions
+                                      </template>
+                                      <template #cell(actions)="data">
+                                        <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                          <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                      </template>
+                                      <template #cell(Name)="data">
+                                        <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                                      </template>
+                                      <template #cell()="data">
+                                        <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                                      </template>
+                                    </b-table>
+                                  </b-card-body>
+                                </b-collapse>
+                              </b-card>
+                            </div>
+                          </b-card-body>
+                          <b-card-body v-else>
+                            <div class="accordion m-1" role="tablist">
+                              <b-card no-body class="m-1" v-for="(child, childindex) in item.children" :key="child">
+                                <b-card-header header-tag="header" class="p-1" role="tab">
+                                  <b-container fluid class="m-0 p-0 px400">
+                                    <b-row no-gutters class="">
+                                      <b-col cols="1">
+                                        <b-button v-b-toggle="'childcollapse-' + childindex" size="sm" variant="outline" class="actionbutton">
+                                          <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                          <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                        </b-button>
+                                      </b-col>
+                                      <b-col cols="9" class="text-left pl-2">
+                                        <span>{{ child.text }}</span>
+                                      </b-col>
+                                      <b-col cols="2">
+                                        <span class="count-label">({{ child.count }})</span>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                </b-card-header>
+                                <b-collapse :id="'childcollapse-' + childindex" accordion="series-accordion" role="tabpanel">
+                                  <b-card-body>
+                                    <b-table striped hover :items="child.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                                      <template #head()="data">
+                                        <span class="text-center">{{ data.field.label }}</span>
+                                      </template>
+                                      <template #head(actions)>
+                                        Actions
+                                      </template>
+                                      <template #cell(actions)="data">
+                                        <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                          <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                      </template>
+                                      <template #cell(Name)="data">
+                                        <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                                      </template>
+                                      <template #cell()="data">
+                                        <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                                      </template>
+                                    </b-table>
+                                  </b-card-body>
+                                </b-collapse>
+                              </b-card>
+                            </div>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                    </div>
+                  </b-row>
+                  <b-row v-else>
+                    <!-- The grouped items array will be based on a specific branch or filtered view but we won't need to show the branch grouping -->
+                    <!-- The grouped items code will have created a single groupitem object and that object will contain what we need -->
+                    <div v-if="groupitem.text == 'Navy'" class="accordion m-1" role="tablist" :style="getStyle('branchaccordion', null)">
+                      <b-card no-body class="m-1" v-for="(child, childindex) in groupitem.children" :key="child">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-container fluid class="m-0 p-0 px350">
+                            <b-row no-gutters class="">
+                              <b-col cols="1">
+                                <b-button v-b-toggle="'collapse-' + childindex" size="sm" variant="outline" class="actionbutton">
+                                  <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                  <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                </b-button>
+                              </b-col>
+                              <b-col cols="9" class="text-left pl-2">
+                                <span>{{ child.text }}</span>
+                              </b-col>
+                              <b-col cols="2">
+                                <span class="count-label">({{ child.count }})</span>
+                              </b-col>
+                            </b-row>
+                          </b-container>
+                        </b-card-header>
+                        <b-collapse :id="'collapse-' + childindex" accordion="branch-accordion" role="tabpanel">
+                          <b-card-body v-if="childindex < 7">
+                            <div class="accordion m-1" role="tablist">
+                              <b-card no-body class="m-1" v-for="(grandchild, grandchildindex) in child.children" :key="grandchild">
+                                <b-card-header header-tag="header" class="p-1" role="tab">
+                                  <b-container fluid class="m-0 p-0 px500">
+                                    <b-row no-gutters class="">
+                                      <b-col cols="1">
+                                        <b-button v-b-toggle="'grandchildcollapse-' + grandchildindex" size="sm" variant="outline" class="actionbutton">
+                                          <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                          <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                        </b-button>
+                                      </b-col>
+                                      <b-col cols="9" class="text-left pl-2">
+                                        <span>{{ grandchild.text }}</span>
+                                      </b-col>
+                                      <b-col cols="2">
+                                        <span class="count-label">({{ grandchild.count }})</span>
+                                      </b-col>
+                                    </b-row>
+                                  </b-container>
+                                </b-card-header>
+                                <b-collapse :id="'grandchildcollapse-' + grandchildindex" accordion="field-accordion" role="tabpanel">
+                                  <b-card-body>
+                                    <b-table striped hover :items="grandchild.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                                      <template #head()="data">
+                                        <span class="text-center">{{ data.field.label }}</span>
+                                      </template>
+                                      <template #head(actions)>
+                                        Actions
+                                      </template>
+                                      <template #cell(actions)="data">
+                                        <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                          <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                          <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                        <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                          <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                        </b-button>
+                                      </template>
+                                      <template #cell(Name)="data">
+                                        <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                                      </template>
+                                      <template #cell()="data">
+                                        <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                                      </template>
+                                    </b-table>
+                                  </b-card-body>
+                                </b-collapse>
+                              </b-card>
+                            </div>
+                          </b-card-body>
+                          <b-card-body v-else>
+                            <b-table striped hover :items="child.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                              <template #head()="data">
+                                <span class="text-center">{{ data.field.label }}</span>
+                              </template>
+                              <template #head(actions)>
+                                Actions
+                              </template>
+                              <template #cell(actions)="data">
+                                <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                  <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                </b-button>
+                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                  <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                </b-button>
+                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                  <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                </b-button>
+                              </template>
+                              <template #cell(Name)="data">
+                                <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                              </template>
+                              <template #cell()="data">
+                                <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                              </template>
+                            </b-table>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                    </div>
+                    <div v-else class="accordion m-1" role="tablist" :style="getStyle('branchaccordion', null)">
+                      <b-card no-body class="m-1" v-for="(child, childindex) in groupitem.children" :key="child">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-container fluid class="m-0 p-0 px350">
+                            <b-row no-gutters class="">
+                              <b-col cols="1">
+                                <b-button v-b-toggle="'collapse-' + childindex" size="sm" variant="outline" class="actionbutton">
+                                  <font-awesome-icon class="while-open ml-1" far icon="minus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                  <font-awesome-icon class="while-closed ml-1" far icon="plus-square" :style="{ color: 'black' }"></font-awesome-icon>
+                                </b-button>
+                              </b-col>
+                              <b-col cols="9" class="text-left pl-2">
+                                <span>{{ child.text }}</span>
+                              </b-col>
+                              <b-col cols="2">
+                                <span class="count-label">({{ child.count }})</span>
+                              </b-col>
+                            </b-row>
+                          </b-container>
+                        </b-card-header>
+                        <b-collapse :id="'collapse-' + childindex" accordion="branch-accordion" role="tabpanel">
+                          <b-card-body>
+                            <b-table striped hover :items="child.items" :fields="table.fields" primary-key="table.primarykey" table-class="table-full" :sticky-header="getSticky('accordiontable')" table-variant="light" thead-class="tbl-dynamic-header">
+                              <template #head()="data">
+                                <span class="text-center">{{ data.field.label }}</span>
+                              </template>
+                              <template #head(actions)>
+                                Actions
+                              </template>
+                              <template #cell(actions)="data">
+                                <b-button title="View" variant="white" size="lg" class="actionbutton text-dark" @click="viewItem(data.item.Id, data.item.IsNato)">
+                                  <font-awesome-icon v-if="String(data.item.Name).indexOf('.docx') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.doc') > 0" :icon="['far', 'file-word']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.pdf') > 0" :icon="['far', 'file-pdf']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.txt') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                  <font-awesome-icon v-else-if="String(data.item.Name).indexOf('.rtf') > 0" :icon="['far', 'file-alt']" class="icon"></font-awesome-icon>
+                                </b-button>
+                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian || currentUser.isActionOfficer" title="Edit" variant="white" size="lg" class="actionbutton text-dark" @click="editItem(data.item.Id, data.item.IsNato)">
+                                  <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+                                </b-button>
+                                <b-button v-if="currentUser.isLibrarian || currentUser.isNATOLibrarian" title="Archive" variant="white" size="lg" class="actionbutton text-dark" @click="archiveItem(data.item.Id, data.item.IsNato, data.item)">
+                                  <font-awesome-icon :icon="['fas', 'sync']" class="icon"></font-awesome-icon>
+                                </b-button>
+                              </template>
+                              <template #cell(Name)="data">
+                                <b-link :to="{ name: 'View Publication', query: { Id: data.item.Id, Nato: data.item.IsNato, Now: new Date().getTime() } }">{{ data.item.Name }}</b-link>
+                              </template>
+                              <template #cell()="data">
+                                <div v-if="data.field.format === 'text'">{{ renderElement(data) }}</div>
+                              </template>
+                            </b-table>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                    </div>
                   </b-row>
                 </b-tab>
                 <b-tab class="vtab all" active>
@@ -144,6 +490,7 @@ import { UserInt } from '../../interfaces/User'
 import { PublicationItem } from '@/interfaces/PublicationItem'
 import { GroupItem } from '@/interfaces/GroupItem'
 import { ObjectItem } from '@/interfaces/ObjectItem'
+import DynamicFilterSelect from './DynamicFilterSelect.vue'
 
 const support = namespace('support')
 const users = namespace('users')
@@ -157,6 +504,9 @@ let that: any
 
 @Component({
   name: 'dynamic-table',
+  components: {
+    DynamicFilterSelect
+  },
   props: {
     hascomponents: {
       type: Boolean,
@@ -226,6 +576,9 @@ export default class DynamicTable extends Vue {
   Title!: any
   PRAAbbrev!: any
   Bookshelf!: any
+  groupitem: GroupItem = {
+    children: [] // Initially required to be set as it is a required object to properly make the code work
+  }
 
   @users.State
   public currentUser!: UserInt
@@ -350,94 +703,80 @@ export default class DynamicTable extends Vue {
     this.groupeditems = []
     let a = this.filtereditems
     // if the filter type is set to All we will start at the branch level but if not we will start at the series level
-    if (this.$props.table.filterType === 'All') {
-      // start at branches first
-      // We can assume based on data and earlier versions that every branch has at least 1 or more items
-      for (let i = 0; i < this.branches.length; i++) {
-        let p: GroupItem = {}
-        p.type = 'Branch'
-        p.text = this.branches[i].text
-        let b = a.filter(search => Vue._.isEqual(search['Branch'], p.text))
-        p.count = b.length
-        p.children = []
-        // p.items = b
+    // start at branches first
+    // We can assume based on data and earlier versions that every branch has at least 1 or more items
+    for (let i = 0; i < this.branches.length; i++) {
+      let p: any = {}
+      p.type = 'Branch'
+      p.text = this.branches[i].text
+      let b = a.filter(search => Vue._.isEqual(search['Branch'], p.text))
+      p.count = b.length
+      p.children = []
+      if (p.count > 0) {
         this.groupeditems.push(p)
       }
-      for (let i = 0; i < this.groupeditems.length; i++) {
-        // get series for this branch
-        let branch = this.groupeditems[i].text
-        if (branch) {
-          let response = await this.returnFunctionalSeriesByBranch(branch)
-          let children = response.children
-          this.groupeditems[i].children = response.children
-          if (children && children.length > 0) {
-            for (let j = 0; j < children.length; j++) {
-              let series = children[j].text
-              if (series) {
-                let b = Vue._.filter(a, { AdditionalData: { FunctionalSeries: series } })
+    }
+    for (let i = 0; i < this.groupeditems.length; i++) {
+      // get series for this branch
+      let branch = this.groupeditems[i].text
+      if (branch) {
+        let response = await this.returnFunctionalSeriesByBranch(branch)
+        let children = response.children
+        let n: Array<GroupItem> = []
+        if (children && children.length > 0) {
+          for (let j = 0; j < children.length; j++) {
+            let series = children[j].text
+            if (series) {
+              let b = Vue._.filter(a, { AdditionalData: { FunctionalSeries: series } })
+              if (b && b.length > 0) {
                 children[j].count = b.length
                 children[j].items = b
+                n.push(children[j])
+              } else {
+                // do nothing
               }
             }
           }
         }
+        this.groupeditems[i].children = n
       }
-      for (let i = 0; i < this.groupeditems.length; i++) {
-        // get the fields now
-        // only branch Navy has fields
-        if (this.groupeditems[i].text === 'Navy') {
-          let children = this.groupeditems[i].children
-          if (children && children.length > 0) {
-            for (let j = 0; j < children.length; j++) {
-              let series = children[j].text
-              if (series) {
-                let response = await this.returnFunctionalFieldByFunctionalSeries(series)
-                children[j].children = response.children
-              }
-            }
-          }
-        }
-      }
-      for (let i = 0; i < this.groupeditems.length; i++) {
-        // get the fields now
-        // only branch Navy has fields
-        if (this.groupeditems[i].text === 'Navy') {
-          let functionalseries = this.groupeditems[i].children
-          if (functionalseries && functionalseries.length > 0) {
-            for (let j = 0; j < functionalseries.length; j++) {
-              let functionalfields = functionalseries[j].children
-              if (functionalfields) {
-                for (let k = 0; k < functionalfields.length; k++) {
-                  let field = functionalfields[k].text
+    }
+    for (let i = 0; i < this.groupeditems.length; i++) {
+      // get the fields now
+      // only branch Navy has fields
+      if (this.groupeditems[i].text === 'Navy') {
+        let children = this.groupeditems[i].children
+        if (children && children.length > 0) {
+          for (let j = 0; j < children.length; j++) {
+            let series = children[j].text
+            children[j].children = []
+            if (series) {
+              let response = await this.returnFunctionalFieldByFunctionalSeries(series)
+              // children[j].children = response.children
+              let grandchildren = response.children
+              let o: Array<GroupItem> = []
+              if (grandchildren && grandchildren.length > 0) {
+                for (let k = 0; k < grandchildren.length; k++) {
+                  let field = grandchildren[k].text
                   if (field) {
                     let b = Vue._.filter(a, { AdditionalData: { FunctionalField: field } })
-                    functionalfields[k].count = b.length
-                    functionalfields[k].items = b
+                    if (b && b.length > 0) {
+                      grandchildren[k].count = b.length
+                      grandchildren[k].items = b
+                      o.push(grandchildren[k])
+                    }
                   }
                 }
               }
+              children[j].children = o
             }
           }
         }
       }
-      /* for (let i = 0; i < this.groupeditems.length; i++) {
-        // get the fields now
-        // only branch Navy has fields
-        if (this.groupeditems[i].text === 'Navy') {
-          let children = this.groupeditems[i].children
-          if (children && children.length > 0) {
-            for (let j = 0; j < children.length; j++) {
-              let series = children[j].text
-              if (series) {
-                let response = await this.returnFunctionalFieldByFunctionalSeries(series)
-                children[j].children = response.children
-              }
-            }
-          }
-        }
-      } */
-    } else {
-      // start at series first
+    }
+    // if there is only 1 in the array, copy it to the groupitem object
+    if (this.groupeditems && this.groupeditems.length == 1) {
+      this.groupitem = this.groupeditems[0]
     }
     this.ready = true
   }
@@ -456,12 +795,6 @@ export default class DynamicTable extends Vue {
     return result
   }
 
-  public getSeries(branch: string) {
-    // This function is supposed to get all the unique Functional Series based on the branch.
-    // There are 2 ways that this can be done. 1: Just call the function from the store and pass in the branch. 2: Loop the actual items and retrieve the data from the filtered items
-    // TODO: Determine if having empty datasets is feasible as this supports option 1 and is easier in most cases. [We are opting for option 1 until we can validate data integrity]
-  }
-
   public renderElement(data) {
     let html = ''
     switch (data.field.format) {
@@ -478,6 +811,9 @@ export default class DynamicTable extends Vue {
       case 'dynamictable':
         h = that.contentheight - 150 + 'px'
         break
+
+      case 'accordiontable':
+        h = '800px'
     }
     return h
   }
@@ -505,6 +841,11 @@ export default class DynamicTable extends Vue {
         style.height = '50px'
         style.width = that.contentwidth + 'px'
         break
+
+      case 'branchaccordion':
+        style.maxHeight = that.contentheight - 180 + 'px'
+        style.overflowY = 'scroll'
+        style.overflowX = 'hidden'
     }
     return style
   }
@@ -547,6 +888,10 @@ export default class DynamicTable extends Vue {
   border: 1px solid #ffffff !important;
   padding: 2px 2px !important;
   color: $pagination-color;
+}
+.collapsed > .while-open,
+.not-collapsed > .while-closed {
+  display: none;
 }
 /* .pubtitle {
   max-width: 500px;

@@ -5,7 +5,7 @@ interface GroupItem {
   type?: string
   count?: number
   items?: Array<PublicationItem>
-  children?: Array<GroupItem>
+  children: Array<GroupItem>
   props?: {}
 }
 export { GroupItem }

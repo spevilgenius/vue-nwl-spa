@@ -22,7 +22,6 @@
     <b-row no-gutters class="contentHeight">
       <b-col cols="12" class="m-0 p-0">
         <dynamic-table
-          v-if="viewReady"
           :user="currentUser"
           :ready="allpubsloaded"
           :table="{
