@@ -1,11 +1,16 @@
 interface PublicationItem {
   Id?: number
   DocID?: string
-  Title?: string
+  Title: string
+  Archive?: string
   Name?: string
+  IsNato?: string
+  IsFXP?: string
+  IsTacMemo?: string
+  InDevelopment?: string
   RelativeURL?: string
   Availability?: string
-  Branch?: string
+  Branch: string
   FileType?: string
   Class?: string
   ClassAbv?: string
@@ -14,19 +19,97 @@ interface PublicationItem {
   DTIC?: string
   LibrarianRemarks?: string
   LongTitle?: string
-  Media?: string
+  Media?: any
+  ModerationStatus?: string
+  Modified?: string
   MA?: string
   NSN?: string
-  NWDCAO?: {}
+  NWDCAO: {
+    Title?: string
+    Id?: string
+    Email?: string
+  }
   PRA?: string
   PRAPOC?: string
   Prfx?: string
   PubID?: string
   Resourced?: string
   ReviewDate?: string
-  StatusComments?: string
+  statuscomments?: string
   Replaces?: string
   Bookshelf?: string
-  AdditionalData?: string
+  Tags?: string
+  Development: {
+    Phase?: string
+    ProjectStart?: string
+    ProgramDirective?: string
+    FirstDraft?: string
+    FinalDraft?: string
+    FinalManuscript?: string
+    SignatureDraft?: string
+    PRAApproval?: string
+    NWDCSignature?: string
+    PhaseFinish?: string
+    ProjectFinish?: string
+    DateEnteredPhase?: string
+    NumberDaysInPhase?: number
+  }
+  AdditionalData: {
+    AdminComments?: string
+    Archived?: string
+    ArchivedRemarks?: string
+    Cancel?: string
+    CancelDate?: string
+    CancelRemarks?: string
+    Change?: string
+    CoordinatingRAPLA?: string
+    CreatedRemarks?: string
+    CurrentPhase?: string
+    DateofIssue?: string
+    Description?: string
+    Dissemination?: string
+    DisseminationAbbrev?: string
+    DraftDate?: string
+    Edition?: string
+    EditionDate?: string
+    EnterpriseKeywords?: string
+    FinalDraft?: string
+    FinalManuscript?: string
+    FirstDraft?: string
+    FunctionalField?: string
+    FunctionalSeries?: string
+    Hidden?: string
+    LastPublished?: string
+    NewPub?: string
+    NWDCSignature?: string
+    OldShortTitles?: string
+    ParentWDC?: string
+    PDDTG?: string
+    PhaseFinish?: string
+    PhaseStart?: string
+    PRAAbbrev?: string
+    PRAApproval?: string
+    PRAID?: string
+    PRAPLA?: string
+    ProgramDirective?: string
+    ProjectFinish?: string
+    ProjectStatus?: string
+    PubCategory?: string
+    RELTO?: string
+    Remarks?: string
+    Reviewed?: string
+    SignatureDraft?: string
+    Status?: string
+    GeneralStatus?: string
+    SupersededBy?: string
+    Update?: string
+  }
+  ActionButtons?: []
+  value?: string
+  text?: string
+  selected?: boolean
+  etag?: string
+  uri?: string
+  type?: string
 }
 export { PublicationItem }

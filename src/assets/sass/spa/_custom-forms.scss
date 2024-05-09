@@ -226,7 +226,7 @@
   font-weight: $custom-select-font-weight;
   line-height: $custom-select-line-height;
   color: $custom-select-color;
-  vertical-align: middle;
+  // vertical-align: middle;
   background: $custom-select-bg $custom-select-background;
   border: $custom-select-border-width solid $custom-select-border-color;
   @include border-radius($custom-select-border-radius, 0);

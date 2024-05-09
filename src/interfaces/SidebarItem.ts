@@ -10,5 +10,7 @@ interface SidebarItem {
   filtertype?: string
   permission?: string
   permissionvalue?: boolean
+  to?: {}
+  props?: {}
 }
 export { SidebarItem }

@@ -5,20 +5,21 @@ interface UserInt {
   userid: number
   recordid?: number
   usergroups?: []
-  isPM?: boolean
   isSecurity?: boolean
   isDeveloper?: boolean
   isOwner?: boolean
-  isWPManager?: boolean
-  isApprover?: boolean
-  isTravelApprover?: boolean
-  isPCA?: boolean
-  isQA?: boolean
-  isMember?: boolean
-  isSubcontractor?: boolean
+  isActionOfficer?: boolean
+  isLibrarian?: boolean
+  isTerminologist?: boolean
   isAdmin?: boolean
-  isAFRL?: boolean
-  isAFRLCEU?: boolean
+  isVisitor?: boolean
+  isNATOVisitor?: boolean
+  isNATOApprover?: boolean
+  isNATOLibrarian?: boolean
+  isFleetUser?: boolean
+  canViewArchives?: boolean
+  canViewDevPubs?: boolean
+  canAddPubs?: boolean
   Account?: string
   PersonalUrl?: string
   Email?: string
@@ -31,7 +32,6 @@ interface UserInt {
   Manager?: string
   About?: string
   Company?: string
-  WPData?: string
   JSONData?: Array<ObjectItem>
 }
 export { UserInt }

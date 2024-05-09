@@ -175,7 +175,33 @@ textarea.form-control {
 
 .form-group {
   margin-bottom: $form-group-margin-bottom;
-}
+  // DRW: 9/25/2021
+  label {
+    background-color: $label-background-color;
+    color: $label-color;
+  }
+  .dcbs {
+    label {
+      background-color: $white !important;
+      color: $black !important;
+    }
+  }
+  .requesttype{
+    label{
+      background-color: white;
+      color: black;
+      font-family: 'Avenier', Arial, Helvetica, sans-serif;
+      /* font-weight: bold; */
+      font-size: 12px;
+     /*  text-transform: uppercase; */
+    }
+  }
+  .reqtypelabel
+    label{ font-family: 'Times New Roman', Times, serif;
+    }
+
+
+  }
 
 .form-text {
   display: block;

@@ -33,29 +33,14 @@ function formatTravel(j: any): Array<TravelItem> {
     start = String(j[i]['StartDate'])
     end = String(j[i]['EndDate'])
     let created = String(j[i]['Created'])
-    start = moment(start)
-      .utc()
-      .add(offset, 'm')
-      .format()
-    end = moment(end)
-      .utc()
-      .add(offset, 'm')
-      .format()
-    created = moment(created)
-      .utc()
-      .add(offset, 'm')
-      .format()
+    start = moment(start).utc().add(offset, 'm').format()
+    end = moment(end).utc().add(offset, 'm').format()
+    created = moment(created).utc().add(offset, 'm').format()
     if (actioncompleted != '') {
-      actioncompleted = moment(created)
-        .utc()
-        .add(offset, 'm')
-        .format()
+      actioncompleted = moment(created).utc().add(offset, 'm').format()
     }
     if (approvedon != '') {
-      approvedon = moment(created)
-        .utc()
-        .add(offset, 'm')
-        .format()
+      approvedon = moment(created).utc().add(offset, 'm').format()
     }
     p.push({
       Id: Number(j[i]['Id']),
@@ -110,7 +95,7 @@ function getOptions(j: any, field: string): Array<ObjectItem> {
     }
   }
   fake = _.uniq(fake)
-  fake = _.orderBy(fake, [f => f.toLowerCase()], ['asc'])
+  fake = _.orderBy(fake, [(f) => f.toLowerCase()], ['asc'])
   for (let i = 0; i < fake.length; i++) {
     opts.push({
       text: fake[i],

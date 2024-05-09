@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { UserInt } from '../../interfaces/User'
-import { TodoItem } from '../../interfaces/TodoItem'
-// import { ObjectItem } from '../../interfaces/ObjectItem'
 import axios from 'axios'
-import moment from 'moment'
 
 declare const _spPageContextInfo: any
 
@@ -24,20 +21,11 @@ class Users extends VuexModule {
   public digest?: string = ''
   public loaded?: boolean = false
   public currentUser!: UserInt
-  public todoCount?: number
-  public todos?: Array<TodoItem> = []
-  // public baseUrl = _spPageContextInfo.webServerRelativeUrl /* + 'doctrine.navy.mil' */
-  public baseUrl = tp1 + slash + slash + tp2 // 'https://doctrine.navy.mil'
+  public baseUrl = tp1 + slash + slash + tp2
   public vm = this
 
   @Mutation updateDigest(digest: string): void {
     this.digest = digest
-  }
-
-  @Mutation
-  public updateTodos(todos: Array<any>): void {
-    this.todos = todos
-    this.todoCount = todos.length
   }
 
   @Mutation
@@ -53,7 +41,6 @@ class Users extends VuexModule {
 
   @Mutation
   public updateUserProfile(data: any): void {
-    this.currentUser.recordid = data.recordid // row id in personnel list not user id
     this.currentUser.Account = data.Account
     this.currentUser.Email = data.Email
     this.currentUser.EmailLink = data.EmailLink
@@ -63,31 +50,22 @@ class Users extends VuexModule {
     this.currentUser.Manager = data.Manager
     this.currentUser.FirstName = data.FirstName
     this.currentUser.LastName = data.LastName
-    this.currentUser.JSONData = data.JSONData
-    this.currentUser.Company = data.Company
-  }
-
-  @Mutation
-  public updateUserJSONData(data: any): void {
-    this.currentUser.JSONData = data
   }
 
   @Mutation
   public updateUserPermissions(data: any): void {
-    this.currentUser.isPM = data.isPM === true ? true : false
-    this.currentUser.isSecurity = data.isSecurity === true ? true : false
     this.currentUser.isDeveloper = data.isDeveloper === true ? true : false
     this.currentUser.isOwner = data.isOwner === true ? true : false
-    this.currentUser.isWPManager = data.isWPManager === true ? true : false
-    this.currentUser.isApprover = data.isApprover === true ? true : false
-    this.currentUser.isTravelApprover = data.isTravelApprover === true ? true : false
-    this.currentUser.isPCA = data.isPCA === true ? true : false
-    this.currentUser.isQA = data.isQA === true ? true : false
-    this.currentUser.isMember = data.isMember === true ? true : false
-    this.currentUser.isSubcontractor = data.isSubcontractor === true ? true : false
+    this.currentUser.isActionOfficer = data.isActionOfficer === true ? true : false
+    this.currentUser.isLibrarian = data.isLibrarian === true ? true : false
     this.currentUser.isAdmin = data.isAdmin === true ? true : false
-    this.currentUser.isAFRL = data.isAFRL === true ? true : false
-    this.currentUser.isAFRLCEU = data.isAFRLCEU === true ? true : false
+    this.currentUser.isVisitor = true
+    this.currentUser.isNATOVisitor = data.isNATOVisitor === true ? true : false
+    this.currentUser.isNATOApprover = data.isNATOApprover === true ? true : false
+    this.currentUser.isNATOLibrarian = data.isNATOLibrarian === true ? true : false
+    this.currentUser.isTerminologist = data.isTerminologist === true ? true : false
+    this.currentUser.canViewArchives = data.canViewArchives === true ? true : false
+    this.currentUser.canViewDevPubs = data.canViewDevPubs === true ? true : false
   }
 
   @Action
@@ -102,67 +80,6 @@ class Users extends VuexModule {
       return true
     } else {
       // should not call on local
-      return true
-    }
-  }
-
-  @Action
-  public async getTodosByUser(): Promise<boolean> {
-    let allTodos: any[] = []
-    const p: Array<TodoItem> = []
-    const that = this
-    // if local just fake it for the current test
-    let userid = 0
-    if (!local) {
-      userid = this.currentUser.userid
-    } else {
-      userid = 1
-    }
-    if (!local) {
-      const that = this
-      async function getAllTodos(turl: string): Promise<void> {
-        if (turl === '') {
-          turl = that.baseUrl + "/_api/lists/getbytitle('Tasks')/items?"
-          turl += '$select=*,AssignedTo/Id&$expand=AssignedTo/Id'
-          turl += '&$filter=(AssignedTo/Id eq ' + userid + ") and (Status ne 'Completed')"
-        }
-        const response = await axios.get(turl, {
-          headers: {
-            accept: 'application/json;odata=verbose'
-          }
-        })
-        const results = response.data.d.results
-        allTodos = allTodos.concat(results)
-        if (response.data.d.__next) {
-          turl = response.data.d.__next
-          return getAllTodos(turl)
-        } else {
-          // Use the results
-          const j = allTodos
-          for (let i = 0; i < j.length; i++) {
-            p.push({
-              Id: Number(j[i]['Id']),
-              Title: j[i]['Title'], // This is the Title column in SharePoint
-              Status: j[i]['Status'],
-              StartDate: moment(j[i]['StartDate']).isValid() ? moment(j[i]['StartDate']).format('MM/DD/YYYY') : '',
-              DueDate: moment(j[i]['DueDate']).isValid() ? moment(j[i]['DueDate']).format('MM/DD/YYYY') : '',
-              TaskType: j[i]['TaskType'],
-              Body: j[i]['Description'],
-              AssignedTo: {
-                Title: j[i]['AssignedTo']['Title'],
-                Id: j[i]['AssignedTo']['ID'],
-                Email: j[i]['AssignedTo']['EMail']
-              },
-              etag: j[i]['__metadata']['etag'],
-              uri: j[i]['__metadata']['uri']
-            })
-          }
-          that.context.commit('updateTodos', p)
-        }
-      }
-      getAllTodos('')
-      return true
-    } else {
       return true
     }
   }
@@ -232,8 +149,20 @@ class Users extends VuexModule {
             break
         }
       }
+      profile.isDeveloper = false
+      profile.isOwner = false
+      profile.isActionOfficer = false
+      profile.isLibrarian = false
+      profile.isAdmin = false
+      profile.isVisitor = false
+      profile.isNATOVisitor = false
+      profile.isNATOApprover = false
+      profile.isNATOLibrarian = false
+      profile.isTerminologist = false
+      profile.canViewArchives = false
+      profile.canAddPubs = false
+      profile.canViewDevPubs = false
       this.context.commit('updateUserProfile', profile)
-      // this.context.commit("updateUserName", profile.DisplayName)
       return true
     } else {
       const profile = {} as any
@@ -246,6 +175,16 @@ class Users extends VuexModule {
       profile.Manager = 'Mickey Mouse'
       profile.LastName = 'Duck'
       profile.FirstName = 'Donald'
+      profile.isDeveloper = true
+      profile.isOwner = true
+      profile.isActionOfficer = true
+      profile.isLibrarian = true
+      profile.isAdmin = true
+      profile.isVisitor = false // have to set false by default to test all functions
+      profile.isNATOVisitor = true
+      profile.isNATOApprover = true
+      profile.isNATOLibrarian = true
+      profile.isTerminologist = true
       return true
     }
   }
@@ -264,28 +203,50 @@ class Users extends VuexModule {
       const permissions = {} as any
       for (let i = 0; i < usergroups.length; i++) {
         switch (usergroups[i].Title) {
-          case 'Approvers':
-            permissions.isApprover = true
-            break
-
-          case 'Visitors':
-            permissions.isVisitor = true
-            break
-
-          case 'Members':
-            permissions.isMember = true
-            break
-
           case 'Developers':
             permissions.isDeveloper = true
+            permissions.canViewDevPubs = true
             break
 
-          case 'Owners':
-            permissions.isOwner = true
+          case 'Doctrine Action Officers':
+            permissions.isActionOfficer = true
+            permissions.canViewArchives = true
+            permissions.canViewDevPubs = true
+            break
+
+          case 'Doctrine Librarian':
+            permissions.isLibrarian = true
+            permissions.canViewArchives = true
+            permissions.canAddPubs = true
+            permissions.canViewDevPubs = true
             break
 
           case 'Library Administrators':
             permissions.isAdmin = true
+            permissions.canViewArchives = true
+            permissions.canViewDevPubs = true
+            break
+
+          case 'Terminology Members':
+            permissions.isTerminologist = true
+            break
+
+          case 'NATO Approvers':
+            permissions.isNATOVisitor = true // using to more easily denote users that can see NATO documents
+            permissions.isNATOApprover = true
+            break
+
+          case 'NATO Librarians':
+            permissions.isNATOVisitor = true // using to more easily denote users that can see NATO documents
+            permissions.isNATOLibrarian = true
+            permissions.isLibrarian = true
+            permissions.canViewArchives = true
+            permissions.canAddPubs = true
+            permissions.canViewDevPubs = true
+            break
+
+          case 'NATO Visitors':
+            permissions.isNATOVisitor = true // using to more easily denote users that can see NATO documents
             break
         }
       }

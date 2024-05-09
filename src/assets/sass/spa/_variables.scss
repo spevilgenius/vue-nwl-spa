@@ -7,8 +7,26 @@
 
 $white:    #fff !default;
 $black:    #000 !default;
+$blue:    #0275d8 !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #dc3545 !default;
+$orange:  #f0ad4e !default;
+$yellow:  #ffc107 !default;
+$green:   #5cb85c !default;
+$teal:    #088199 !default;
+$cyan:    #5bc0de !default;
+$azure:   #45c0fd !default;
+$navy:    #003b4f !default;
+$olive:   #717d65 !default;
+$gold:    #d3ac45 !default;
+$ocean:   #5e819e !default;
+$globe:   #aee0eb !default;
+$sand:    #b8aa85 !default;
+
 $gray-100: #f8f9fa !default;
-$gray-200: #e9ecef !default;
+$gray-200: #e7e6e6 !default; // used as block background color
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
@@ -21,10 +39,10 @@ $blue-100: #caf0f8 !default;
 $blue-200: #ade8f4 !default;
 $blue-300: #90e0ef !default;
 $blue-400: #48cae4 !default;
-$blue-500: #00b4d8 !default;
+$blue-500: $navy !default; // blue-500 changed to 'Navy' color
 $blue-600: #0096c7 !default;
 $blue-700: #0077b6 !default;
-$blue-800: #023e8a !default;
+$blue-800: $ocean !default; // blue-800 changed to 'ocean' color
 $blue-900: #03045e !default;
 
 $grays: () !default;
@@ -61,18 +79,6 @@ $blues: map-merge(
   $blues
 );
 
-$blue:    #0275d8 !default;
-$indigo:  #6610f2 !default;
-$purple:  #6f42c1 !default;
-$pink:    #e83e8c !default;
-$red:     #d9534f !default;
-$orange:  #f0ad4e !default;
-$yellow:  #ffc107 !default;
-$green:   #5cb85c !default;
-$teal:    #20c997 !default;
-$cyan:    #5bc0de !default;
-$azure:   #45c0fd !default;
-
 $colors: () !default;
 // stylelint-disable-next-line scss/dollar-variable-default
 $colors: map-merge(
@@ -91,7 +97,13 @@ $colors: map-merge(
     "white":      $white,
     "gray":       $gray-600,
     "gray-dark":  $gray-800,
-    "black":      $black
+    "black":      $black,
+    "navy":       $navy,
+    "olive":      $olive,
+    "gold":       $gold,
+    "ocean":      $ocean,
+    "globe":      $globe,
+    "sand":       $sand
   ),
   $colors
 );
@@ -104,6 +116,7 @@ $warning:       $orange !default;
 $danger:        $red !default;
 $light:         $white !default;
 $dark:          $black !default;
+$loading:       $gray-200 !default;
 
 $theme-colors: () !default;
 
@@ -116,6 +129,7 @@ $theme-colors: map-merge(
     "warning":    $warning,
     "danger":     $danger,
     "light":      $light,
+    "loading":    $loading,
     "dark":       $dark,
     "blue":       $blue,
     "indigo":     $indigo,
@@ -140,7 +154,13 @@ $theme-colors: map-merge(
     "blue-600":   $blue-600,
     "blue-700":   $blue-700,
     "blue-800":   $blue-800,
-    "blue-900":   $blue-900
+    "blue-900":   $blue-900,
+    "navy":       $navy,
+    "olive":      $olive,
+    "gold":       $gold,
+    "ocean":      $ocean,
+    "globe":      $globe,
+    "sand":       $sand
   ),
   $theme-colors
 );
@@ -222,7 +242,7 @@ $escaped-characters: (
 // Quickly modify global styling by enabling or disabling optional features.
 
 $enable-caret:                                true !default;
-$enable-rounded:                              true !default;
+$enable-rounded:                              false !default;
 $enable-shadows:                              false !default;
 $enable-gradients:                            false !default;
 $enable-transitions:                          true !default;
@@ -231,8 +251,8 @@ $enable-hover-media-query:                    false !default; // Deprecated, no 
 $enable-grid-classes:                         true !default;
 $enable-pointer-cursor-for-buttons:           true !default;
 $enable-print-styles:                         true !default;
-$enable-responsive-font-sizes:                false !default;
-$enable-validation-icons:                     true !default;
+$enable-responsive-font-sizes:                true !default;
+$enable-validation-icons:                     false !default;
 $enable-deprecation-messages:                 true !default;
 
 
@@ -386,7 +406,7 @@ $embed-responsive-aspect-ratios: join(
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif:      Roboto, RobotoLocal, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 $font-family-base:            $font-family-sans-serif !default;
 // stylelint-enable value-keyword-case
@@ -496,7 +516,7 @@ $table-border-level:          -6 !default;
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
 $input-btn-padding-y:         .375rem !default;
-$input-btn-padding-x:         .75rem !default;
+$input-btn-padding-x:         1.75rem !default;
 $input-btn-font-family:       null !default;
 $input-btn-font-size:         $font-size-base !default;
 $input-btn-line-height:       $line-height-base !default;
@@ -562,7 +582,9 @@ $btn-transition:              color .15s ease-in-out, background-color .15s ease
 
 // Forms
 
-$label-margin-bottom:                   .5rem !default;
+$label-margin-bottom:                   0 !default;
+$label-background-color:                $blue-800;
+$label-color:                           $white;
 
 $input-padding-y:                       $input-btn-padding-y !default;
 $input-padding-x:                       $input-btn-padding-x !default;
@@ -695,9 +717,10 @@ $custom-select-bg-size:             8px 10px !default; // In pixels because imag
 $custom-select-indicator-color:     $gray-800 !default;
 $custom-select-indicator:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'><path fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>") !default;
 $custom-select-background:          escape-svg($custom-select-indicator) no-repeat right $custom-select-padding-x center / $custom-select-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
+// $custom-select-background:          escape-svg($custom-select-indicator) no-repeat left $custom-select-padding-x center / $custom-select-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
 
 $custom-select-feedback-icon-padding-right: add(1em * .75, (2 * $custom-select-padding-y * .75) + $custom-select-padding-x + $custom-select-indicator-padding) !default;
-$custom-select-feedback-icon-position:      center right ($custom-select-padding-x + $custom-select-indicator-padding) !default;
+$custom-select-feedback-icon-position:      center left ($custom-select-padding-x + $custom-select-indicator-padding) !default;
 $custom-select-feedback-icon-size:          $input-height-inner-half $input-height-inner-half !default;
 
 $custom-select-border-width:        $input-border-width !default;
@@ -936,8 +959,8 @@ $jumbotron-bg:                      $gray-200 !default;
 
 // Cards
 
-$card-spacer-y:                     .75rem !default;
-$card-spacer-x:                     1.25rem !default;
+$card-spacer-y:                     .25rem !default;
+$card-spacer-x:                     .25rem !default;
 $card-border-width:                 $border-width !default;
 $card-border-radius:                $border-radius !default;
 $card-border-color:                 rgba($black, .125) !default;

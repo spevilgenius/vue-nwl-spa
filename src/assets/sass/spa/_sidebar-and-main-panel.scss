@@ -68,7 +68,7 @@ a[aria-controls~="menu"] .caret {
   .b-sidebar {
     // overwrite bootstrapvue style
     height: calc(100vh - 50px) !important;
-    width: 300px !important;
+    width: 300px;
     position: fixed !important;
     top: 25px !important;
 
@@ -107,8 +107,6 @@ a[aria-controls~="menu"] .caret {
   width: 300px;
   display: block;
   z-index: 1;
-  /* color: $dark !important;
-  background-color: $light !important; */
   font-weight: 200;
 
   .sidebar-wrapper {
@@ -118,7 +116,6 @@ a[aria-controls~="menu"] .caret {
     overflow: auto;
     width: 300px;
     z-index: 4;
-    /* padding-bottom: 100px; */    
 
     .nav {
       min-height: 20px;
@@ -126,8 +123,27 @@ a[aria-controls~="menu"] .caret {
 
     .nav .nav-header {
       height: 150px !important;
+      .nav-header-link-sub {
+        height: 50px;
+        background-color: transparent;
+        color: $light;
+        width: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        .nav-header-title {
+          font-family: 'Bahnschrift SemiCondensed';
+          font-weight: bold;
+          height: 50px;
+          width: 300px;
+          line-height: 1.25rem;
+          margin-top: 18px;
+          font-size: 1.5rem;
+        }
+      }
       .nav-header-link {
-        height: 150px;
+        height: 100px;
         background-color: transparent;
         color: $light;
         width: 300px;
@@ -143,13 +159,6 @@ a[aria-controls~="menu"] .caret {
             width: 100px;
             margin: 0 auto;
           }
-        }
-        .nav-header-title {
-          height: 50px;
-          width: 300px;
-          line-height: 1.25rem;
-          margin-top: 18px;
-          font-size: 1.25rem;
         }
       }
       .sidebar-logo {
@@ -282,6 +291,8 @@ a[aria-controls~="menu"] .caret {
     display: block;
 
     .nav-item {
+      margin-bottom: 5px;
+      
       .nav-header {
         height: 50px;
       }
@@ -290,10 +301,10 @@ a[aria-controls~="menu"] .caret {
         color: $light;
         margin: 0;
         opacity: 1;
-        text-transform: uppercase;
+        // text-transform: uppercase;
         line-height: 1.25rem;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 1.3rem;
+        font-weight: 300;
         padding: 0.25rem 0.2rem;
         white-space: nowrap;
         text-align: left;
@@ -310,8 +321,10 @@ a[aria-controls~="menu"] .caret {
         }
 
         .sidebar-text {
+          font-family: 'Calibri Light';
+          font-size: 16px;
           text-align: left;
-          text-transform: uppercase;
+          // text-transform: uppercase;
           margin-left: 8px;
           padding: 0;
         }
@@ -425,7 +438,7 @@ a[aria-controls~="menu"] .caret {
 
   &:before {
     opacity: 1;
-    background: $blue-600;
+    background: $blue-500;
   }
 }
 
@@ -436,13 +449,17 @@ a[aria-controls~="menu"] .caret {
   top: 25px;
   bottom: 25px;
   left: 300px;
-  height: calc(100vh - 50px); /* cui banner compensation */
+  // right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* height: calc(100vh - 50px); */
   width: calc(100vw - 300px);
+  font-family: 'RobotoSlab', 'RobotoSlabLocal', 'Roboto', 'RobotoLocal', serif;
 
   .content {
-    height: calc(
+    /* height: calc(
       100vh - 150px
-    ); /* TODO: validate conentheight in bootstrap.scss is set to this same style.    */
+    ); */
     width: calc(100vw - 300px);
     background: $light; /* $BACKGROUNDCOLOR; */
     display: flex;

@@ -6,12 +6,15 @@ import lodash from 'lodash'
 import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
 import crono from 'vue-crono'
+// import VueExcelXlsx from 'vue-excel-xlsx'
 // import { logger } from './applogger'
 
 import './assets/css/themify-icons.css'
 import './assets/css/animate.css'
 import './assets/sass/bootstrap.scss'
 import './assets/css/spa.css'
+import '../node_modules/quill/dist/quill.core.css'
+import '../node_modules/quill/dist/quill.bubble.css'
 
 import App from './components/App.vue'
 import router from './router/router'
@@ -37,6 +40,7 @@ Vue.use(BootstrapVue)
 Vue.use(Global)
 Vue.use(VueLodash, { lodash: lodash })
 Vue.use(crono)
+// Vue.use(VueExcelXlsx)
 
 export const EventBus = new Vue()
 
@@ -48,7 +52,7 @@ export const EventBus = new Vue()
   logger.logToServer({ message, source, lineno, colno, error })
 } */
 
-window.addEventListener('beforeunload', function(e) {
+window.addEventListener('beforeunload', function (e) {
   // TODO: anything to do here?
 })
 
@@ -59,5 +63,5 @@ Vue.config.devtools = true
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount('#app')

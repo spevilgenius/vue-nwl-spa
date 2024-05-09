@@ -18,7 +18,7 @@ module.exports = {
     }
   },
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     // console.log(config.plugins)
     config.plugins.delete('prefetch')
     config.plugins.delete('preload')
@@ -31,7 +31,6 @@ module.exports = {
     loaderOptions: {
       sass: {
         prependData: `
-          $BACKGROUNDCOLOR: ${process.env.APP_BACKGROUND};
           @import "@/assets/sass/spa/_mixins.scss";
           @import "@/assets/sass/spa/_functions.scss";
           @import "@/assets/sass/spa/_functions-overrides.scss";

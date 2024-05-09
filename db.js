@@ -14,10 +14,10 @@ const lorem = new LoremIpsum({
 })
 
 module.exports = () => {
-  ;(function() {
+  ;(function () {
     var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
 
-    Math.uuid = function(len, radix) {
+    Math.uuid = function (len, radix) {
       var chars = CHARS,
         uuid = [],
         i
@@ -39,7 +39,7 @@ module.exports = () => {
       return uuid.join('')
     }
 
-    Math.uuidFast = function() {
+    Math.uuidFast = function () {
       var chars = CHARS,
         uuid = new Array(36),
         rnd = 0,
@@ -59,8 +59,8 @@ module.exports = () => {
       return uuid.join('')
     }
 
-    Math.uuidCompact = function() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    Math.uuidCompact = function () {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (Math.random() * 16) | 0,
           v = c == 'x' ? r : (r & 0x3) | 0x8
         return v.toString(16)
@@ -103,15 +103,20 @@ module.exports = () => {
 
   for (let i = 0; i < announcementcount; i++) {
     data.announcements.push({
-      id: i,
-      title: 'DOCUMENT ' + i,
-      date: moment().format('MM/DD/YYYY'),
-      author: users[getRandomInt(10)],
-      description: lorem.generateSentences(4)
+      Id: i,
+      Title: 'DOCUMENT ' + i,
+      Modified: moment().format('MM/DD/YYYY'),
+      Author: users[getRandomInt(10)],
+      Body: lorem.generateSentences(4),
+      ModifiedBy: {
+        Title: users[getRandomInt(10)],
+        Id: 1,
+        Email: ''
+      }
     })
   }
 
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 1500; i++) {
     let ext = filetypes[getRandomInt(5)]
     let title = 'Publication-' + letters[getRandomInt(8)] + '-' + i + '-' + letters[getRandomInt(8)]
     let name = title + ext

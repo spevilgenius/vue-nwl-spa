@@ -44,7 +44,7 @@
                     <template slot="title">Active Pubs</template>
                     <b-row no-gutters>
                       <b-col cols="12">
-                        <b-overlay :show="!ActivePubsLoaded" variant="success" class="mtab">
+                        <b-overlay :show="!ActivePubsLoaded" variant="loading" class="mtab">
                           <b-textarea v-model="ActivePubsArea" class="area"></b-textarea>
                           <template #overlay>
                             <div class="text-center">

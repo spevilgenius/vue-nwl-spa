@@ -3,140 +3,116 @@
 
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { SidebarItem } from '@/interfaces/SidebarItem'
-import axios from 'axios'
 import _ from 'lodash'
-
-declare const _spPageContextInfo: any
-
-// are we on a localhost demo?
-let loc = String(window.location)
-let local = false
-if (loc.indexOf('localhost') >= 0) {
-  local = true
-}
-let baseUrl = null
-if (!local) {
-  baseUrl = _spPageContextInfo.webServerRelativeUrl
-}
-
-function formatNavigation(j: any): Array<SidebarItem> {
-  const p: Array<SidebarItem> = []
-  // loop through the items
-  for (let i = 0; i < j.length; i++) {
-    // we know that any item that has isMenu set to true is a root item so we are going to set those up first
-    if (j[i]['isMenu'] == true) {
-      // add this item to the array
-      p.push({
-        id: Number(j[i]['Id']),
-        isMenu: true,
-        name: j[i]['Title'],
-        path: j[i]['path'],
-        children: [],
-        library: j[i]['library'],
-        icon: j[i]['icon'],
-        permission: j[i]['permission'],
-        permissionvalue: j[i]['permissionvalue']
-      })
-    }
-  }
-  // we now should have an array of main menu items
-  // add the children
-  for (let i = 0; i < j.length; i++) {
-    // we know that items with a parent set should be added to their respective parent
-    if (j[i]['parent']) {
-      // add this item to the array
-      let parent = Number(j[i]['parent'])
-      for (let k = 0; k < p.length; k++) {
-        if (p[k]['id'] == parent) {
-          p[k].children?.push({
-            id: Number(j[i]['Id']),
-            name: j[i]['Title'],
-            path: j[i]['path'],
-            library: j[i]['library'],
-            icon: j[i]['icon'],
-            filtertype: j[i]['filtertype'],
-            permission: j[i]['permission'],
-            permissionvalue: j[i]['permissionvalue']
-          })
-        }
-      }
-    }
-  }
-  return p
-}
 
 @Module({ namespaced: true })
 class Sidebar extends VuexModule {
   public sidebaritems: Array<SidebarItem> = [
     {
+      id: 50,
+      isMenu: false,
+      name: "What's New",
+      library: 'fas',
+      icon: 'newspaper',
+      children: [],
+      to: { path: '/pubs/reroute/new' }
+    },
+    {
       id: 100,
       isMenu: true,
       name: 'Approved Publications',
-      path: '/pubs/home',
+      to: { path: '/pubs/approved' },
       children: [
         {
-          id: 101,
-          name: 'Whats New',
-          path: '/pubs/home/refreshnew',
-          library: 'fas',
-          icon: 'newspaper'
+          id: 107,
+          name: 'All Publications',
+          library: 'far',
+          icon: 'file-lines',
+          children: [],
+          to: { path: '/pubs/reroute/all' }
         },
         {
-          id: 102,
+          id: 1081,
           name: 'Navy',
-          path: '/pubs/home/refreshnavy',
           library: 'fas',
-          icon: 'anchor'
+          icon: 'anchor',
+          to: { path: '/pubs/reroute/grouped/Navy' }
         },
         {
           id: 103,
           name: 'Allied',
-          path: '/pubs/home/refreshallied',
           library: 'fas',
-          icon: 'users'
+          icon: 'users',
+          permission: 'isNATOVisitor',
+          permissionvalue: true,
+          children: [],
+          to: { path: '/pubs/approved/allied' }
         },
         {
           id: 104,
+          name: 'Allied',
+          library: 'fas',
+          icon: 'users',
+          permission: 'isNATOVisitor',
+          permissionvalue: false,
+          children: [],
+          to: { path: '/nwlsupport/home/requestnato' }
+        },
+        {
+          id: 1083,
           name: 'Joint',
-          path: '/pubs/home/refreshjoint',
           library: 'fas',
-          icon: 'user-friends'
+          icon: 'user-friends',
+          to: { path: '/pubs/reroute/grouped/Joint' }
         },
         {
-          id: 105,
+          id: 1084,
           name: 'MultiNational',
-          path: '/pubs/home/refreshmulti',
           library: 'fas',
-          icon: 'user-tie'
+          icon: 'user-tie',
+          to: { path: '/pubs/reroute/grouped/Multinational' }
         },
         {
-          id: 106,
-          name: 'All Publications',
-          path: '/pubs/home/refreshall',
-          library: 'fas',
-          icon: 'user-shield'
+          id: 1085,
+          name: 'All Publications (Grouped)',
+          library: 'far',
+          icon: 'file-lines',
+          to: { path: '/pubs/reroute/grouped/All' }
         }
       ],
       library: 'fas',
       icon: 'file-alt'
     },
     {
+      id: 150,
+      isMenu: false,
+      children: [],
+      name: 'Archived Publications',
+      to: { path: '/pubs/archived/all' },
+      library: 'fas',
+      icon: 'file-archive',
+      permission: 'canViewArchives',
+      permissionvalue: true
+    },
+    {
       id: 200,
       isMenu: false,
       children: [],
       name: 'Pubs In Development',
+      to: { path: '/pubs/development/all' },
       library: 'fas',
-      icon: 'user-edit',
-      path: '/pubs/home/refreshdevelopment'
+      icon: 'pen-to-square',
+      permission: 'canViewDevPubs',
+      permissionvalue: true
     },
     {
       id: 300,
       isMenu: false,
       children: [],
       name: 'Naval Terminology',
+      to: { path: '/terminology/home' },
       library: 'fas',
-      icon: 'spell-check',
-      path: '/terminology/home'
+      icon: 'spell-check'
     },
     {
       id: 400,
@@ -145,53 +121,46 @@ class Sidebar extends VuexModule {
       name: 'PleaseReview',
       library: 'fas',
       icon: 'folder-open',
-      path: '/review/home'
+      to: { path: '/pages/pleasereview' }
     },
     {
       id: 500,
       isMenu: true,
       name: 'Documents',
-      path: '/docs/home',
+      path: '/pubs/home',
       children: [
         {
           id: 501,
-          name: 'TACMEMOS',
-          path: '/docs/home/refreshtacmemos',
+          name: 'TACMEMO, TACBUL, TACNOTE',
+          to: { path: '/pubs/reroute/tacmemos' },
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 502,
           name: 'Fleet CONOPS',
-          path: '/docs/home/refreshfleet',
+          to: { path: '/pubs/reroute/conops' },
           library: 'fas',
           icon: 'file-signature'
         },
         {
           id: 503,
-          name: 'Navy Concept Pubs',
-          path: '/docs/home/refreshconcept',
+          name: 'Navy Concept',
+          to: { path: '/pubs/reroute/concept' },
           library: 'fas',
           icon: 'passport'
         },
         {
           id: 504,
           name: 'Navy-Wide OPTASKs',
-          path: '/docs/home/refreshoptasks',
+          to: { path: '/pubs/reroute/optasks' },
           library: 'fas',
           icon: 'tasks'
         },
         {
           id: 505,
-          name: 'Archived Documents',
-          path: '/docs/home/refresharchived',
-          library: 'fas',
-          icon: 'archive'
-        },
-        {
-          id: 506,
           name: 'Other',
-          path: '/docs/home/refreshother',
+          to: { path: '/pubs/reroute/other' },
           library: 'fas',
           icon: 'folder'
         }
@@ -207,29 +176,22 @@ class Sidebar extends VuexModule {
       children: [
         {
           id: 601,
-          name: 'Bookshelves',
-          path: '/library/home/refreshshelves',
-          library: 'fas',
-          icon: 'newspaper'
-        },
-        {
-          id: 602,
-          name: 'Announcements',
-          path: '/library/home/refreshfleet',
-          library: 'fas',
-          icon: 'file-signature'
-        },
-        {
-          id: 603,
           name: 'Command List',
-          path: '/library/home/refreshlist',
+          to: { path: '/library/home/refreshcommandlist' },
           library: 'fas',
           icon: 'passport'
         },
         {
-          id: 604,
+          id: 602,
           name: 'Doctrine POCs',
-          path: '/library/home/refreshpocs',
+          to: { path: '/library/home/refreshpocs' },
+          library: 'fas',
+          icon: 'tasks'
+        },
+        {
+          id: 603,
+          name: 'Mission Area Bookshelves',
+          to: { path: '/library/home/refreshbookshelves' },
           library: 'fas',
           icon: 'tasks'
         }
@@ -244,138 +206,164 @@ class Sidebar extends VuexModule {
       name: 'Doctrine Links',
       library: 'fas',
       icon: 'link',
-      path: '/links/home'
+      to: { path: '/library/home/refreshlinks' }
     },
     {
       id: 800,
       isMenu: true,
-      name: 'Support',
-      path: '/support/home',
+      name: 'NWL Support',
+      to: { path: '/nwlsupport/home' },
       children: [
         {
           id: 801,
           name: 'FAQ',
-          path: '/support/home/refreshfaq',
+          to: { path: '/nwlsupport/home/refreshfaq' },
           library: 'fas',
           icon: 'newspaper'
         },
         {
           id: 802,
-          name: 'My NATO Status',
-          path: '/support/home/natostatus',
-          library: 'fas',
-          icon: 'file-signature'
-        },
-        {
-          id: 803,
-          name: 'Request NATO Access',
-          path: '/support/home/requestnato',
-          library: 'fas',
-          icon: 'passport'
-        },
-        {
-          id: 804,
           name: 'Request NWL Support',
-          path: '/support/home/requestnwl',
+          to: { path: '/nwlsupport/home/requestnwl' },
           library: 'fas',
           icon: 'tasks'
         },
         {
-          id: 805,
+          id: 803,
           name: 'Request Portal/IT Support',
-          path: '/support/home/requestit',
+          to: { path: '/nwlsupport/home/requestit' },
           library: 'fas',
           icon: 'archive'
+        },
+        {
+          id: 804,
+          name: 'Request NATO Access',
+          to: { path: '/nwlsupport/home/requestnato' },
+          library: 'fas',
+          icon: 'house-flag'
         }
       ],
       library: 'fas',
-      icon: 'question'
+      icon: 'bell-concierge'
+    },
+    {
+      id: 900,
+      isMenu: true,
+      name: 'Librarian Actions',
+      to: { path: '/librarian/home' },
+      permission: 'isLibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 901,
+          name: 'NWL Administration',
+          to: { path: '/librarian/home/refreshadmin' },
+          library: 'fas',
+          icon: 'tools'
+        },
+        {
+          id: 902,
+          name: 'Add New Publication',
+          to: { path: '/pubs/development/new' },
+          library: 'fas',
+          icon: 'plus',
+          permission: 'isLibrarian',
+          permissionvalue: true
+        },
+        {
+          id: 903,
+          name: 'Announcements',
+          to: { path: '/librarian/home/refreshannouncements' },
+          library: 'fas',
+          icon: 'bullhorn'
+        }
+      ],
+      library: 'fas',
+      icon: 'book'
+    },
+    {
+      id: 940,
+      isMenu: false,
+      children: [],
+      name: 'Manage Terminology',
+      library: 'fas',
+      icon: 'spell-check',
+      to: { path: '/pages/ManageTerminology' },
+      permission: 'isTerminologist',
+      permissionvalue: true
+    },
+    {
+      id: 950,
+      isMenu: true,
+      name: 'AO Actions',
+      to: { path: '/ao/home' },
+      permission: 'isActionOfficer',
+      permissionvalue: true,
+      children: [
+        {
+          id: 951,
+          name: 'AO Administration',
+          to: { path: '/ao/home/aoadministration' },
+          library: 'fas',
+          icon: 'tools'
+        }
+      ],
+      library: 'fas',
+      icon: 'briefcase'
     },
     {
       id: 1000,
-      isMenu: false,
-      children: [],
-      name: 'Search',
-      path: '/search/home',
+      isMenu: true,
+      name: 'Reports',
+      permission: 'isLibrarian',
+      permissionvalue: true,
+      children: [
+        {
+          id: 1001,
+          name: 'Top Publications',
+          to: { path: '/reports/home/toppublications' },
+          library: 'far',
+          icon: 'file-lines'
+        },
+        {
+          id: 1002,
+          name: 'Top NATO Publications',
+          to: { path: '/reports/home/topnatopublications' },
+          library: 'far',
+          icon: 'file-lines'
+        },
+        {
+          id: 1003,
+          name: 'Publications In Dev Phase',
+          to: { path: '/reports/home/publicationsindevphase' },
+          library: 'far',
+          icon: 'file-lines'
+        },
+        {
+          id: 1004,
+          name: 'Publications Posted',
+          to: { path: '/reports/home/publicationsposted' },
+          library: 'far',
+          icon: 'file-lines'
+        },
+        {
+          id: 1005,
+          name: 'NATO Publications Posted',
+          to: { path: '/reports/home/natopublicationsposted' },
+          library: 'far',
+          icon: 'file-lines'
+        },
+        {
+          id: 1006,
+          name: 'Unique Users',
+          to: { path: '/reports/home/uniqueusers' },
+          library: 'far',
+          icon: 'file-lines'
+        }
+      ],
       library: 'fas',
-      icon: 'search-plus'
-    },
-    {
-      id: 1500,
-      isMenu: false,
-      children: [],
-      name: 'Developer',
-      path: '/pages/Developer',
-      library: 'fas',
-      icon: 'user-shield',
-      permission: 'isDeveloper',
-      permissionvalue: true
+      icon: 'folder-tree'
     }
   ]
-
-  public navigationloaded = false
-  public navigation: Array<SidebarItem> = []
-
-  @Mutation
-  public addSidebarItem(item: SidebarItem): void {
-    // TODO: Update to just push results from axios call as one larger function
-    this.sidebaritems.push({
-      ...item
-    })
-  }
-
-  @Mutation
-  public updateNavigation(navigation: Array<SidebarItem>): void {
-    this.navigation = navigation
-    this.sidebaritems = navigation
-  }
-
-  @Mutation
-  public updateNavigationLoaded(loaded: boolean): void {
-    this.navigationloaded = loaded
-  }
-
-  @Action
-  public add(item: SidebarItem): void {
-    this.context.commit('addSidebarItem', item)
-  }
-
-  @Action
-  public async getNavigation(): Promise<boolean> {
-    if (!local) {
-      const nurl = baseUrl + "/_api/lists/getbytitle('Navigation')/items?$select=*&$orderby=OrderID"
-      let allNavigation: any[] = []
-      let p: Array<SidebarItem> = []
-      const that = this
-      async function getAllNavigation(url: string): Promise<void> {
-        if (url === '') {
-          url = nurl
-        }
-        const response = await axios.get(url, {
-          headers: {
-            accept: 'application/json;odata=verbose'
-          }
-        })
-        allNavigation = allNavigation.concat(response.data.d.results)
-        // recursively load items if there is a next result
-        if (response.data.d.__next) {
-          url = response.data.d.__next
-          return getAllNavigation(url)
-        } else {
-          // call a function from here?
-          p = formatNavigation(allNavigation)
-          that.context.commit('updateNavigation', p)
-          that.context.commit('updateNavigationLoaded', true)
-        }
-      }
-      getAllNavigation('')
-      return true
-    } else {
-      console.log('Setting Sidebar Items: ' + this.sidebaritems.length)
-      this.context.commit('updateNavigation', this.sidebaritems)
-      this.context.commit('updateNavigationLoaded', true)
-      return true
-    }
-  }
 }
 export default Sidebar

@@ -1,0 +1,2 @@
+NWL GIT TOKEN: UJyCu3AnUDBxEFs5QUHn
+NWL GIT URL: https://nexagen-dev.usgovvirginia.cloudapp.usgovcloudapi.net/nwdc-main/vue-nwl-spa.git
